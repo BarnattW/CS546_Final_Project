@@ -60,7 +60,7 @@ const getCustomerById = async (id) => {
  * }
  */
 
-/* 
+/* TO-DO
  * Return's a customer's cart
  */
 const getCustomerCart = async (customerId) => {
@@ -110,7 +110,7 @@ const getCustomerCart = async (customerId) => {
 const addToCart = async (customerId, listingId, quantity) => {
 	customerId = checkId(customerId);
 	listingId = checkId(listingId);
-	quantity = checkIsPositiveInteger(quantity);
+	checkIsPositiveInteger(quantity);
 	const newItem = {
 		listingId: listingId,
 		quantity: quantity,
@@ -138,7 +138,7 @@ const addToCart = async (customerId, listingId, quantity) => {
 const updateCart = async (customerId, listingId, quantity) => {
 	customerId = checkId(customerId);
 	listingId = checkId(listingId);
-	quantity = checkIsPositiveInteger(quantity);
+	checkIsPositiveInteger(quantity);
 
 	const customersCollection = await customers();
 	let updatedCart;
@@ -270,6 +270,7 @@ export const customerDataFunctions = {
 	getCustomerCart,
 	addToCart,
 	updateCart,
+	getCustomerWishlist,
 	addToWishlist,
 	removeFromWishlist,
 };
