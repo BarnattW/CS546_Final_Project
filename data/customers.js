@@ -6,7 +6,7 @@ import {
 	checkString,
 } from "../utils/checks.js";
 
-/* TO-DO
+/*
  * Creates a customer, add them to the database and returns the new customer
  */
 const createCustomer = async (username, password, name) => {
@@ -36,6 +36,11 @@ const createCustomer = async (username, password, name) => {
 	return customer;
 };
 
+/* TO-DO
+ * Login a customer
+ */
+const loginCustomer = async (username, password) => {};
+
 /*
  * Returns a customer from db given a customer's id
  */
@@ -55,7 +60,7 @@ const getCustomerById = async (id) => {
  * }
  */
 
-/* TO-DO
+/* 
  * Return's a customer's cart
  */
 const getCustomerCart = async (customerId) => {
@@ -70,9 +75,33 @@ const getCustomerCart = async (customerId) => {
 		{ projection: { _id: 0, cart: 1 } }
 	);
 
-	// populate cart with listings by first retreiving listing data and then merging
 	if (!customerCart) throw `No cart found for customer with id ${customerId}`;
-	return customerCart;
+	// populate cart with listings by first retreiving listing data and then merging
+	const sellersCollection = await sellers();
+	const listingIds = customerCart.map((cartItem) => cartItem.listingId);
+	const sellers = sellersCollection
+		.find({
+			"listings._id": { $in: listingIds },
+		})
+		.toArray();
+
+	const items = {}
+	sellers.forEach((seller) => {
+		seller.listings.forEach((listing) => {
+			if (listingIds.includes(listing._id)) {
+				items[listing._id] = listing
+			}
+		});
+	});
+
+	const populatedCart = customerCart.map((cartItem) => {
+		return {
+			listing: items[cartItem.listingId],
+			quantity: cartItem.quantity
+		}
+	})
+
+	return JSON.stringify(populatedCart);
 };
 
 /*
@@ -163,10 +192,27 @@ const getCustomerWishlist = async (customerId) => {
 		{ projection: { _id: 0, wishlist: 1 } }
 	);
 
-	// populate cart with listings by first retreiving listing data and then merging
 	if (!customerWishlist)
 		throw `No wishlist found for customer with id ${customerId}`;
-	return customerWishlist;
+
+	// populate cart with listings by first retreiving listing data and then merging
+	const sellersCollection = await sellers();
+	const sellers = sellersCollection
+		.find({
+			"listings._id": { $in: listingIds },
+		})
+		.toArray();
+
+	const populatedWishlist = []
+	sellers.forEach((seller) => {
+		seller.listings.forEach((listing) => {
+			if (customerWishlist.includes(listing._id)) {
+				populatedWishlist.push(listing);
+			}
+		});
+	});
+
+	return JSON.stringify(populatedWishlist);
 };
 
 /*

@@ -1,6 +1,8 @@
 import { sellers } from "../config/mongoCollections.js";
 import { checkId } from "../utils/checks.js";
 
+const createSeller = async (username, password, name, town) => {};
+
 /*
  * Returns a Seller from db given a Seller's id
  */
@@ -13,4 +15,31 @@ const getSellerById = async (id) => {
 	return sellersCollection;
 };
 
-export const sellerDataFunctions = { getSellerById };
+const getAllListings = async () => {};
+
+const getAllSellerListings = async (sellerId) => {};
+
+const getSellerListing = async (sellerId) => {};
+
+const createListing = async (sellerId) => {};
+
+const updateListing = async (sellerId) => {};
+
+const deleteListing = async (sellerId) => {};
+
+/*
+ * The one below is a doozy
+ */
+const searchForListing = async (queryParams) => {};
+
+export const sellerDataFunctions = {
+	createSeller,
+	getSellerById,
+	getAllListings,
+	getAllSellerListings,
+	getSellerListing,
+	createListing,
+	updateListing,
+	deleteListing,
+	searchForListing,
+};
