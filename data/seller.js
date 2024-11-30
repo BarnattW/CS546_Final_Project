@@ -21,11 +21,27 @@ const getAllSellerListings = async (sellerId) => {};
 
 const getSellerListing = async (sellerId) => {};
 
-const createListing = async (sellerId) => {};
+const createListing = async (
+	sellerId,
+	itemName,
+	itemDescription,
+	itemPrice,
+	itemImage,
+	itemCategory,
+	condition
+) => {};
 
-const updateListing = async (sellerId) => {};
+const updateListing = async (
+	listingId,
+	itemName,
+	itemDescription,
+	itemPrice,
+	itemImage,
+	itemCategory,
+	condition
+) => {};
 
-const deleteListing = async (sellerId) => {};
+const deleteListing = async () => {};
 
 /*
  * The one below is a doozy

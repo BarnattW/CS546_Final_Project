@@ -43,4 +43,12 @@ const checkIsPositiveInteger = (num) => {
 	if (num < 0) throw "Err: Number should be greater than 0";
 };
 
-export { checkString, checkId, checkIsPositiveInteger };
+const checkCustomer = (username, password, name) => {
+	username = checkString(username);
+	password = checkString(password);
+	name = checkString(name);
+
+	return { username: username, password: password, name: name };
+};
+
+export { checkString, checkId, checkIsPositiveInteger, checkCustomer };

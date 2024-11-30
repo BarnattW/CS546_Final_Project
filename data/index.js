@@ -1,5 +1,5 @@
-import { customerDataFunctions } from "./customers";
-import { sellerDataFunctions } from "./seller";
+import { customerDataFunctions } from "./customers.js";
+import { sellerDataFunctions } from "./seller.js";
 
 export const customersData = customerDataFunctions;
 export const sellersData = sellerDataFunctions;
