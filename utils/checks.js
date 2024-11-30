@@ -28,4 +28,19 @@ const checkId = (id) => {
 	return id;
 };
 
-export { checkString, checkId };
+const checkIsNumber = (num) => {
+	checkExists(num);
+	if (typeof num != "number") throw `Err: Argument ${num} should be a number`;
+};
+
+const checkIsInteger = (num) => {
+	if (!Number.isInteger(num)) throw `Err: Number ${num} should be an integer`;
+};
+
+const checkIsPositiveInteger = (num) => {
+	checkIsNumber(num);
+	checkIsInteger(num);
+	if (num < 0) throw "Err: Number should be greater than 0";
+};
+
+export { checkString, checkId, checkIsPositiveInteger };
