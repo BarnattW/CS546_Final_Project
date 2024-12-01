@@ -1,5 +1,5 @@
 import { dbConnection } from './mongoConnection.js';
-// added some comments here
+// this is some more comments
 const getCollectionFn = (collection) => {
   let _col = undefined;
 
