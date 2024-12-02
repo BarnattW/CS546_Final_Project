@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { checkId, checkIsPositiveInteger } from "../utils/checks.js";
+import {
+	checkId,
+	checkIsPositiveInteger,
+	sanitizeInput,
+	sanitizeObject,
+} from "../utils/checks.js";
 import { customersData } from "../data/index.js";
 
 const router = Router();
@@ -20,6 +25,7 @@ router.route("/").post(async (req, res) => {
 
 	let checkedCustomer;
 	try {
+		customerData = sanitizeObject(customerData);
 		checkedCustomer = checkCustomer(
 			customerData.username,
 			customerData.password,
@@ -49,6 +55,7 @@ router.route("/:id").get(async (req, res) => {
 	// gets customer with param id
 	try {
 		req.params.id = checkId(req.params.id);
+		req.params.id = sanitizeInput(req.params.id);
 	} catch (e) {
 		console.log(e);
 		return res.json({ error: e });
@@ -69,6 +76,7 @@ router
 		// gets customer's cart with param id
 		try {
 			req.params.id = checkId(req.params.id);
+			req.params.id = sanitizeInput(req.params.id);
 		} catch (e) {
 			return res.status(404).json({ error: e });
 		}
@@ -92,7 +100,9 @@ router
 
 		try {
 			req.params.id = checkId(req.params.id);
+			req.params.id = sanitizeInput(req.params.id);
 
+			cartItemData = sanitizeObject(cartItemData);
 			cartItemData.listingId = checkId(cartItemData.listingId);
 			checkIsPositiveInteger(cartItemData.quantity);
 		} catch (e) {
@@ -122,7 +132,9 @@ router
 
 		try {
 			req.params.id = checkId(req.params.id);
+			req.params.id = sanitizeInput(req.params.id);
 
+			cartItemData = sanitizeObject(cartItemData);
 			cartItemData.listingId = checkId(cartItemData.listingId);
 			checkIsPositiveInteger(cartItemData.quantity);
 		} catch (e) {
@@ -148,6 +160,7 @@ router
 		// get customer's wishlist
 		try {
 			req.params.id = checkId(req.params.id);
+			req.params.id = sanitizeInput(req.params.id);
 		} catch (e) {
 			return res.status(404).json({ error: e });
 		}
@@ -171,7 +184,9 @@ router
 
 		try {
 			req.params.id = checkId(req.params.id);
+			req.params.id = sanitizeInput(req.params.id);
 
+			wishlistItemData = sanitizeObject(wishlistItemData);
 			wishlistItemData.listingId = checkId(wishlistItemData.listingId);
 			checkIsPositiveInteger(wishlistItemData.quantity);
 		} catch (e) {
@@ -201,7 +216,9 @@ router
 
 		try {
 			req.params.id = checkId(req.params.id);
+			req.params.id = sanitizeInput(req.params.id);
 
+			wishlistItemData = sanitizeObject(wishlistItemData);
 			wishlistItemData.listingId = checkId(wishlistItemData.listingId);
 		} catch (e) {
 			console.log(e);
