@@ -6,6 +6,18 @@ import ordersRoutes from "./orders.js";
 import pagesRoutes from "./pages.js";
 
 const routeConfig = (app) => {
+	app.get("/customer/browselistings", (req, res) => {
+        res.render("customer/browselistings");
+    });
+
+	app.get("/customer/cart", (req, res) => {
+        res.render("customer/cart");
+    });
+
+	app.get("/login", (req, res) => {
+        res.render("login");
+    });
+
 	app.use("/", pagesRoutes);
 	app.use("/api/customers", customersRoutes);
 	app.use("/api/sellers", sellersRoutes);

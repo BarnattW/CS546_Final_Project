@@ -12,6 +12,7 @@ app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 routeConfig(app);
+// app.use('/customer', customerRoutes);
 
 app.listen(3000, () => {
 	console.log("Server listening on port 3000");
