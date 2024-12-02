@@ -16,16 +16,22 @@ const checkIsStringEmpty = (str) => {
     throw 'Err: String argument cannot be an empty string or empty spaces';
 };
 
-const checkString = (str) => {
-  checkIsString(str);
-  checkIsStringEmpty(str);
-  //if (!isNaN(str)) throw `Err: Argument ${str} should not contain only digits`;
-  return str.trim();
+const checkString = (strVal, varName) => {
+  if (!strVal) throw `Error: You must supply a ${varName}!`;
+  if (typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
+  strVal = strVal.trim();
+  if (strVal.length === 0)
+    throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+  return strVal;
 };
 
-const checkId = (id) => {
-  id = checkString(id);
-  if (!ObjectId.isValid(id)) throw 'Err: invalid object ID';
+const checkId = (id, varName) => {
+  if (!id) throw `Error: You must provide a ${varName}`;
+  if (typeof id !== 'string') throw `Error:${varName} must be a string`;
+  id = id.trim();
+  if (id.length === 0)
+    throw `Error: ${varName} cannot be an empty string or just spaces`;
+  if (!ObjectId.isValid(id)) throw `Error: ${varName} invalid object ID`;
   return id;
 };
 
