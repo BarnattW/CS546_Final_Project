@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import xss from "xss";
 
 const checkExists = (val) => {
 	if (val === null || val === undefined)
@@ -51,4 +52,22 @@ const checkCustomer = (username, password, name) => {
 	return { username: username, password: password, name: name };
 };
 
-export { checkString, checkId, checkIsPositiveInteger, checkCustomer };
+const sanitizeInput = (arg) => {
+	arg = xss(arg);
+	return arg;
+};
+
+const sanitizeObject = (obj) => {
+	for (property in obj) {
+		obj[property] = xss(obj[property]);
+	}
+	return obj;
+};
+export {
+	checkString,
+	checkId,
+	checkIsPositiveInteger,
+	checkCustomer,
+	sanitizeInput,
+	sanitizeObject,
+};

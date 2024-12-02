@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { customers } from "../config/mongoCollections.js";
+import { customers, listings } from "../config/mongoCollections.js";
 import {
 	checkId,
 	checkIsPositiveInteger,
@@ -77,31 +77,26 @@ const getCustomerCart = async (customerId) => {
 
 	if (!customerCart) throw `No cart found for customer with id ${customerId}`;
 	// populate cart with listings by first retreiving listing data and then merging
-	const sellersCollection = await sellers();
+	const listingsCollection = listings();
 	const listingIds = customerCart.map((cartItem) => cartItem.listingId);
-	const sellers = sellersCollection
+	const listings = listingsCollection
 		.find({
-			"listings._id": { $in: listingIds },
+			_id: { $in: listingIds },
 		})
 		.toArray();
 
-	const items = {}
-	sellers.forEach((seller) => {
-		seller.listings.forEach((listing) => {
-			if (listingIds.includes(listing._id)) {
-				items[listing._id] = listing
-			}
+	const populatedCart = customerCart.map((cartItem) => {
+		const item = listings.find((listing) => {
+			listing._id === cartItem._id;
 		});
+		return {
+			_id: cart._id,
+			listing: item,
+			quantity: cartItem.quantity,
+		};
 	});
 
-	const populatedCart = customerCart.map((cartItem) => {
-		return {
-			listing: items[cartItem.listingId],
-			quantity: cartItem.quantity
-		}
-	})
-
-	return JSON.stringify(populatedCart);
+	return populatedCart;
 };
 
 /*
@@ -196,23 +191,26 @@ const getCustomerWishlist = async (customerId) => {
 		throw `No wishlist found for customer with id ${customerId}`;
 
 	// populate cart with listings by first retreiving listing data and then merging
-	const sellersCollection = await sellers();
-	const sellers = sellersCollection
+	const listingsCollection = listings();
+	const listingIds = customerCart.map((cartItem) => cartItem.listingId);
+	const listings = listingsCollection
 		.find({
-			"listings._id": { $in: listingIds },
+			_id: { $in: listingIds },
 		})
 		.toArray();
 
-	const populatedWishlist = []
-	sellers.forEach((seller) => {
-		seller.listings.forEach((listing) => {
-			if (customerWishlist.includes(listing._id)) {
-				populatedWishlist.push(listing);
-			}
+	const populatedWishlist = customerWishlist.map((wishlistItem) => {
+		const item = listings.find((listing) => {
+			listing._id === wishlistItem._id;
 		});
+		return {
+			_id: cart._id,
+			listing: item,
+			quantity: cartItem.quantity,
+		};
 	});
 
-	return JSON.stringify(populatedWishlist);
+	return populatedWishlist;
 };
 
 /*
