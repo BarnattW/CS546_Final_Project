@@ -51,4 +51,5 @@ const checkCustomer = (username, password, name) => {
 	return { username: username, password: password, name: name };
 };
 
+
 export { checkString, checkId, checkIsPositiveInteger, checkCustomer };

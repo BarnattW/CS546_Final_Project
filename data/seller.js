@@ -1,47 +1,49 @@
-import { sellers } from "../config/mongoCollections.js";
-import { checkId } from "../utils/checks.js";
+import { sellers } from '../config/mongoCollections.js';
+import * as validation from '../utils/checks.js';
 
-const createSeller = async (username, password, name, town) => {};
+const createSeller = async (username, password, name, town) => {
+  username = validation.checkString(username); // Editing
+};
 
 /*
  * Returns a Seller from db given a Seller's id
  */
 const getSellerById = async (id) => {
-	id = checkId(id);
-	const sellersCollection = await sellers();
-	const seller = await sellersCollection.findOne({ _id: new ObjectId(id) });
-	if (!seller) throw "Error: Seller not found";
+  id = validation.checkId(id);
+  const sellersCollection = await sellers();
+  const seller = await sellersCollection.findOne({ _id: new ObjectId(id) });
+  if (!seller) throw 'Error: Seller not found';
 
-	return sellersCollection;
+  return seller;
 };
 
 const getAllListings = async () => {};
 
 const getAllSellerListings = async (sellerId) => {};
 
-const getSellerListing = async (sellerId) => {};
+const getSellerListing = async (listingId) => {};
 
 const createListing = async (
-	sellerId,
-	itemName,
-	itemDescription,
-	itemPrice,
-	itemImage,
-	itemCategory,
-	condition
+  sellerId,
+  itemName,
+  itemDescription,
+  itemPrice,
+  itemImage,
+  itemCategory,
+  condition
 ) => {};
 
 const updateListing = async (
-	listingId,
-	itemName,
-	itemDescription,
-	itemPrice,
-	itemImage,
-	itemCategory,
-	condition
+  listingId,
+  itemName,
+  itemDescription,
+  itemPrice,
+  itemImage,
+  itemCategory,
+  condition
 ) => {};
 
-const deleteListing = async () => {};
+const deleteListing = async (listingId) => {};
 
 /*
  * The one below is a doozy
@@ -49,13 +51,13 @@ const deleteListing = async () => {};
 const searchForListing = async (queryParams) => {};
 
 export const sellerDataFunctions = {
-	createSeller,
-	getSellerById,
-	getAllListings,
-	getAllSellerListings,
-	getSellerListing,
-	createListing,
-	updateListing,
-	deleteListing,
-	searchForListing,
+  createSeller,
+  getSellerById,
+  getAllListings,
+  getAllSellerListings,
+  getSellerListing,
+  createListing,
+  updateListing,
+  deleteListing,
+  searchForListing,
 };
