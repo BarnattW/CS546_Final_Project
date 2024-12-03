@@ -1,6 +1,12 @@
 import { ObjectId } from "mongodb";
-import { customers, listings, sellers } from "../config/mongoCollections.js";
-import { checkId, checkIsPositiveInteger, checkString } from "../utils/checks.js";
+import { customers, sellers } from "../config/mongoCollections.js";
+import {
+	checkDate,
+	checkId,
+	checkIsPositiveInteger,
+	checkString,
+} from "../utils/checks.js";
+import { sellerDataFunctions } from "./seller.js";
 
 /* TO-DO
  * Orders -> likely to change to support payment info and shipping status
@@ -10,6 +16,7 @@ import { checkId, checkIsPositiveInteger, checkString } from "../utils/checks.js
  *  shippingAddress : String,
  *  cost : Number,
  *  orderDate : Date,
+ *  orderStatus : String // Received, Shipping, Delivered
  * }
  */
 
@@ -17,19 +24,19 @@ import { checkId, checkIsPositiveInteger, checkString } from "../utils/checks.js
  * Given an array of itemIds, return an array of populated listing items
  */
 const populateOrderItems = async (itemIds) => {
-	const listingsCollection = await listings();
-	const listings = listingsCollection
-		.find({
-			_id: { $in: itemIds },
-		})
-		.toArray();
-
-	// preserve order
-	const populatedItems = itemIds.map((itemId) => {
-		return listings.find((listing) => {
-			listing._id === itemId;
-		});
+	itemIds.forEach((itemId) => {
+		itemId = itemId.toString();
 	});
+
+	const populatedItems = await Promise.all(
+		itemIds.map(async (itemId) => {
+			const listing = await sellerDataFunctions.getListingById(itemId);
+			return {
+				_id: itemId,
+				listing: listing,
+			};
+		})
+	);
 	return populatedItems;
 };
 
@@ -37,7 +44,7 @@ const populateOrderItems = async (itemIds) => {
  * Returns a customer's populated orders
  */
 const getCustomerOrders = async (customerId) => {
-	customerId = checkId(customerId);
+	customerId = checkId(customerId, "customerId");
 
 	const customersCollection = await customers();
 	const customerOrders = await customersCollection.findOne(
@@ -90,8 +97,11 @@ const getCustomerOrder = async (customerId, orderId) => {
 	return customerOrder;
 };
 
+/*
+ * Returns all seller orders
+ */
 const getSellerOrders = async (sellerId) => {
-	sellerId = checkId(sellerId);
+	sellerId = checkId(sellerId, "sellerId");
 
 	const sellersCollection = await sellers();
 	const sellerOrders = await sellersCollection.findOne(
@@ -115,6 +125,9 @@ const getSellerOrders = async (sellerId) => {
 	return sellerOrders;
 };
 
+/*
+ * Creates a new order for a user and associated sellers
+ */
 const createOrder = async (
 	customerId,
 	orderItems,
@@ -123,11 +136,69 @@ const createOrder = async (
 	orderDate
 ) => {
 	// replicate order across both sellers and the customer
-	customerId = checkId(customerId);
-	// check orderItems
-    shippingAddress = checkString(shippingAddress); // update to check address
-    cost = checkIsPositiveInteger(cost);
-    // check orderDate
+	customerId = checkId(customerId, "customerId");
+	orderItems.map((itemId) => {
+		return checkId(itemId, "itemId");
+	});
+	// check if orderItems are valid items
+	shippingAddress = checkString(shippingAddress, "shippingAddress"); // update to check address
+	checkIsPositiveInteger(cost);
+	checkDate(orderDate);
+
+	const newOrder = {
+		customerId: customerId,
+		orderItems: orderItems,
+		shippingAddress: shippingAddress,
+		cost: cost,
+		orderDate: orderDate,
+	};
+
+	const customersCollection = customers();
+	const sellersCollection = await sellers();
+	const updatedCustomerOrders = await customersCollection.updateOne(
+		{
+			_id: new ObjectId(customerId),
+		},
+		{
+			$push: { orders: newOrder },
+		}
+	);
+
+	if (!updatedCustomerOrders.modifiedCount != 1)
+		throw `Could not create an order for customer id ${customerId}`;
+
+	// for each order item, find their associated seller and push orders to them
+	const sellerOrders = {};
+	await Promise.all(
+		orderItems.forEach(async (listingId) => {
+			const listing = await sellerDataFunctions.getListingById(listingId);
+			sellerOrders[listing.sellerId] = listing;
+		})
+	);
+
+	// update seller order data
+	for (const sellerId in sellerOrders) {
+		const newOrd = {
+			customerId: customerId,
+			orderItems: sellerOrders[sellerId],
+			shippingAddress: shippingAddress,
+			cost: cost,
+			orderDate: orderDate,
+		};
+		const updatedSellerOrders = await sellersCollection.updateOne(
+			{
+				_id: new ObjectId(sellerId),
+			},
+			{
+				$push: { orders: newOrd },
+			}
+		);
+
+		if (updatedSellerOrders.modifiedCount != 1)
+			throw `Error while updating seller orders`;
+	}
+
+	return await getCustomerOrders(customerId);
 };
 
 // optional

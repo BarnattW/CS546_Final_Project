@@ -54,7 +54,7 @@ router.route("/").post(async (req, res) => {
 router.route("/:id").get(async (req, res) => {
 	// gets customer with param id
 	try {
-		req.params.id = checkId(req.params.id);
+		req.params.id = checkId(req.params.id, "customerId");
 		req.params.id = sanitizeInput(req.params.id);
 	} catch (e) {
 		console.log(e);
@@ -75,7 +75,7 @@ router
 	.get(async (req, res) => {
 		// gets customer's cart with param id
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 		} catch (e) {
 			return res.status(404).json({ error: e });
@@ -99,11 +99,11 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 
 			cartItemData = sanitizeObject(cartItemData);
-			cartItemData.listingId = checkId(cartItemData.listingId);
+			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
 			checkIsPositiveInteger(cartItemData.quantity);
 		} catch (e) {
 			console.log(e);
@@ -131,11 +131,11 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 
 			cartItemData = sanitizeObject(cartItemData);
-			cartItemData.listingId = checkId(cartItemData.listingId);
+			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
 			checkIsPositiveInteger(cartItemData.quantity);
 		} catch (e) {
 			console.log(e);
@@ -159,7 +159,7 @@ router
 	.get(async (req, res) => {
 		// get customer's wishlist
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 		} catch (e) {
 			return res.status(404).json({ error: e });
@@ -183,11 +183,14 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 
 			wishlistItemData = sanitizeObject(wishlistItemData);
-			wishlistItemData.listingId = checkId(wishlistItemData.listingId);
+			wishlistItemData.listingId = checkId(
+				wishlistItemData.listingId,
+				"listingId"
+			);
 			checkIsPositiveInteger(wishlistItemData.quantity);
 		} catch (e) {
 			console.log(e);
@@ -215,11 +218,14 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 
 			wishlistItemData = sanitizeObject(wishlistItemData);
-			wishlistItemData.listingId = checkId(wishlistItemData.listingId);
+			wishlistItemData.listingId = checkId(
+				wishlistItemData.listingId,
+				"listingId"
+			);
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ error: e });
