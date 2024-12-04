@@ -6,16 +6,6 @@ const checkExists = (val) => {
     throw `Err: Argument ${val} is null or undefined`;
 };
 
-const checkIsString = (str) => {
-  checkExists(str);
-  if (typeof str != 'string') throw `Err: Argument ${str} should be a string`;
-};
-
-const checkIsStringEmpty = (str) => {
-  if (str.trim().length <= 0)
-    throw 'Err: String argument cannot be an empty string or empty spaces';
-};
-
 const checkString = (strVal, varName) => {
   if (!strVal) throw `Error: You must supply a ${varName}!`;
   if (typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;

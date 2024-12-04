@@ -5,7 +5,7 @@ import * as validation from '../utils/checks.js';
 
 // Creates a new Seller and returns it.
 
-const createSeller = async (username, password, name, town) => {
+export const createSeller = async (username, password, name, town) => {
   // Validating Parameters
   username = validation.checkString(username);
   password = validation.checkString(password);
@@ -32,10 +32,24 @@ const createSeller = async (username, password, name, town) => {
   return seller;
 };
 
+export const getAllSellers = async () => {
+  const sellerCollection = await sellers();
+  let sellerList = await teamCollection
+    .find({})
+    .project({ _id: 1, name: 1 })
+    .toArray();
+  if (!sellerList) throw 'Can not get all sellers.';
+  sellerList = sellerList.map((element) => {
+    element._id = element._id.toString();
+    return element;
+  });
+  return sellerList;
+};
+
 /*
  * Returns a Seller from db given a Seller's id
  */
-const getSellerById = async (id) => {
+export const getSellerById = async (id) => {
   id = validation.checkId(id);
   const sellersCollection = await sellers();
   const seller = await sellersCollection.findOne({ _id: new ObjectId(id) });
@@ -46,7 +60,7 @@ const getSellerById = async (id) => {
 
 // Returns a specific seller's listings array (seller.listing is an array of references aka a listing id)
 
-const getAllSellerListings = async (sellerId) => {
+export const getAllSellerListings = async (sellerId) => {
   sellerId = validation.checkId(sellerId);
 
   const currSeller = await getSellerById(sellerId);
@@ -64,7 +78,7 @@ const getAllSellerListings = async (sellerId) => {
 
 // Returns a specific seller's
 
-const getListingById = async (listingId) => {
+export const getListingById = async (listingId) => {
   listingId = validation.checkId(listingId, 'Listing ID');
   const listingCollection = await listings();
   const listing = await listingCollection.findOne({
@@ -76,7 +90,7 @@ const getListingById = async (listingId) => {
   return listing;
 };
 
-const createListing = async (
+export const createListing = async (
   sellerId,
   itemName,
   itemDescription,
@@ -118,7 +132,7 @@ const createListing = async (
 
 // Returns all listing furniture with (ID and NAME)
 
-const getAllListings = async () => {
+export const getAllListings = async () => {
   const listingCollection = await listings();
   let listingList = await listingCollection
     .find({})
@@ -134,7 +148,7 @@ const getAllListings = async () => {
 
 // Updates a Listing's information
 
-const updateListing = async (
+export const updateListing = async (
   listingId,
   itemName,
   itemDescription,
@@ -176,7 +190,7 @@ const updateListing = async (
 
 // Deletes a listing from the listing collection
 
-const deleteListing = async (listingId) => {
+export const deleteListing = async (listingId) => {
   listingId = validation.checkId(listingId, 'Listing ID');
   const listingCollection = await listings();
   const deletionInfo = await listingCollection.findOneAndDelete({
@@ -191,15 +205,3 @@ const deleteListing = async (listingId) => {
  * The one below is a doozy
  */
 const searchForListing = async (queryParams) => {};
-
-export const sellerDataFunctions = {
-  createSeller,
-  getSellerById,
-  getAllListings,
-  getAllSellerListings,
-  getListingById,
-  createListing,
-  updateListing,
-  deleteListing,
-  searchForListing,
-};
