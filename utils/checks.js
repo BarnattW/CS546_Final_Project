@@ -40,6 +40,11 @@ const checkIsPositiveInteger = (num) => {
   if (num < 0) throw 'Err: Number should be greater than 0';
 };
 
+const checkDate = (date) => {
+  if (date instanceof Date === false && isNaN(num))
+    throw `Err: ${date} is not a valid date`;
+};
+
 const checkCustomer = (username, password, name) => {
   username = checkString(username);
   password = checkString(password);
@@ -59,6 +64,7 @@ const sanitizeObject = (obj) => {
   }
   return obj;
 };
+
 export {
   checkString,
   checkId,

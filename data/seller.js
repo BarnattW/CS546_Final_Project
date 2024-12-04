@@ -12,24 +12,24 @@ export const createSeller = async (username, password, name, town) => {
   name = validation.checkString(name);
   town = validation.checkString(town);
 
-  let newSeller = {
-    username,
-    password,
-    name,
-    town,
-    listing: [],
-    orders: [],
-  };
+	let newSeller = {
+		username,
+		password,
+		name,
+		town,
+		listing: [],
+		orders: [],
+	};
 
-  const sellerCollection = await sellers();
-  const insertInfo = await sellerCollection.insertOne(newSeller);
-  if (!insertInfo.acknowledged || !insertInfo.insertedId)
-    throw 'Could not add seller.';
+	const sellerCollection = await sellers();
+	const insertInfo = await sellerCollection.insertOne(newSeller);
+	if (!insertInfo.acknowledged || !insertInfo.insertedId)
+		throw "Could not add seller.";
 
-  const newId = insertInfo.insertedId.toString();
+	const newId = insertInfo.insertedId.toString();
 
-  const seller = await getSellerById(newId);
-  return seller;
+	const seller = await getSellerById(newId);
+	return seller;
 };
 
 export const getAllSellers = async () => {
@@ -49,13 +49,13 @@ export const getAllSellers = async () => {
 /*
  * Returns a Seller from db given a Seller's id
  */
-export const getSellerById = async (id) => {
-  id = validation.checkId(id);
-  const sellersCollection = await sellers();
-  const seller = await sellersCollection.findOne({ _id: new ObjectId(id) });
-  if (!seller) throw 'Error: Seller not found';
+const getSellerById = async (id) => {
+	id = validation.checkId(id);
+	const sellersCollection = await sellers();
+	const seller = await sellersCollection.findOne({ _id: new ObjectId(id) });
+	if (!seller) throw "Error: Seller not found";
 
-  return seller;
+	return seller;
 };
 
 // Returns a specific seller's listings array (seller.listing is an array of references aka a listing id)
