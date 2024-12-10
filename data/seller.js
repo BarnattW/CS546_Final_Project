@@ -40,7 +40,7 @@ export const getAllSellers = async () => {
     .find({})
     .project({ _id: 1, name: 1 })
     .toArray();
-  if (!sellerList) throw 'Can not get all sellers.';
+  if (!sellerList) throw 'Can not get all Sellers.';
   sellerList = sellerList.map((element) => {
     element._id = element._id.toString();
     return element;
