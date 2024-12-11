@@ -4,8 +4,12 @@ import {
 	checkId,
 	checkIsPositiveInteger,
 	checkString,
+	checkStringLength,
 } from "../utils/checks.js";
-import { sellerDataFunctions } from "./seller.js";
+import { sellersData } from "./index.js";
+import bcrypt from "bcrypt";
+
+const saltRounds = 12;
 
 /*
  * Creates a customer, add them to the database and returns the new customer
@@ -14,12 +18,20 @@ const createCustomer = async (username, password, name) => {
 	username = checkString(username, "username");
 	password = checkString(password, "password"); // look into hashing and authentication
 	name = checkString(name, "name");
+	checkStringLength(username, 5, 20);
+	checkStringLength(password, 8);
 
 	const customersCollection = await customers();
+	const existingUser = await usersCollection.findOne({ username });
+	if (existingUser) {
+		throw "There is already a user with that username";
+	}
+
+	const hashedPassword = await bcrypt.hash(password, saltRounds);
 	const newCustomer = {
-		username: username,
-		password: password,
-		name: name,
+		username,
+		password: hashedPassword,
+		name,
 		orders: [],
 		cart: [],
 		wishlist: [],
@@ -40,7 +52,24 @@ const createCustomer = async (username, password, name) => {
 /* TO-DO
  * Login a customer
  */
-const loginCustomer = async (username, password) => {};
+const loginCustomer = async (username, password) => {
+	username = checkString(username);
+	password = checkString(password);
+	checkStringLength(username, 5, 20);
+	checkStringLength(password, 8);
+
+	username = username.toLower();
+
+	const customersCollection = await customers();
+	const customer = await customersCollection.findOne({ username });
+
+	if (!customer) throw "Invalid username or password";
+
+	const comparePassword = await bcrypt.compare(password, customer.password);
+
+	if (!comparePassword) throw "Invalid username or password";
+	return { username: customer.username, _id: customer._id.toString() };
+};
 
 /*
  * Returns a customer from db given a customer's id
@@ -84,7 +113,7 @@ const getCustomerCart = async (customerId) => {
 	});
 	const populatedCart = await Promise.all(
 		customerCart.map(async (cartItem) => {
-			const listing = await sellerDataFunctions.getListingById(cartItem._id);
+			const listing = await sellersData.getListingById(cartItem._id);
 			return {
 				_id: cartItem._id,
 				listing: listing,
@@ -194,9 +223,7 @@ const getCustomerWishlist = async (customerId) => {
 
 	const populatedWishlist = await Promise.all(
 		customerWishlist.map(async (wishlistItem) => {
-			const listing = await sellerDataFunctions.getListingById(
-				wishlistItem.listingId
-			);
+			const listing = await sellersData.getListingById(wishlistItem.listingId);
 			return {
 				_id: wishlistItemt._id,
 				listing: listing,
@@ -266,4 +293,5 @@ export const customerDataFunctions = {
 	getCustomerWishlist,
 	addToWishlist,
 	removeFromWishlist,
+	loginCustomer,
 };

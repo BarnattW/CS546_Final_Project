@@ -6,7 +6,7 @@ import {
 	checkIsPositiveInteger,
 	checkString,
 } from "../utils/checks.js";
-import { sellerDataFunctions } from "./seller.js";
+import { sellersData } from "./index.js";
 
 /* TO-DO
  * Orders -> likely to change to support payment info and shipping status
@@ -30,7 +30,7 @@ const populateOrderItems = async (itemIds) => {
 
 	const populatedItems = await Promise.all(
 		itemIds.map(async (itemId) => {
-			const listing = await sellerDataFunctions.getListingById(itemId);
+			const listing = await sellersData.getListingById(itemId);
 			return {
 				_id: itemId,
 				listing: listing,
@@ -62,8 +62,8 @@ const getCustomerOrders = async (customerId) => {
 	if (customerOrders.length === 0) return;
 
 	// populate orders with items
-	customerOrders.forEach((order) => {
-		order.orderItems = populateOrderItems(order.orderItems);
+	customerOrders.forEach(async (order) => {
+		order.orderItems = await populateOrderItems(order.orderItems);
 	});
 
 	return customerOrders;
@@ -92,7 +92,7 @@ const getCustomerOrder = async (customerId, orderId) => {
 		throw `No order found with orderId ${orderId}`;
 
 	customerOrder = customerOrder[0];
-	customerOrder.orderItems = populateOrderItems(customerOrder.orderItems);
+	customerOrder.orderItems = await populateOrderItems(customerOrder.orderItems);
 
 	return customerOrder;
 };
@@ -118,23 +118,44 @@ const getSellerOrders = async (sellerId) => {
 	if (sellerOrders.length === 0) return;
 
 	// populate each order's orderItems
-	sellerOrders.forEach((order) => {
-		order.orderItems = populateOrderItems(order.orderItems);
+	sellerOrders.forEach(async (order) => {
+		order.orderItems = await populateOrderItems(order.orderItems);
 	});
 
 	return sellerOrders;
 };
 
 /*
+ * Returns all seller orders
+ */
+const getSellerOrder = async (sellerId, orderId) => {
+	sellerId = checkId(sellerId, "sellerId");
+	orderId = checkId(orderId, "orderId");
+
+	const sellersCollection = await sellers();
+	const sellerOrder = await sellersCollection.findOne(
+		{
+			_id: new ObjectId(sellerId),
+			"orders._id": orderId,
+		},
+		{
+			projection: { _id: 0, orders: 1 },
+		}
+	);
+
+	if (!sellerOrder || sellerOrder.length === 0)
+		throw `No order found with orderId ${orderId}`;
+
+	sellerOrder = sellerOrder[0];
+	sellerOrder.orderItems = await populateOrderItems(sellerOrder.orderItems);
+
+	return sellerOrder;
+};
+
+/*
  * Creates a new order for a user and associated sellers
  */
-const createOrder = async (
-	customerId,
-	orderItems,
-	shippingAddress,
-	cost,
-	orderDate
-) => {
+const createOrder = async (customerId, orderItems, shippingAddress, cost) => {
 	// replicate order across both sellers and the customer
 	customerId = checkId(customerId, "customerId");
 	orderItems.map((itemId) => {
@@ -143,17 +164,16 @@ const createOrder = async (
 	// check if orderItems are valid items
 	shippingAddress = checkString(shippingAddress, "shippingAddress"); // update to check address
 	checkIsPositiveInteger(cost);
-	checkDate(orderDate);
 
 	const newOrder = {
 		customerId: customerId,
 		orderItems: orderItems,
 		shippingAddress: shippingAddress,
 		cost: cost,
-		orderDate: orderDate,
+		orderDate: new Date(),
 	};
 
-	const customersCollection = customers();
+	const customersCollection = await customers();
 	const sellersCollection = await sellers();
 	const updatedCustomerOrders = await customersCollection.updateOne(
 		{
@@ -164,6 +184,7 @@ const createOrder = async (
 		}
 	);
 
+	print(updatedCustomerOrders);
 	if (!updatedCustomerOrders.modifiedCount != 1)
 		throw `Could not create an order for customer id ${customerId}`;
 
@@ -171,7 +192,7 @@ const createOrder = async (
 	const sellerOrders = {};
 	await Promise.all(
 		orderItems.forEach(async (listingId) => {
-			const listing = await sellerDataFunctions.getListingById(listingId);
+			const listing = await sellersData.getListingById(listingId);
 			sellerOrders[listing.sellerId] = listing;
 		})
 	);
@@ -183,7 +204,7 @@ const createOrder = async (
 			orderItems: sellerOrders[sellerId],
 			shippingAddress: shippingAddress,
 			cost: cost,
-			orderDate: orderDate,
+			orderDate: new Date(),
 		};
 		const updatedSellerOrders = await sellersCollection.updateOne(
 			{
@@ -198,10 +219,17 @@ const createOrder = async (
 			throw `Error while updating seller orders`;
 	}
 
-	return await getCustomerOrders(customerId);
+	// update to return customer's new order
+	return await getCustomerOrder(customerId);
 };
 
 // optional
 const deleteOrder = async (sellerId, orderId) => {};
 
-export { getCustomerOrders, getCustomerOrder, getSellerOrders, createOrder };
+export const orderDataFunctions = {
+	getCustomerOrders,
+	getCustomerOrder,
+	getSellerOrders,
+	getSellerOrder,
+	createOrder,
+};

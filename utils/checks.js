@@ -65,11 +65,21 @@ const sanitizeObject = (obj) => {
   return obj;
 };
 
+const checkStringLength = (str, min, max) => {
+	if (max == undefined && str.length < min) {
+		throw `Err: Input string should be greater than ${min} characters long`;
+	}
+	if (str.length < min || str.length > max)
+		throw `Err: Input string should be between ${min}-${max} characters long`;
+};
+
 export {
-  checkString,
-  checkId,
-  checkIsPositiveInteger,
-  checkCustomer,
-  sanitizeInput,
-  sanitizeObject,
+	checkString,
+	checkId,
+	checkIsPositiveInteger,
+	checkCustomer,
+	sanitizeInput,
+	sanitizeObject,
+	checkStringLength,
+	checkDate,
 };
