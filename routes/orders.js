@@ -5,29 +5,51 @@ import { ordersData } from "../data/index.js";
 const router = Router();
 
 /*
- * /orders/customer/:id
+ * /customers/orders | /sellers/orders
  */
 router
-	.route("/customers/:id")
+	.route("/")
 	.get(async (req, res) => {
-		// gets all customer orders
+		// gets all customer or seller orders depoending on session user role
+		const user = req.session.user;
 		try {
-			req.params.id = checkId(req.params.id, "customerId");
-			req.params.id = sanitizeInput(req.params.id);
+			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			console.log(e);
-			return res.status(404).json({ error: e });
+			return res.status(401).render("customerlogin", { error: e });
 		}
 
+		// TODO - change to render handlebars
 		try {
-			const customerOrders = await ordersData.getCustomerOrders(req.params.id);
-			return res.json(customerOrders);
+			if (user.role === "customer") {
+				const customerOrders = await ordersData.getCustomerOrders(user._id);
+				return res.json(customerOrders);
+			} else if (user.role === "seller") {
+				const sellerOrders = await ordersData.getSellerOrders(user._id);
+				return res.json(sellerOrders);
+			} else {
+				return res.status(403).render("customerlogin", {
+					error: "Session user role not found. Login again",
+				});
+			}
 		} catch (e) {
 			console.log(e);
 			return res.status(404).json({ error: e });
 		}
 	})
 	.post(async (req, res) => {
+		const user = req.session.user;
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("customerlogin", { error: e });
+		}
+
+		if (user.role != "customer") {
+			return res
+				.status(403)
+				.render("customerlogin", { error: "Only customers can place orders" });
+		}
+
 		const orderData = req.body;
 
 		if (!orderData || Object.keys(orderData).length === 0) {
@@ -37,13 +59,12 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id, "customerId");
-			req.params.id = sanitizeInput(req.params.id);
-
 			const orderData = sanitizeObject(ordersData);
-			orderData.orderItems.map((itemId) => {
-				itemId = checkId(itemId, "itemId");
-				return sanitizeInput(itemId);
+			orderData.orderItems.map((orderItem) => {
+				orderItem = sanitizeObject(orderItem);
+				orderItem.itemId = checkId(orderItem.listingId, "listingIdId");
+				checkIsPositiveInteger(orderItem.quantity);
+				return orderItem;
 			});
 			orderData.shippingAddress = checkString(
 				orderDatashippingAddress,
@@ -59,7 +80,7 @@ router
 
 		try {
 			const newOrder = await ordersData.createOrder(
-				req.params.id,
+				user._id,
 				orderData.orderItems,
 				orderData.shippingAddress,
 				orderData.cost
@@ -72,77 +93,41 @@ router
 	});
 
 /*
- * /orders/order/:orderId/customers/:customerId
+ * /customers/orders/:orderId | /sellers/orders/:orderId
  */
-router.route("/order/:orderId/customers/:customerId").get(async (req, res) => {
+router.route("/:orderId").get(async (req, res) => {
 	// gets a specific customer's order
+	const user = req.session.user;
+	try {
+		if (!user) throw `Session user not found. Login again.`;
+	} catch (e) {
+		return res.status(401).render("customerlogin", { error: e });
+	}
+
+	// check the input
 	try {
 		req.params.orderId = checkId(req.params.orderId, "orderId");
-		req.params.customerId = checkId(req.params.customerId, "customerId");
-
 		req.params.orderId = sanitizeInput(req.params.orderId);
-		req.params.customerId = sanitizeInput(req.params.customerId);
 	} catch (e) {
 		console.log(e);
 		return res.status(404).json({ error: e });
 	}
 
+	// check the role
 	try {
-		const customerOrder = await ordersData.getCustomerOrder(
-			req.params.customerId,
-			req.params.orderId
-		);
-		return res.json(customerOrder);
-	} catch (e) {
-		console.log(e);
-		return res.status(404).json({ error: e });
-	}
-});
-
-/*
- * /orders//sellers/:sellerId
- */
-router.route("/sellers/:sellerId").get(async (req, res) => {
-	// gets all seller's order
-	try {
-		req.params.sellerId = checkId(req.params.sellerId, "sellerId");
-		req.params.sellerId = sanitizeInput(req.params.sellerId);
-	} catch (e) {
-		console.log(e);
-		return res.status(404).json({ error: e });
-	}
-
-	try {
-		const sellerOrders = await ordersData.getSellerOrders(req.params.sellerId);
-		return res.json(sellerOrders);
-	} catch (e) {
-		console.log(e);
-		return res.status(404).json({ error: e });
-	}
-});
-
-/*
- * /orders/order/:orderId/sellers/:sellerId
- */
-router.route("/order/:orderId/sellers/:sellerId").get(async (req, res) => {
-	// gets a specific seller's order
-	try {
-		req.params.orderId = checkId(req.params.orderId, "orderId");
-		req.params.sellerId = checkId(req.params.sellerId, "sellerId");
-
-		req.params.orderId = sanitizeInput(req.params.orderId);
-		req.params.sellerId = sanitizeInput(req.params.sellerId);
-	} catch (e) {
-		console.log(e);
-		return res.status(404).json({ error: e });
-	}
-
-	try {
-		const sellerOrder = await ordersData.getSellerOrder(
-			req.params.sellerId,
-			req.params.orderId
-		);
-		return res.json(sellerOrder);
+		if (user.role === "customer") {
+			const customerOrder = await ordersData.getCustomerOrder(
+				user._id,
+				req.params.orderId
+			);
+			return res.json(customerOrder);
+		} else if (user.role === "seller") {
+			const sellerOrder = await ordersData.getSellerOrder(
+				user._id,
+				req.params.orderId
+			);
+			return res.json(sellerOrder);
+		}
 	} catch (e) {
 		console.log(e);
 		return res.status(404).json({ error: e });

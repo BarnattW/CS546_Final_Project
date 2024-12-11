@@ -4,50 +4,60 @@ import {
 	checkIsPositiveInteger,
 	checkString,
 	checkStringLength,
-	sanitizeInput,
 	sanitizeObject,
 } from "../utils/checks.js";
 import { customersData } from "../data/index.js";
+import ordersRoutes from "./orders.js";
 
 const router = Router();
 
 /*
  * /customers/login
  */
-router.route("/login").post(async (req, res) => {
-	const customerData = req.body;
-
-	if (!customerData || Object.keys(customerData).length === 0) {
-		return res
-			.status(400)
-			.json({ error: "There are no fields in the request body" });
-	}
-
-	const { username, password } = customerData;
-	try {
-		customerData = sanitizeObject(customerData);
-		username = checkString(username, "Username");
-		password = checkString(password, "Password");
-		checkStringLength(username, 5, 20);
-		checkStringLength(password, 8);
-		username = username.toLowerCase();
-	} catch (e) {
-		return res.status(400).json({ error: e });
-	}
-
-	try {
-		const user = await customersData.loginCustomer(username, password);
-		if (user) {
-			req.session.user = {
-				_id: user._id,
-				username: user.username,
-				role: "customer",
-			};
+router
+	.route("/login")
+	.get(async (req, res) => {
+		try {
+			return res.render("customerlogin", { user: req.session.user });
+		} catch (e) {
+			return res.status(404).json({ error: e });
 		}
-	} catch (e) {
-		return res.status(400).json({ error: e });
-	}
-});
+	})
+	.post(async (req, res) => {
+		const customerData = req.body;
+
+		if (!customerData || Object.keys(customerData).length === 0) {
+			return res
+				.status(400)
+				.json({ error: "There are no fields in the request body" });
+		}
+
+		const { username, password } = customerData;
+		try {
+			customerData = sanitizeObject(customerData);
+			username = checkString(username, "Username");
+			password = checkString(password, "Password");
+			checkStringLength(username, 5, 20);
+			checkStringLength(password, 8);
+			username = username.toLowerCase();
+		} catch (e) {
+			return res.status(400).json({ error: e });
+		}
+
+		try {
+			const user = await customersData.loginCustomer(username, password);
+			if (user) {
+				req.session.user = {
+					_id: user._id,
+					username: user.username,
+					role: "customer",
+				};
+			}
+			res.redirect("/home");
+		} catch (e) {
+			return res.status(400).json({ error: e });
+		}
+	});
 
 /*
  *  /customers/signup
@@ -95,28 +105,6 @@ router.route("/signup").post(async (req, res) => {
 	}
 });
 
-/*
- * /customers/:id
- */
-router.route("/:id").get(async (req, res) => {
-	// gets customer with param id
-	try {
-		req.params.id = checkId(req.params.id, "customerId");
-		req.params.id = sanitizeInput(req.params.id);
-	} catch (e) {
-		console.log(e);
-		return res.json({ error: e });
-	}
-
-	try {
-		const customer = customersData.getCustomerById(req.params.id);
-		return res.json(customer);
-	} catch (e) {
-		console.log(e);
-		res.status(404).json({ error: "Customer not found!" });
-	}
-});
-
 router
 	.route("/cart")
 	.get(async (req, res) => {
@@ -125,12 +113,12 @@ router
 		try {
 			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			return res.status(401).render("customer/createlogin", { error: e });
+			return res.status(401).render("customerlogin", { error: e });
 		}
 
 		try {
 			const cart = await customersData.getCustomerCart(user._id);
-			return res.render("customer/cart", { cart });
+			return res.render("customer/cart", { cart, user: req.session.user });
 		} catch (e) {
 			console.log(e);
 			return res.status(404).json({ error: e });
@@ -142,7 +130,7 @@ router
 		try {
 			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			return res.status(401).render("customer/createlogin", { error: e });
+			return res.status(401).render("customerlogin", { error: e });
 		}
 
 		const cartItemData = req.body;
@@ -178,7 +166,7 @@ router
 		try {
 			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			return res.status(401).render("customer/createlogin", { error: e });
+			return res.status(401).render("customerlogin", { error: e });
 		}
 
 		const cartItemData = req.body;
@@ -217,7 +205,7 @@ router
 		try {
 			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			return res.status(401).render("customer/createlogin", { error: e });
+			return res.status(401).render("customerlogin", { error: e });
 		}
 
 		try {
@@ -236,7 +224,7 @@ router
 		try {
 			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			return res.status(401).render("customer/createlogin", { error: e });
+			return res.status(401).render("customerlogin", { error: e });
 		}
 
 		const wishlistItemData = req.body;
@@ -273,7 +261,7 @@ router
 		try {
 			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			return res.status(401).render("customer/createlogin", { error: e });
+			return res.status(401).render("customerlogin", { error: e });
 		}
 
 		const wishlistItemData = req.body;
@@ -304,5 +292,30 @@ router
 			return res.status(500).json({ error: e });
 		}
 	});
+
+router.route("/customers/checkout").get(async (req, res) => {
+	const user = req.session.user;
+	try {
+		if (!user) throw `Session user not found. Login again.`;
+	} catch (e) {
+		return res.status(401).render("customerlogin", { error: e });
+	}
+
+	try {
+		res.render("customer/checkout", { user: req.session.user });
+	} catch (e) {
+		return res.status(404).json({ error: e });
+	}
+});
+
+router.route("/customers/browselistings").get(async (req, res) => {
+	try {
+		res.render("customers/browselistings", { user: req.session.user });
+	} catch (e) {
+		return res.status(404).json({ error: e });
+	}
+});
+
+router.use("/orders", ordersRoutes);
 
 export default router;
