@@ -1,0 +1,30 @@
+{
+	"name": "cs546_duckling_decor",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"dependencies": {
+		"bcrypt": "^5.1.1",
+		"express": "^4.21.1",
+		"express-handlebars": "^8.0.1",
+		"express-session": "^1.18.1",
+		"handlebars": "^4.7.8",
+		"mongodb": "^6.10.0",
+		"xss": "^1.0.15"
+	},
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node app.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/BarnattW/CS546_Final_Project.git"
+	},
+	"author": "Barnatt Wu, Harry Wang, Madison Wong, Om Boghra",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/BarnattW/CS546_Final_Project/issues"
+	},
+	"homepage": "https://github.com/BarnattW/CS546_Final_Project#readme"
+}

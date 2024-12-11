@@ -1,0 +1,37 @@
+<h1>Check Out</h1>
+<form action="/customers/confirmpurchase" method="POST">
+    <label for="cardnumber">Card number:</label>
+    <input type="password" id="cardnumber" name="cardnumber" required>
+    <br>
+    <label for="cardname">Name on card:</label>
+    <input type="text" id="cardname" name="cardname" required>
+    <br>
+    <label for="expiration">Expiration date:</label>
+    <select name="month" id="month">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+    </select>
+    <select name="year" id="year">
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+        <option value="2028">2028</option>
+        <option value="2029">2029</option>
+        <option value="2030">2030</option>
+    </select>
+    <br>
+    <br>
+    <button type="submit">Place your order</button>
+    
+</form>

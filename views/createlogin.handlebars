@@ -1,0 +1,22 @@
+<h1>Sign Up</h1>
+<form action="/api/customers/login" method="POST">
+    <label for="name">First Name:</label>
+    <input type="text" id="name" name="name" required>
+    <br>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <label for="confirmpassword">Confirm Password:</label>
+    <input type="password" id="confirmpassword" name="confirmpassword" required>
+    <br>
+    <label for="sellerorcustomer">Do you want to be a Seller or Customer?</label>
+    <select name="sellerorcustomer" id="sellerorcustomer">
+        <option value="selleroption">Seller</option>
+        <option value="customeroption">Customer</option>
+    </select>
+    <br>
+    <button type="submit">Log In</button>
+</form>
