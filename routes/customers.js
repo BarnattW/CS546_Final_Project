@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
 	checkId,
 	checkIsPositiveInteger,
+	checkString,
+	checkStringLength,
 	sanitizeInput,
 	sanitizeObject,
 } from "../utils/checks.js";
@@ -10,9 +12,47 @@ import { customersData } from "../data/index.js";
 const router = Router();
 
 /*
- *  /customers
+ * /customers/login
  */
-router.route("/").post(async (req, res) => {
+router.route("/login").post(async (req, res) => {
+	const customerData = req.body;
+
+	if (!customerData || Object.keys(customerData).length === 0) {
+		return res
+			.status(400)
+			.json({ error: "There are no fields in the request body" });
+	}
+
+	const { username, password } = customerData;
+	try {
+		customerData = sanitizeObject(customerData);
+		username = checkString(username, "Username");
+		password = checkString(password, "Password");
+		checkStringLength(username, 5, 20);
+		checkStringLength(password, 8);
+		username = username.toLowerCase();
+	} catch (e) {
+		return res.status(400).json({ error: e });
+	}
+
+	try {
+		const user = await customersData.loginCustomer(username, password);
+		if (user) {
+			req.session.user = {
+				_id: user._id,
+				username: user.username,
+				role: "customer",
+			};
+		}
+	} catch (e) {
+		return res.status(400).json({ error: e });
+	}
+});
+
+/*
+ *  /customers/signup
+ */
+router.route("/signup").post(async (req, res) => {
 	// creates a new customer
 	const customerData = req.body;
 
@@ -23,14 +63,21 @@ router.route("/").post(async (req, res) => {
 			.json({ error: "There are no fields in the request body" });
 	}
 
-	let checkedCustomer;
+	const { username, name, password } = customerData;
 	try {
 		customerData = sanitizeObject(customerData);
-		checkedCustomer = checkCustomer(
-			customerData.username,
-			customerData.password,
-			customerData.name
-		);
+		username = checkString(username, "Username");
+		name = checkString(name, "Name");
+		password = checkString(password, "Password");
+		confirmPassword = checkString(confirmPassword, "Confirmation Password");
+		checkStringLength(username, 5, 20);
+		checkStringLength(password, 8);
+		checkStringLength(confirmPassword, 8);
+
+		if (password != confirmPassword)
+			throw `Password and confirmation password must match`;
+
+		username = username.toLowerCase();
 	} catch (e) {
 		return res.status(400).json({ error: e });
 	}
@@ -38,9 +85,9 @@ router.route("/").post(async (req, res) => {
 	// db insertion
 	try {
 		const newCustomer = await customersData.createCustomer(
-			checkedCustomer.username,
-			checkedCustomer.password,
-			checkedCustomer.name
+			customerData.username,
+			customerData.password,
+			customerData.name
 		);
 		return res.json(newCustomer);
 	} catch (e) {
@@ -54,7 +101,7 @@ router.route("/").post(async (req, res) => {
 router.route("/:id").get(async (req, res) => {
 	// gets customer with param id
 	try {
-		req.params.id = checkId(req.params.id);
+		req.params.id = checkId(req.params.id, "customerId");
 		req.params.id = sanitizeInput(req.params.id);
 	} catch (e) {
 		console.log(e);
@@ -75,7 +122,7 @@ router
 	.get(async (req, res) => {
 		// gets customer's cart with param id
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 		} catch (e) {
 			return res.status(404).json({ error: e });
@@ -99,11 +146,11 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 
 			cartItemData = sanitizeObject(cartItemData);
-			cartItemData.listingId = checkId(cartItemData.listingId);
+			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
 			checkIsPositiveInteger(cartItemData.quantity);
 		} catch (e) {
 			console.log(e);
@@ -131,11 +178,11 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 
 			cartItemData = sanitizeObject(cartItemData);
-			cartItemData.listingId = checkId(cartItemData.listingId);
+			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
 			checkIsPositiveInteger(cartItemData.quantity);
 		} catch (e) {
 			console.log(e);
@@ -159,7 +206,7 @@ router
 	.get(async (req, res) => {
 		// get customer's wishlist
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 		} catch (e) {
 			return res.status(404).json({ error: e });
@@ -183,11 +230,14 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 
 			wishlistItemData = sanitizeObject(wishlistItemData);
-			wishlistItemData.listingId = checkId(wishlistItemData.listingId);
+			wishlistItemData.listingId = checkId(
+				wishlistItemData.listingId,
+				"listingId"
+			);
 			checkIsPositiveInteger(wishlistItemData.quantity);
 		} catch (e) {
 			console.log(e);
@@ -215,11 +265,14 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id);
+			req.params.id = checkId(req.params.id, "customerId");
 			req.params.id = sanitizeInput(req.params.id);
 
 			wishlistItemData = sanitizeObject(wishlistItemData);
-			wishlistItemData.listingId = checkId(wishlistItemData.listingId);
+			wishlistItemData.listingId = checkId(
+				wishlistItemData.listingId,
+				"listingId"
+			);
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ error: e });

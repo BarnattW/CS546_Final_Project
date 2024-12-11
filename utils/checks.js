@@ -6,16 +6,6 @@ const checkExists = (val) => {
     throw `Err: Argument ${val} is null or undefined`;
 };
 
-const checkIsString = (str) => {
-  checkExists(str);
-  if (typeof str != 'string') throw `Err: Argument ${str} should be a string`;
-};
-
-const checkIsStringEmpty = (str) => {
-  if (str.trim().length <= 0)
-    throw 'Err: String argument cannot be an empty string or empty spaces';
-};
-
 const checkString = (strVal, varName) => {
   if (!strVal) throw `Error: You must supply a ${varName}!`;
   if (typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
@@ -50,6 +40,11 @@ const checkIsPositiveInteger = (num) => {
   if (num < 0) throw 'Err: Number should be greater than 0';
 };
 
+const checkDate = (date) => {
+  if (date instanceof Date === false && isNaN(num))
+    throw `Err: ${date} is not a valid date`;
+};
+
 const checkCustomer = (username, password, name) => {
   username = checkString(username);
   password = checkString(password);
@@ -69,11 +64,22 @@ const sanitizeObject = (obj) => {
   }
   return obj;
 };
+
+const checkStringLength = (str, min, max) => {
+	if (max == undefined && str.length < min) {
+		throw `Err: Input string should be greater than ${min} characters long`;
+	}
+	if (str.length < min || str.length > max)
+		throw `Err: Input string should be between ${min}-${max} characters long`;
+};
+
 export {
-  checkString,
-  checkId,
-  checkIsPositiveInteger,
-  checkCustomer,
-  sanitizeInput,
-  sanitizeObject,
+	checkString,
+	checkId,
+	checkIsPositiveInteger,
+	checkCustomer,
+	sanitizeInput,
+	sanitizeObject,
+	checkStringLength,
+	checkDate,
 };
