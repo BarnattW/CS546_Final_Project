@@ -18,8 +18,12 @@ const routeConfig = (app) => {
         res.render("customer/cart");
     });
 
-	app.get("/login", (req, res) => {
-        res.render("login");
+	app.get("/sellerlogin", (req, res) => {
+        res.render("sellerlogin");
+    });
+
+	app.get("/customerlogin", (req, res) => {
+        res.render("customerlogin");
     });
 
 	app.use("/", pagesRoutes);
