@@ -158,10 +158,20 @@ const getSellerOrder = async (sellerId, orderId) => {
 const createOrder = async (customerId, orderItems, shippingAddress, cost) => {
 	// replicate order across both sellers and the customer
 	customerId = checkId(customerId, "customerId");
-	orderItems.map((itemId) => {
-		return checkId(itemId, "itemId");
+	orderItems.map((orderItem) => {
+		orderItem = sanitizeObject(orderItem);
+		orderItem.itemId = checkId(orderItem.listingId, "listingIdId");
+		checkIsPositiveInteger(orderItem.quantity);
+		return orderItem;
 	});
 	// check if orderItems are valid items
+
+	await Promise.all(
+		orderItems.forEach(async (orderItem) => {
+			const listing = await sellersData.getListingById(itemId);
+			if (!listing) throw `Invalid orderItem`;
+		})
+	);
 	shippingAddress = checkString(shippingAddress, "shippingAddress"); // update to check address
 	checkIsPositiveInteger(cost);
 
