@@ -8,8 +8,10 @@ const applyMiddlewares = (app) => {
 
 		console.log(
 			`[${date}]: ${method} ${route} (${
-				user ? "Authenticated" : "Non-Authenticated"
-			} ${user?.role == "customer" ? "Customer" : "Seller"}`
+				user
+					? `Authenticated ${user.role === "customer" ? "Customer" : "Seller"}`
+					: "Non-Authenticated"
+			})`
 		);
 		return next();
 	});
