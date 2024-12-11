@@ -10,6 +10,10 @@ const routeConfig = (app) => {
         res.render("customer/browselistings");
     });
 
+	app.get("/customer/checkout", (req, res) => {
+        res.render("customer/checkout");
+    });
+
 	app.get("/customer/cart", (req, res) => {
         res.render("customer/cart");
     });
