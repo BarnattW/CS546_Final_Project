@@ -63,7 +63,7 @@ router.route("/signup").post(async (req, res) => {
 			.json({ error: "There are no fields in the request body" });
 	}
 
-	const { username, name, password } = customerData;
+	const { username, name, password, confirmPassword } = customerData;
 	try {
 		customerData = sanitizeObject(customerData);
 		username = checkString(username, "Username");
@@ -118,19 +118,19 @@ router.route("/:id").get(async (req, res) => {
 });
 
 router
-	.route("/cart/:id")
+	.route("/cart")
 	.get(async (req, res) => {
-		// gets customer's cart with param id
+		// gets customer's cart with session user id
+		const user = req.session.user;
 		try {
-			req.params.id = checkId(req.params.id, "customerId");
-			req.params.id = sanitizeInput(req.params.id);
+			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			return res.status(404).json({ error: e });
+			return res.status(401).render("customer/createlogin", { error: e });
 		}
 
 		try {
-			const cart = await customersData.getCustomerCart(req.params.id);
-			return res.json(cart);
+			const cart = await customersData.getCustomerCart(user._id);
+			return res.render("customer/cart", { cart });
 		} catch (e) {
 			console.log(e);
 			return res.status(404).json({ error: e });
@@ -138,6 +138,13 @@ router
 	})
 	.post(async (req, res) => {
 		// add to customer's cart
+		const user = req.session.user;
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("customer/createlogin", { error: e });
+		}
+
 		const cartItemData = req.body;
 		if (!cartItemData || Object.keys(cartItemData).length === 0) {
 			return res
@@ -146,9 +153,6 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id, "customerId");
-			req.params.id = sanitizeInput(req.params.id);
-
 			cartItemData = sanitizeObject(cartItemData);
 			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
 			checkIsPositiveInteger(cartItemData.quantity);
@@ -159,7 +163,7 @@ router
 
 		try {
 			const updatedCart = customersData.addToCart(
-				req.params.id,
+				user._id,
 				cartItemData.listingId,
 				cartItemData.quantity
 			);
@@ -170,6 +174,13 @@ router
 	})
 	.put(async (req, res) => {
 		// update customer's cart
+		const user = req.session.user;
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("customer/createlogin", { error: e });
+		}
+
 		const cartItemData = req.body;
 		if (!cartItemData || Object.keys(cartItemData).length === 0) {
 			return res
@@ -178,9 +189,6 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id, "customerId");
-			req.params.id = sanitizeInput(req.params.id);
-
 			cartItemData = sanitizeObject(cartItemData);
 			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
 			checkIsPositiveInteger(cartItemData.quantity);
@@ -191,7 +199,7 @@ router
 
 		try {
 			const updatedCart = customersData.updateCart(
-				req.params.id,
+				user._id,
 				cartItemData.listingId,
 				cartItemData.quantity
 			);
@@ -202,18 +210,20 @@ router
 	});
 
 router
-	.route("/wishlist/:id")
+	.route("/wishlist/")
 	.get(async (req, res) => {
 		// get customer's wishlist
+		const user = req.session.user;
 		try {
-			req.params.id = checkId(req.params.id, "customerId");
-			req.params.id = sanitizeInput(req.params.id);
+			if (!user) throw `Session user not found. Login again.`;
 		} catch (e) {
-			return res.status(404).json({ error: e });
+			return res.status(401).render("customer/createlogin", { error: e });
 		}
 
 		try {
 			const wishlist = await customersData.getCustomerWishlist(req.params.id);
+
+			// TODO update with handlebars
 			return res.json(wishlist);
 		} catch (e) {
 			console.log(e);
@@ -221,7 +231,14 @@ router
 		}
 	})
 	.post(async (req, res) => {
-		// add to customer's wishlistconst cartItemData = req.body;
+		// add to customer's wishlistconst
+		const user = req.session.user;
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("customer/createlogin", { error: e });
+		}
+
 		const wishlistItemData = req.body;
 		if (!wishlistItemData || Object.keys(wishlistItemData).length === 0) {
 			return res
@@ -230,15 +247,11 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id, "customerId");
-			req.params.id = sanitizeInput(req.params.id);
-
 			wishlistItemData = sanitizeObject(wishlistItemData);
 			wishlistItemData.listingId = checkId(
 				wishlistItemData.listingId,
 				"listingId"
 			);
-			checkIsPositiveInteger(wishlistItemData.quantity);
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ error: e });
@@ -246,9 +259,8 @@ router
 
 		try {
 			const updatedWishlist = customersData.addToWishlist(
-				req.params.id,
-				cartItemData.listingId,
-				cartItemData.quantity
+				user._id,
+				wishlistItemData.listingId
 			);
 			return res.json(updatedWishlist);
 		} catch (e) {
@@ -257,6 +269,13 @@ router
 	})
 	.delete(async (req, res) => {
 		// delete item from customer's wishlist
+		const user = req.session.user;
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("customer/createlogin", { error: e });
+		}
+
 		const wishlistItemData = req.body;
 		if (!wishlistItemData || Object.keys(wishlistItemData).length === 0) {
 			return res
@@ -265,9 +284,6 @@ router
 		}
 
 		try {
-			req.params.id = checkId(req.params.id, "customerId");
-			req.params.id = sanitizeInput(req.params.id);
-
 			wishlistItemData = sanitizeObject(wishlistItemData);
 			wishlistItemData.listingId = checkId(
 				wishlistItemData.listingId,
@@ -280,7 +296,7 @@ router
 
 		try {
 			const updatedWishlist = customersData.removeFromWishlist(
-				req.params.id,
+				user._id,
 				cartItemData.listingId
 			);
 			return res.json(updatedWishlist);
