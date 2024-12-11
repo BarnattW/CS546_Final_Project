@@ -26,6 +26,10 @@ const routeConfig = (app) => {
         res.render("customerlogin");
     });
 
+	app.get("/createlogin", (req, res) => {
+        res.render("createlogin");
+    });
+
 	app.use("/", pagesRoutes);
 	app.use("/api/customers", customersRoutes);
 	app.use("/api/sellers", sellersRoutes);
