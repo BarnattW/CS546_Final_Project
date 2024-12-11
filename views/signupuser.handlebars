@@ -1,0 +1,30 @@
+<div id="signupView">
+    <h1>Sign Up</h1>
+    <form id="signup-form" name="signup-form" action="/api/customers/login" method="POST">
+        <label for="firstName">Full Name:</label>
+        <input type="text" id="firstName" name="firstName" required />
+        <br />
+
+
+        <label for="user">User ID:</label>
+        <input type="text" id="userId" name="userId" required />
+        <br />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+        <br />
+
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required />
+        <br />
+
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+            <option value="seller">seller</option>
+            <option value="customer">customer</option>
+        </select>
+        <br />
+
+        <button type="submit">Sign Up</button>
+    </form>
+</div>

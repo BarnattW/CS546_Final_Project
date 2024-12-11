@@ -7,17 +7,27 @@
     <link rel="stylesheet" href="/public/css/styles.css">
 </head>
 <body>
-    <header>
+   <header>
         <nav class="navbar">
             <div class="nav-container">
                 <a class="navbar-brand" href="/">Ducklink Dećor</a>
                 <ul class="nav-list">
-                    <li><a href="/">Home</a></li>
-                   <li><a href="/customer/browselistings">Browse Listings</a></li>
-                      <li><a href="/customer/cart">Cart</a></li>
-                    <li><a href="/customerlogin">Sign In As Customer</a></li>
-                    <li><a href="/sellerlogin">Sign In As Seller</a></li>
-                    <li><a href="/createlogin">Sign Up</a></li>
+                <div class="search-bar">
+                    <input type="text" class="search-input wide-search" placeholder="Search here!">
+                              <li><a href="api/customers/cart">Cart</a></li>
+                    <li class="dropdown">
+                        <a href="#">Sign In</a>
+                        <div class="dropdown-content">
+                            <a href="/customerlogin">As Customer</a>
+                            <a href="/sellerlogin">As Seller</a>
+                        </div>
+                    </li>
+                    <li><a href="/signupuser">Sign Up</a></li>
+                    <li><a href="/api/customers/wishlist">Wishlist</a></li>
+                </ul>
+
+                <ul class="nav-list sign-out">
+                    <li><a href="/signout">Sign Out</a></li>
                 </ul>
             </div>
         </nav>

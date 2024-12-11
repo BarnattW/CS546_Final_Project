@@ -9,9 +9,17 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.get("/login", async (req, res) => {
+router.get("/signupuser", async (req, res) => {
 	try {
-		res.render("customer/createlogin");
+		res.render("signupuser");
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
+router.get("/signout", async (req, res) => {
+	try {
+		res.render("signoutuser");
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}
