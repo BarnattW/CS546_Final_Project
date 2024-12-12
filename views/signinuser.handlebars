@@ -1,0 +1,51 @@
+<div id="signinView" class="flex-col-centered">
+	<h1>Sign In</h1>
+	<div class="flex-col-centered w-50">
+		<div class="tabs">
+			<button class="signinTab active" data-tab="customerSignin">Customers</button>
+			<button class="signinTab" data-tab="sellerSignin">Sellers</button>
+		</div>
+		<form
+			id="customerSignin"
+			name="customerSignin"
+			action="/customers/signin"
+			method="POST"
+			class="signinForm"
+		>
+			<label for="customerUsername">Username</label>
+			<input type="text" id="customerUsername" name="customerUsername" required />
+
+			<label for="customerPassword">Password</label>
+			<input
+				type="password"
+				id="customerPassword"
+				name="customerPassword"
+				required
+			/>
+
+
+			<button id="customerSigninSubmit" name="customerSigninSubmit" type="submit" class="button">Sign Up</button>
+		</form>
+		<form
+			id="sellerSignin"
+			name="sellerSignin"
+			action="/sellers/signin"
+			method="POST"
+			class="signinForm hidden"
+		>			
+			<label for="sellerBusinessName">Business Name</label>
+			<input type="text" id="sellerBusinessName" name="sellerBusinessName" required />
+
+			<label for="sellerPassword">Password</label>
+			<input
+				type="password"
+				id="sellerPassword"
+				name="sellerPassword"
+				required
+			/>
+
+			<button id="sellerSignupSubmit" name="sellerSignupSubmit" type="submit" class="button">Sign Up</button>
+		</form>
+        <div id="clientError" class="error" hidden>Error Message</div>
+	</div>
+</div>

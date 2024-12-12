@@ -18,7 +18,7 @@ router
 	.route("/login")
 	.get(async (req, res) => {
 		try {
-			return res.render("customerlogin", { user: req.session.user });
+			return res.render("signupuser", { user: req.session.user });
 		} catch (e) {
 			return res.status(404).json({ error: e });
 		}
