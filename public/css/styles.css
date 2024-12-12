@@ -268,3 +268,16 @@ input {
 .btn-remove-from-cart:hover {
 	background-color: #0056b3;
 }
+
+.backtocartbutton{
+	text-align: right;
+	padding: 10px 20px;
+	background-color: #007bff;
+	color: white;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.backtocartbutton:hover {
+	background-color: #0056b3;
+}
