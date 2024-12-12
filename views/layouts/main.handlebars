@@ -19,9 +19,18 @@
 							/>
 						</div>
 						{{#if user}}
-							<li><a href="/customers/cart">Cart</a></li>
-							<li><a href="/customers/wishlist">Wishlist</a></li>
-							<li class="sign-out"><a href="/signout">Sign Out</a></li>
+							{{#eq user.role "customer"}}
+								<li><a href="/customers/cart">Cart</a></li>
+								<li><a href="/customers/wishlist">Wishlist</a></li>
+								<li><a href="/customers/orders">Orders</a></li>
+								<li class="sign-out"><a href="/signout">Sign Out</a></li>
+								<li>Hello, {{user.username}}</li>
+							{{else}}
+								<li><a href="/sellers/listings">My Listings</a></li>
+								<li><a href="/sellers/orders">Orders</a></li>
+								<li class="sign-out"><a href="/signout">Sign Out</a></li>
+								<li>Hello, {{user.username}}</li>
+							{{/eq}}
 						{{else}}
 							<li>
 								<a href="/signin">Sign In</a>
@@ -40,7 +49,7 @@
 		</main>
 
 		<footer>
-			<p>© 2024 WebApp. All Rights Reserved.</p>
+			<p>© 2024 DucklingDecor. All Rights Reserved.</p>
 		</footer>
 		<script src="/public/js/script.js"></script>
 	</body>
