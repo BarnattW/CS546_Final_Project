@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.get("/login", async (req, res) => {
+router.get("/signin", async (req, res) => {
 	try {
 		return res.render("loginuser");
 	} catch (e) {
@@ -33,6 +33,14 @@ router.get("/signout", async (req, res) => {
 		return res.render("signoutuser");
 	} catch (e) {
 		return res.status(500).json({ error: e });
+	}
+});
+
+router.get("/checkout", async (req, res) => {
+	try {
+		res.render("checkout");
+	} catch (e) {
+		res.status(500).json({ error: e });
 	}
 });
 

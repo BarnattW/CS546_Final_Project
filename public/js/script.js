@@ -40,6 +40,31 @@ if (signupTabs && signupForms) {
 	});
 }
 
+/*
+ * Signin Page
+ */
+let signinTabs = document.getElementsByClassName("signinTab");
+let signinForms = document.getElementsByClassName("signinForm");
+
+if (signinTabs && signinForms) {
+	signinTabs = Array.from(signinTabs);
+	signinForms = Array.from(signinForms);
+	signinTabs.forEach((signinTab) => {
+		signinTab.addEventListener("click", () => {
+			signinTabs.forEach((tab) => {
+				tab.classList.remove("active");
+			});
+			signinForms.forEach((form) => {
+				form.classList.add("hidden");
+			});
+
+			signinTab.classList.add("active");
+			const form = signinTab.getAttribute("data-tab");
+			document.getElementById(form).classList.remove("hidden");
+		});
+	});
+}
+
 // Form Submission
 const clientErrorDiv = document.getElementById("clientError");
 

@@ -32,16 +32,12 @@
 								<li>Hello, {{user.username}}</li>
 							{{/eq}}
 						{{else}}
-							<li class="dropdown">
-								<a href="#">Sign In</a>
-								<div class="dropdown-content">
-									<a href="/customers/login">As Customer</a>
-									<a href="/sellers/login">As Seller</a>
-								</div>
+							<li>
+								<a href="/signin">Sign In</a>
 							</li>
-							<li class="dropdown">
 								<a href="/signup">Sign Up</a>
 							</li>
+							
 						{{/if}}
 					</ul>
 				</div>
