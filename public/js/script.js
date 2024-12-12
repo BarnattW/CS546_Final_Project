@@ -57,6 +57,7 @@ const customerConfirmPassword = document.getElementById(
 
 const sellerBusinessName = document.getElementById("sellerBusinessName");
 const sellerTown = document.getElementById("sellerTown");
+const sellerUsername = document.getElementById("sellerUsername");
 const sellerPassword = document.getElementById("sellerPassword");
 const sellerConfirmPassword = document.getElementById("sellerConfirmPassword");
 
@@ -126,11 +127,13 @@ if (sellerSignupForm) {
 				"Business Name"
 			);
 			sellerTown.value = checkInputEmpty(sellerTown, "Town");
+			sellerUsername.value = checkInputEmpty(sellerUsername, "Username");
 			sellerPassword.value = checkInputEmpty(sellerPassword, "Password");
 			sellerConfirmPassword.value = checkInputEmpty(
 				sellerConfirmPassword,
 				"Confirmation Password"
 			);
+			checkInputLength(sellerUsername, "Username", 5, 30);
 			checkInputLength(sellerPassword, "Password", 8);
 			checkInputLength(sellerConfirmPassword, "Confirmation Password", 8);
 
@@ -149,8 +152,9 @@ if (sellerSignupForm) {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					username: sellerBusinessName.value,
+					businessName: sellerBusinessName.value,
 					town: sellerTown.value,
+					username: sellerUsername.value,
 					password: sellerPassword.value,
 					confirmPassword: sellerConfirmPassword.value,
 				}),

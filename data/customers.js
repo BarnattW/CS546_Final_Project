@@ -16,16 +16,14 @@ const saltRounds = 12;
  */
 const createCustomer = async (username, password, name) => {
 	username = checkString(username, "username");
-	password = checkString(password, "password"); // look into hashing and authentication
+	password = checkString(password, "password");
 	name = checkString(name, "name");
 	checkStringLength(username, 5, 20);
 	checkStringLength(password, 8);
 
 	const customersCollection = await customers();
 	const existingUser = await customersCollection.findOne({ username });
-	if (existingUser) {
-		throw "There is already a user with that username";
-	}
+	if (existingUser) throw "There is already a customer with that username";
 
 	const hashedPassword = await bcrypt.hash(password, saltRounds);
 	const newCustomer = {
@@ -45,20 +43,19 @@ const createCustomer = async (username, password, name) => {
 		throw "Could not create customer";
 
 	const newId = insertInfo.insertedId.toString();
+	// TODO - see if this is essential...
 	const customer = await getCustomerById(newId);
 	return customer;
 };
 
-/* TO-DO
+/*
  * Login a customer
  */
 const loginCustomer = async (username, password) => {
-	username = checkString(username);
-	password = checkString(password);
+	username = checkString(username, "username");
+	password = checkString(password, "password");
 	checkStringLength(username, 5, 20);
 	checkStringLength(password, 8);
-
-	username = username.toLower();
 
 	const customersCollection = await customers();
 	const customer = await customersCollection.findOne({ username });
