@@ -3,6 +3,30 @@ import { ObjectId } from 'mongodb';
 import { listings } from '../config/mongoCollections.js';
 import * as validation from '../utils/checks.js';
 
+const saltRounds = 12;
+
+// Login Seller
+
+export const loginSeller = async (username, password) => {
+  username = validation.checkString(username);
+  password = validation.checkString(password);
+  validation.checkStringLength(username, 5, 20);
+  validation.checkStringLength(password, 8);
+
+  username = username.toLowerCase();
+
+  const sellerCollection = await sellers();
+  const seller = await sellerCollection.findOne({ username });
+
+  if (!seller) throw 'Invalid UserName or Password';
+
+  const comparePassword = await bcrypt.compare(password, seller.password);
+
+  if (!comparePassword) throw 'Invalid UserName or Password';
+
+  return { username: seller.username, _id: seller._id.toString() };
+};
+
 // Creates a new Seller and returns it.
 
 export const createSeller = async (username, password, name, town) => {
@@ -12,9 +36,11 @@ export const createSeller = async (username, password, name, town) => {
   name = validation.checkString(name);
   town = validation.checkString(town);
 
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
   let newSeller = {
     username,
-    password,
+    password: hashedPassword,
     name,
     town,
     listing: [],
@@ -27,7 +53,6 @@ export const createSeller = async (username, password, name, town) => {
     throw 'Could not add seller.';
 
   const newId = insertInfo.insertedId.toString();
-
   const seller = await getSellerById(newId);
   return seller;
 };
