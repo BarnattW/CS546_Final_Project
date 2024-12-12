@@ -150,6 +150,17 @@ router
 		}
 	});
 
+	router
+	.route("/addlisting")
+	.get(async (req, res) => {
+		try {
+			return res.render("addlisting", { user: req.session.user });
+
+		} catch (e) {
+			return res.status(500).render("error", { error: e });
+		}
+	})
+
 // Export Router
 
 export default router;
