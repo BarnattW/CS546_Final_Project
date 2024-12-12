@@ -33,4 +33,12 @@ router.get("/signout", async (req, res) => {
 	}
 });
 
+router.get("/checkout", async (req, res) => {
+	try {
+		res.render("checkout");
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
 export default router;

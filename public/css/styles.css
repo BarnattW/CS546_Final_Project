@@ -63,6 +63,22 @@ footer {
 	background: #78d3ee;
 }
 
+.signinTab {
+	padding: 10px 20px;
+	cursor: pointer;
+	border: none;
+	transition: background 0.3s;
+	float: left;
+}
+
+.signinTab:hover {
+	background: #6d6d6d;
+}
+
+.signinTab.active {
+	background: #78d3ee;
+}
+
 .flex-col-centered {
 	display: flex;
 	flex-direction: column;
