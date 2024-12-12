@@ -24,7 +24,7 @@ router
 		}
 	})
 	.post(async (req, res) => {
-		const customerData = req.body;
+		let customerData = req.body;
 
 		if (!customerData || Object.keys(customerData).length === 0) {
 			return res
@@ -40,6 +40,7 @@ router
 			checkStringLength(username, 5, 20);
 			checkStringLength(password, 8);
 		} catch (e) {
+			console.log(e);
 			return res.status(400).json({ error: e });
 		}
 
@@ -52,7 +53,7 @@ router
 					role: "customer",
 				};
 			}
-			res.redirect("/home");
+			return res.json();
 		} catch (e) {
 			return res.status(400).json({ error: e });
 		}

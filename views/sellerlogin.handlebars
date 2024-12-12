@@ -1,19 +1,13 @@
-<h1>Log In As Seller</h1>
-<form action="/api/customers/login" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <button type="submit">Log In</button>
-      <div class="formInputError" id="form-errors-div">
-      {{#if hasErrors}}
-      {{#each errors}}
-      <p>
-        {{this}}
-      </p>
-      {{/each}}
-      {{/if}}
-</form>
-<script type="module" src="/public/js/users/login_validation.js"></script>
+<div class="flex-col-centered">
+	<h1>Log In As Seller</h1>
+	<form action="/sellers/login" method="POST" id="sellerLogin" name="sellerLogin">
+		<label for="sellerUsername">Username</label>
+		<input type="text" id="sellerUsername" name="sellerUsername" required />
+		<br />
+		<label for="sellerPassword">Password</label>
+		<input type="password" id="sellerPassword" name="sellerPssword" required />
+		<br />
+		<button type="submit" class="button" id="sellerLoginSubmit">Log In</button>
+	</form>
+	<div id="clientError" class="error" hidden>Error Message</div>
+</div>

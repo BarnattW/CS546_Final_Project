@@ -173,3 +173,98 @@ if (sellerSignupForm) {
 		}
 	});
 }
+
+/*
+ * Login Pages
+ */
+
+const customerLoginForm = document.getElementById("customerLogin");
+const customerLoginSubmit = document.getElementById("customerLoginSubmit");
+
+const sellerLoginForm = document.getElementById("sellerLogin");
+
+if (customerLoginForm) {
+	customerLoginForm.addEventListener("submit", async (event) => {
+		event.preventDefault();
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			customerUsername.value = checkInputEmpty(customerUsername, "Username");
+			customerPassword.value = checkInputEmpty(customerPassword, "Password");
+			checkInputLength(customerUsername, "Username", 5, 20);
+			checkInputLength(customerPassword, "Password", 8);
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+			return;
+		}
+
+		try {
+			const response = await fetch("/customers/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					username: customerUsername.value,
+					password: customerPassword.value,
+				}),
+			});
+
+			if (response.ok) {
+				window.location.href = "/";
+			} else {
+				const data = await response.json();
+				clientErrorDiv.hidden = false;
+				clientErrorDiv.innerHTML = data.error;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	});
+}
+
+if (sellerLoginForm) {
+	sellerLoginForm.addEventListener("submit", async (event) => {
+		event.preventDefault();
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			sellerUsername.value = checkInputEmpty(sellerUsername, "Username");
+			sellerPassword.value = checkInputEmpty(sellerPassword, "Password");
+			checkInputLength(sellerUsername, "Username", 5, 20);
+			checkInputLength(sellerPassword, "Password", 8);
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+			return;
+		}
+
+		try {
+			const response = await fetch("/sellers/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					username: sellerUsername.value,
+					password: sellerPassword.value,
+				}),
+			});
+
+			if (response.ok) {
+				window.location.href = "/";
+			} else {
+				const data = await response.json();
+				clientErrorDiv.hidden = false;
+				clientErrorDiv.innerHTML = data.error;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	});
+}

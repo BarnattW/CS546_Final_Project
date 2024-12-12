@@ -16,7 +16,7 @@ router
 		}
 	})
 	.post(async (req, res) => {
-		const sellerData = req.body;
+		let sellerData = req.body;
 
 		if (!sellerData || Object.keys(sellerData).length === 0) {
 			return res
@@ -32,11 +32,12 @@ router
 			validation.checkStringLength(username, 5, 20);
 			validation.checkStringLength(password, 8);
 		} catch (e) {
+			console.log(e);
 			return res.status(400).json({ error: e });
 		}
 
 		try {
-			const user = await sellersData.loginCustomer(username, password);
+			const user = await sellersData.loginSeller(username, password);
 			if (user) {
 				req.session.user = {
 					_id: user._id,
@@ -44,8 +45,9 @@ router
 					role: "seller",
 				};
 			}
-			res.redirect("/home");
+			res.redirect("/");
 		} catch (e) {
+			console.log(e);
 			return res.status(400).json({ error: e });
 		}
 	});

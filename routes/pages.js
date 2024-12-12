@@ -3,33 +3,36 @@ import { Router } from "express";
 const router = Router();
 router.get("/", async (req, res) => {
 	try {
-		res.render("home");
+		return res.render("home", { user: req.session.user });
 	} catch (e) {
-		res.status(500).json({ error: e });
+		return res.status(500).json({ error: e });
 	}
 });
 
 router.get("/login", async (req, res) => {
 	try {
-		res.render("loginuser");
+		return res.render("loginuser");
 	} catch (e) {
-		res.status(500).json({ error: e });
+		return res.status(500).json({ error: e });
 	}
 });
 
 router.get("/signup", async (req, res) => {
 	try {
-		res.render("signupuser");
+		return res.render("signupuser");
 	} catch (e) {
-		res.status(500).json({ error: e });
+		return res.status(500).json({ error: e });
 	}
 });
 
 router.get("/signout", async (req, res) => {
 	try {
-		res.render("signoutuser");
+		if (req.session) {
+			req.session.destroy();
+		}
+		return res.render("signoutuser");
 	} catch (e) {
-		res.status(500).json({ error: e });
+		return res.status(500).json({ error: e });
 	}
 });
 
