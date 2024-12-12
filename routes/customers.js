@@ -64,7 +64,7 @@ router
  */
 router.route("/signup").post(async (req, res) => {
 	// creates a new customer
-	const customerData = req.body;
+	let customerData = req.body;
 
 	// check user input
 	if (!customerData || Object.keys(customerData).length === 0) {
@@ -73,7 +73,7 @@ router.route("/signup").post(async (req, res) => {
 			.json({ error: "There are no fields in the request body" });
 	}
 
-	const { username, name, password, confirmPassword } = customerData;
+	let { username, name, password, confirmPassword } = customerData;
 	try {
 		customerData = sanitizeObject(customerData);
 		username = checkString(username, "Username");
@@ -89,6 +89,7 @@ router.route("/signup").post(async (req, res) => {
 
 		username = username.toLowerCase();
 	} catch (e) {
+		console.log(e);
 		return res.status(400).json({ error: e });
 	}
 

@@ -3,7 +3,7 @@ async function seed() {
 	const db = await dbConnection();
 	await db.dropDatabase();
 
-	// insert seed data
+	// insert seed data, 1 fake customer, and 1 fake seller with 3 listings
 }
 
 export default seed;

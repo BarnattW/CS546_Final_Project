@@ -59,9 +59,9 @@ const sanitizeInput = (arg) => {
 };
 
 const sanitizeObject = (obj) => {
-  for (property in obj) {
-    obj[property] = xss(obj[property]);
-  }
+  for (const property in obj) {
+		obj[property] = xss(obj[property]);
+	}
   return obj;
 };
 
