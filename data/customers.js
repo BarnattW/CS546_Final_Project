@@ -95,16 +95,17 @@ const getCustomerCart = async (customerId) => {
 
 	// fetch cart
 	const customersCollection = await customers();
-	const customerCart = await customersCollection.findOne(
+	const customer = await customersCollection.findOne(
 		{
 			_id: new ObjectId(customerId),
 		},
 		{ projection: { _id: 0, cart: 1 } }
 	);
 
-	if (!customerCart) throw `No cart found for customer with id ${customerId}`;
+	if (!customer) throw `No cart found for customer with id ${customerId}`;
 
 	// populate cart with listings
+	const customerCart = customer.cart;
 	customerCart.forEach((cartItem) => {
 		cartItem._id = cartItem._id.toString();
 	});
@@ -203,17 +204,17 @@ const getCustomerWishlist = async (customerId) => {
 
 	// fetch cart
 	const customersCollection = await customers();
-	const customerWishlist = await customersCollection.findOne(
+	const customer = await customersCollection.findOne(
 		{
 			_id: new ObjectId(customerId),
 		},
 		{ projection: { _id: 0, wishlist: 1 } }
 	);
 
-	if (!customerWishlist)
-		throw `No wishlist found for customer with id ${customerId}`;
+	if (!customer) throw `No wishlist found for customer with id ${customerId}`;
 
 	// populate wishlist with listings
+	const customerWishlist = customer.wishlist;
 	customerWishlist.forEach((wishlistItem) => {
 		wishlistItem._id = wishlistItem._id.toString();
 	});

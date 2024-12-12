@@ -295,73 +295,52 @@ if (sellerLoginForm) {
 }
 
 // listings (customer view)
-const searchForm = document.getElementById('searchForm');
+const searchForm = document.getElementById("searchForm");
 
-const listingsContainer = document.querySelector('.listing-item');
+const listingsContainer = document.querySelector(".listing-item");
 
 const fetchListings = async () => {
 	try {
-		const response = await fetch('/api/listings');
+		const response = await fetch("/api/listings");
 		if (!response.ok) {
-			throw new Error('Network response was not ok');
+			throw new Error("Network response was not ok");
 		}
 		const listings = await response.json();
 		return listings;
 	} catch (error) {
-		console.error('Failed to fetch listings:', error);
+		console.error("Failed to fetch listings:", error);
 		return [];
 	}
 };
 
 const createListingElement = (listing) => {
-	const listingElement = document.createElement('div');
-	listingElement.classList.add('listing-item');
-
-	const listingImage = document.createElement('img');
-	listingImage.src = listing.itemImage;
-	listingImage.alt = listing.itemName;
-	listingImage.classList.add('listing-image');
-
-	const listingTitle = document.createElement('h2');
-	listingTitle.textContent = listing.itemName;
-
-	const listingDescription = document.createElement('p');
-	listingDescription.textContent = listing.itemDescription;
-
-	const listingPrice = document.createElement('p');
-	listingPrice.innerHTML = `Price: $${listing.itemPrice}`;
-
-	const listingCategory = document.createElement('p');
-	listingCategory.textContent = `Category: ${listing.itemCategory}`;
-
-	const listingCondition = document.createElement('p');
-	listingCondition.textContent = `Condition: ${listing.condition}`;
-
-	const sellerId = document.createElement('p');
-	sellerId.textContent = `Seller ID: ${listing.sellerId}`;
-
-	const addToCartButton = document.createElement('button');
-	addToCartButton.textContent = 'Add to Cart';
-	addToCartButton.classList.add('btn-add-to-cart');
-	addToCartButton.addEventListener('click', () => {
-		console.log(`Added ${listing.itemName} to cart.`);
-	});
-
-	listingElement.appendChild(listingImage);
-	listingElement.appendChild(listingTitle);
-	listingElement.appendChild(listingDescription);
-	listingElement.appendChild(listingPrice);
-	listingElement.appendChild(listingCategory);
-	listingElement.appendChild(listingCondition);
-	listingElement.appendChild(sellerId);
-	listingElement.appendChild(addToCartButton);
-
-	return listingElement;
+	return `<div class="listing-item">
+			<img class="listing-image" src="${listing.itemImage}" alt="${listing.itemName}" />
+			<h2>${listing.itemName}</h2>
+			<p>${listing.itemDescription}</p>
+			<p>Price: $${listing.itemPrice}</p>
+			<p>Category: ${listing.itemCategory}</p>
+			<p>Condition: ${listing.condition}</p>
+			<p>Seller ID: ${listing.sellerId}</p>
+			<button class="btn-add-to-cart">Add to Cart</button>
+		</div>
+	`;
 };
+
+document
+	.getElementById("listingsContainer")
+	.addEventListener("click", (event) => {
+		if (event.target && event.target.classList.contains("btn-add-to-cart")) {
+			const listingName = event.target
+				.closest(".listing-item")
+				.querySelector("h2").textContent;
+			console.log(`Added ${listingName} to cart.`);
+		}
+	});
 
 const renderListings = async () => {
 	const listings = await fetchListings();
-	listings.forEach(listing => {
+	listings.forEach((listing) => {
 		const listingElement = createListingElement(listing);
 		listingsContainer.appendChild(listingElement);
 	});
