@@ -32,7 +32,7 @@ router
 				.json({ error: "There are no fields in the request body" });
 		}
 
-		const { username, password } = customerData;
+		let { username, password } = customerData;
 		try {
 			customerData = sanitizeObject(customerData);
 			username = checkString(username, "Username");
