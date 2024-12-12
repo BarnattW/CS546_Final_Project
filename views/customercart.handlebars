@@ -1,8 +1,18 @@
 <h1>Your Cart</h1>
-<p>Cart functionality is under construction. Check back soon!</p>
+<div class="listing-item">
+    <img src="itemImageURL" alt="itemName" class="listing-image" id="listingimage">
+    <h2>itemName</h2>
+    <p>itemDescription</p>
+    <p>Price: $itemPrice</p>
+    <p>Category: itemCategory</p>
+    <p>Condition: condition</p>
+    <p>Seller ID: sellerId</p>
+    <button class="btn-remove-from-cart">Remove from cart</button>
+</div>
 
 
 
-<form action="/customer/checkout" method="POST">
+
+<form action="/checkout" method="GET">
     <button type="submit" id="checkout">Check out</button>
 </form>

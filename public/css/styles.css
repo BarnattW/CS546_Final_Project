@@ -256,3 +256,15 @@ input {
     border-radius: 8px;
     object-fit: cover;
 }
+
+.btn-remove-from-cart{
+	padding: 10px 20px;
+	background-color: #007bff;
+	color: white;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.btn-remove-from-cart:hover {
+	background-color: #0056b3;
+}

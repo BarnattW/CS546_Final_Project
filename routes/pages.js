@@ -52,4 +52,20 @@ router.get("/customerbrowselistings", async (req, res) => {
 	}
 });
 
+router.get("/customercart", async (req, res) => {
+	try {
+		res.render("customercart");
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
+router.get("/checkout", async (req, res) => {
+	try {
+		res.render("checkout");
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
 export default router;
