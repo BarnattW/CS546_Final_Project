@@ -26,9 +26,7 @@ if (signupTabs && signupForms) {
 	signupForms = Array.from(signupForms);
 	signupTabs.forEach((signupTab) => {
 		signupTab.addEventListener("click", () => {
-			console.log("click");
 			signupTabs.forEach((tab) => {
-				console.log(tab);
 				tab.classList.remove("active");
 			});
 			signupForms.forEach((form) => {
@@ -106,7 +104,6 @@ if (customerSignupForm) {
 				window.location.href = "/customers/login";
 			} else {
 				const data = await response.json();
-				console.log(data);
 				clientErrorDiv.hidden = false;
 				clientErrorDiv.innerHTML = data.error;
 			}
@@ -163,7 +160,6 @@ if (sellerSignupForm) {
 				window.location.href = "/sellers/login";
 			} else {
 				const data = await response.json();
-				console.log(data);
 				clientErrorDiv.hidden = false;
 				clientErrorDiv.innerHTML = data.error;
 			}

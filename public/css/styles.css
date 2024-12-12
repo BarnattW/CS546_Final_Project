@@ -38,6 +38,10 @@ footer {
     width: 100%;
 }
 
+.error {
+	color: #ed155e;
+}
+
 .tabs {
 	border-bottom: 2px solid;
 	border-color: black;

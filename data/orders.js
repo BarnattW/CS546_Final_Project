@@ -1,7 +1,6 @@
 import { ObjectId } from "mongodb";
 import { customers, sellers } from "../config/mongoCollections.js";
 import {
-	checkDate,
 	checkId,
 	checkIsPositiveInteger,
 	checkString,

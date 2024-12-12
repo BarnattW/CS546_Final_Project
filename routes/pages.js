@@ -9,7 +9,15 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.get("/signupuser", async (req, res) => {
+router.get("/login", async (req, res) => {
+	try {
+		res.render("loginuser");
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
+router.get("/signup", async (req, res) => {
 	try {
 		res.render("signupuser");
 	} catch (e) {
