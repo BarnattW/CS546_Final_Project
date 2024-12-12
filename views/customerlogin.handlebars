@@ -1,10 +1,13 @@
-<h1>Log In As Customer</h1>
-<form action="/api/customers/login" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <button type="submit">Log In</button>
-</form>
+<div class="flex-col-centered">
+	<h1>Log In As Customer</h1>
+	<form action="/customers/login" method="POST" id="customerLogin" name="customerLogin">
+		<label for="customerUsername">Username</label>
+		<input type="text" id="customerUsername" name="customerUsername" required />
+		<br />
+		<label for="customerPassword">Password</label>
+		<input type="password" id="customerPassword" name="customerPssword" required />
+		<br />
+		<button type="submit" class="button" id="customerLoginSubmit">Log In</button>
+	</form>
+	<div id="clientError" class="error" hidden>Error Message</div>
+</div>

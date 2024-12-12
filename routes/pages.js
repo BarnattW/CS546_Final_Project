@@ -3,23 +3,66 @@ import { Router } from "express";
 const router = Router();
 router.get("/", async (req, res) => {
 	try {
-		res.render("home");
+		return res.render("home", { user: req.session.user });
 	} catch (e) {
-		res.status(500).json({ error: e });
+		return res.status(500).json({ error: e });
 	}
 });
 
-router.get("/signupuser", async (req, res) => {
+router.get("/signin", async (req, res) => {
 	try {
-		res.render("signupuser");
+		return res.render("loginuser");
 	} catch (e) {
-		res.status(500).json({ error: e });
+		return res.status(500).json({ error: e });
+	}
+});
+
+router.get("/signup", async (req, res) => {
+	try {
+		return res.render("signupuser");
+	} catch (e) {
+		return res.status(500).json({ error: e });
 	}
 });
 
 router.get("/signout", async (req, res) => {
 	try {
-		res.render("signoutuser");
+		if (req.session) {
+			req.session.destroy();
+		}
+		return res.render("signoutuser");
+	} catch (e) {
+		return res.status(500).json({ error: e });
+	}
+});
+
+router.get("/checkout", async (req, res) => {
+	try {
+		res.render("checkout");
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
+router.get("/customerbrowselistings", async (req, res) => {
+	try {
+		res.render("customerbrowselistings");
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
+router.get("/customercart", async (req, res) => {
+	try {
+		res.render("customercart");
+	} catch (e) {
+		res.status(500).json({ error: e });
+	}
+});
+
+router.get("/checkout", async (req, res) => {
+	try {
+		res.render("checkout");
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}

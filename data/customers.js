@@ -15,17 +15,15 @@ const saltRounds = 12;
  * Creates a customer, add them to the database and returns the new customer
  */
 const createCustomer = async (username, password, name) => {
-  username = checkString(username, 'username');
-  password = checkString(password, 'password'); // look into hashing and authentication
-  name = checkString(name, 'name');
-  checkStringLength(username, 5, 20);
-  checkStringLength(password, 8);
+	username = checkString(username, "username");
+	password = checkString(password, "password");
+	name = checkString(name, "name");
+	checkStringLength(username, 5, 20);
+	checkStringLength(password, 8);
 
-  const customersCollection = await customers();
-  const existingUser = await customersCollection.findOne({ username });
-  if (existingUser) {
-    throw 'There is already a user with that username';
-  }
+	const customersCollection = await customers();
+	const existingUser = await customersCollection.findOne({ username });
+	if (existingUser) throw "There is already a customer with that username";
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   const newCustomer = {
@@ -44,24 +42,23 @@ const createCustomer = async (username, password, name) => {
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw 'Could not create customer';
 
-  const newId = insertInfo.insertedId.toString();
-  const customer = await getCustomerById(newId);
-  return customer;
+	const newId = insertInfo.insertedId.toString();
+	// TODO - see if this is essential...
+	const customer = await getCustomerById(newId);
+	return customer;
 };
 
-/* TO-DO
+/*
  * Login a customer
  */
 const loginCustomer = async (username, password) => {
-  username = checkString(username);
-  password = checkString(password);
-  checkStringLength(username, 5, 20);
-  checkStringLength(password, 8);
+	username = checkString(username, "username");
+	password = checkString(password, "password");
+	checkStringLength(username, 5, 20);
+	checkStringLength(password, 8);
 
-  username = username.toLowerCase();
-
-  const customersCollection = await customers();
-  const customer = await customersCollection.findOne({ username });
+	const customersCollection = await customers();
+	const customer = await customersCollection.findOne({ username });
 
   if (!customer) throw 'Invalid username or password';
 

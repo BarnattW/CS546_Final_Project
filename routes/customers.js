@@ -24,7 +24,7 @@ router
 		}
 	})
 	.post(async (req, res) => {
-		const customerData = req.body;
+		let customerData = req.body;
 
 		if (!customerData || Object.keys(customerData).length === 0) {
 			return res
@@ -32,15 +32,15 @@ router
 				.json({ error: "There are no fields in the request body" });
 		}
 
-		const { username, password } = customerData;
+		let { username, password } = customerData;
 		try {
 			customerData = sanitizeObject(customerData);
 			username = checkString(username, "Username");
 			password = checkString(password, "Password");
 			checkStringLength(username, 5, 20);
 			checkStringLength(password, 8);
-			username = username.toLowerCase();
 		} catch (e) {
+			console.log(e);
 			return res.status(400).json({ error: e });
 		}
 
@@ -53,7 +53,7 @@ router
 					role: "customer",
 				};
 			}
-			res.redirect("/home");
+			return res.json();
 		} catch (e) {
 			return res.status(400).json({ error: e });
 		}
@@ -64,7 +64,7 @@ router
  */
 router.route("/signup").post(async (req, res) => {
 	// creates a new customer
-	const customerData = req.body;
+	let customerData = req.body;
 
 	// check user input
 	if (!customerData || Object.keys(customerData).length === 0) {
@@ -73,7 +73,7 @@ router.route("/signup").post(async (req, res) => {
 			.json({ error: "There are no fields in the request body" });
 	}
 
-	const { username, name, password, confirmPassword } = customerData;
+	let { username, name, password, confirmPassword } = customerData;
 	try {
 		customerData = sanitizeObject(customerData);
 		username = checkString(username, "Username");
@@ -86,18 +86,17 @@ router.route("/signup").post(async (req, res) => {
 
 		if (password != confirmPassword)
 			throw `Password and confirmation password must match`;
-
-		username = username.toLowerCase();
 	} catch (e) {
+		console.log(e);
 		return res.status(400).json({ error: e });
 	}
 
 	// db insertion
 	try {
 		const newCustomer = await customersData.createCustomer(
-			customerData.username,
-			customerData.password,
-			customerData.name
+			username,
+			password,
+			name
 		);
 		return res.json(newCustomer);
 	} catch (e) {

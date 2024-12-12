@@ -1,8 +1,21 @@
 <h1>Check Out</h1>
 <form action="/customers/confirmpurchase" method="POST">
-    <label for="cardnumber">Card number:</label>
-    <input type="password" id="cardnumber" name="cardnumber" required>
+    <label for="addressline">Address Line:</label>
+    <input type="text" id="addressline" name="addressline" required>
     <br>
+    
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required>
+    <br>
+
+    <label for="state">State:</label>
+    <input type="text" id="state" name="state" required>
+    <br>
+
+    <label for="zipcode">Zip code:</label>
+    <input type="text" id="zipcode" name="zipcode" required>
+    <br>
+
     <label for="cardname">Name on card:</label>
     <input type="text" id="cardname" name="cardname" required>
     <br>
@@ -32,6 +45,6 @@
     </select>
     <br>
     <br>
-    <button type="submit">Place your order</button>
-    
+    <button type="submit" class="btn-remove-from-cart">Place your order</button>    
 </form>
+    <button onclick="/customercart" class="backtocartbutton">Back to cart</button>

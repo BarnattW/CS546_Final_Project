@@ -1,40 +1,39 @@
 import { Router } from 'express';
+const router = Router();
 import { sellersData } from '../data/index.js';
 import * as validation from '../utils/checks.js';
 
-const router = Router();
-
-// /sellers/login
-
+/*
+ * /sellers/login
+ */
 router
   .route('/login')
   .get(async (req, res) => {
     try {
       return res.render('sellerlogin', { user: req.session.user });
     } catch (e) {
-      return res.status(500).render('error', { error: e });
+      return res.status(404).json({ error: e });
     }
   })
   .post(async (req, res) => {
-    const sellerData = req.body;
+    let sellerData = req.body;
 
     if (!sellerData || Object.keys(sellerData).length === 0) {
       return res
         .status(400)
-        .render('error', { error: 'There are no fields in the request body' });
+        .json({ error: 'There are no fields in the request body' });
     }
 
-    const { username, password } = sellerData;
-
+    let { username, password } = sellerData;
     try {
       sellerData = validation.sanitizeObject(sellerData);
-      sellerData.username = validation.checkString(username, 'Seller Username');
-      sellerData.password = validation.checkString(password, 'Seller Password');
+      username = validation.checkString(username, 'Username');
+      password = validation.checkString(password, 'Password');
       validation.checkStringLength(username, 5, 20);
       validation.checkStringLength(password, 8);
-      sellerData.username = sellerData.username.toLowerCase();
     } catch (e) {
-      return res.status(500).render('error', { error: e });
+      console.log(e);
+      return res.status(400).json({ error: e });
     }
 
     try {
@@ -46,54 +45,116 @@ router
           role: 'seller',
         };
       }
-      res.redirect('/home');
+      res.redirect('/');
+    } catch (e) {
+      console.log(e);
+      return res.status(400).json({ error: e });
+    }
+  });
+
+/*
+ * /sellers/signup
+ */
+router.route('/signup').post(async (req, res) => {
+  let sellerData = req.body;
+  if (!sellerData || Object.keys(sellerData).length === 0) {
+    return res
+      .status(400)
+      .json({ error: 'There are no fields in the request body' });
+  }
+  let { username, businessName, town, password, confirmPassword } = sellerData;
+  try {
+    sellerData = validation.sanitizeObject(sellerData);
+    username = validation.checkString(username, 'Username');
+    businessName = validation.checkString(businessName, 'Business Name');
+    town = validation.checkString(town, 'Town');
+    password = validation.checkString(password, 'Password');
+    confirmPassword = validation.checkString(
+      confirmPassword,
+      'Confirmation Password'
+    );
+    validation.checkStringLength(username, 5, 20);
+    validation.checkStringLength(password, 8);
+    validation.checkStringLength(confirmPassword, 8);
+
+    if (password != confirmPassword)
+      throw `Password and confirmation password must match`;
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ error: e });
+  }
+
+  // db insertion
+  try {
+    const newSeller = await sellersData.createSeller(
+      username,
+      password,
+      businessName,
+      town
+    );
+    return res.json(newSeller);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ error: e });
+  }
+});
+
+// /sellers/login
+
+router
+  .route('/')
+  .get(async (req, res) => {
+    try {
+      const sellersList = await sellersData.getAllSellers();
+      return res.render(sellersList);
+    } catch (e) {
+      return res.status(500).render('error', { error: e });
+    }
+  })
+  .post(async (req, res) => {
+    const requestBodyData = req.body;
+
+    if (!requestBodyData || Object.keys(requestBodyData).length === 0) {
+      return res
+        .status(400)
+        .render('error', { error: 'Could not get Request Body.' });
+    }
+    try {
+      // Validation of Request Body Data
+
+      requestBodyData.username = validation.checkString(
+        requestBodyData.username
+      );
+      requestBodyData.password = validation.checkString(
+        requestBodyData.password
+      );
+      requestBodyData.name = validation.checkString(requestBodyData.name);
+      requestBodyData.town = validation.checkString(requestBodyData.town);
+    } catch (e) {
+      return res.status(500).render('error', { error: e });
+    }
+
+    //
+
+    try {
+      const { username, password, name, town } = requestBodyData;
+
+      const newSeller = await sellersData.createSeller(
+        username,
+        password,
+        name,
+        town
+      );
     } catch (e) {
       return res.status(500).render('error', { error: e });
     }
   });
-// SIGNUP
 
-router.route('/signup ').post(async (req, res) => {
-  const requestBodyData = req.body;
+// ADDLISTING
 
-  if (!requestBodyData || Object.keys(requestBodyData).length === 0) {
-    return res
-      .status(400)
-      .render('error', { error: 'Could not get Request Body.' });
-  }
-
+router.route('/addlisting').get(async (req, res) => {
   try {
-    requestBodyData.username = validation.checkString(
-      requestBodyData.username,
-      "Seller's Username"
-    );
-    requestBodyData.password = validation.checkString(
-      requestBodyData.password,
-      "Seller's Password"
-    );
-    requestBodyData.name = validation.checkString(
-      requestBodyData.name,
-      'Sellers Name'
-    );
-    requestBodyData.town = validation.checkString(
-      requestBodyData.town,
-      "Seller's Town"
-    );
-  } catch (e) {
-    return res.status(500).render('error', { error: e });
-  }
-
-  try {
-    const { username, password, name, town } = requestBodyData;
-
-    const newSeller = await sellersData.createSeller(
-      username,
-      password,
-      name,
-      town
-    );
-
-    return res.status(200).render('seller', { seller: newSeller }); // Not sure if this is the correct way to render the seller
+    return res.render('addlisting', { user: req.session.user });
   } catch (e) {
     return res.status(500).render('error', { error: e });
   }

@@ -9,19 +9,33 @@
 		<header>
 			<nav class="navbar">
 				<div class="nav-container">
-					<a class="navbar-brand" href="/">Ducklink Dećor</a>
+					<a class="navbar-brand" href="/">Duckling Dećor</a>
 					<ul class="nav-list">
 						<div class="search-bar">
-							<input
-								type="text"
-								class="search-input wide-search"
-								placeholder="Search here!"
-							/>
+							<form id="searchForm" action="/customerbrowselistings" method="get">
+								<input
+									type="text"
+									class="search-input wide-search"
+									placeholder="Search here!"
+									name="query"
+									required
+								/>
+							</form>
 						</div>
+
 						{{#if user}}
-							<li><a href="/customers/cart">Cart</a></li>
-							<li><a href="/customers/wishlist">Wishlist</a></li>
-							<li class="sign-out"><a href="/signout">Sign Out</a></li>
+							{{#eq user.role "customer"}}
+								<li><a href="/customercart">Cart</a></li>
+								<li><a href="/customers/wishlist">Wishlist</a></li>
+								<li><a href="/customers/orders">Orders</a></li>
+								<li class="sign-out"><a href="/signout">Sign Out</a></li>
+								<li>Hello, {{user.username}}</li>
+							{{else}}
+								<li><a href="/sellerlistings">My Listings</a></li>
+								<li><a href="/sellers/orders">Orders</a></li>
+								<li class="sign-out"><a href="/signout">Sign Out</a></li>
+								<li>Hello, {{user.username}}</li>
+							{{/eq}}
 						{{else}}
 							<li class="dropdown">
 								<a href="#">Sign In</a>
@@ -30,7 +44,10 @@
 									<a href="/sellers/login">As Seller</a>
 								</div>
 							</li>
-							<li><a href="/signupuser">Sign Up</a></li>
+							<li>
+								<a href="/signup">Sign Up</a>
+							</li>
+
 						{{/if}}
 					</ul>
 				</div>
@@ -42,7 +59,8 @@
 		</main>
 
 		<footer>
-			<p>© 2024 WebApp. All Rights Reserved.</p>
+			<p>© 2024 DucklingDecor. All Rights Reserved.</p>
 		</footer>
+		<script src="/public/js/script.js"></script>
 	</body>
 </html>

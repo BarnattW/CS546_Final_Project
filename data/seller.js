@@ -2,6 +2,7 @@ import { sellers } from '../config/mongoCollections.js';
 import { ObjectId } from 'mongodb';
 import { listings } from '../config/mongoCollections.js';
 import * as validation from '../utils/checks.js';
+import bcrypt from 'bcrypt';
 
 const saltRounds = 12;
 
@@ -29,11 +30,11 @@ export const loginSeller = async (username, password) => {
 
 // Creates a new Seller and returns it.
 
-export const createSeller = async (username, password, name, town) => {
+export const createSeller = async (username, password, businessName, town) => {
   // Validating Parameters
   username = validation.checkString(username);
   password = validation.checkString(password);
-  name = validation.checkString(name);
+  businessName = validation.checkString(businessName);
   town = validation.checkString(town);
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -48,7 +49,11 @@ export const createSeller = async (username, password, name, town) => {
   };
 
   const sellerCollection = await sellers();
+  const existingUser = await sellerCollection.findOne({ username });
+  if (existingUser) throw 'There is already a seller with that username';
+
   const insertInfo = await sellerCollection.insertOne(newSeller);
+
   if (!insertInfo.acknowledged || !insertInfo.insertedId)
     throw 'Could not add seller.';
 
