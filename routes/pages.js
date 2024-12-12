@@ -9,9 +9,9 @@ router.get("/", async (req, res) => {
 	}
 });
 
-router.get("/login", async (req, res) => {
+router.get("/signin", async (req, res) => {
 	try {
-		res.render("loginuser");
+		res.render("signinuser");
 	} catch (e) {
 		res.status(500).json({ error: e });
 	}
