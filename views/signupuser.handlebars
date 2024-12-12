@@ -1,13 +1,25 @@
 <div id="signupView">
     <h1>Sign Up</h1>
     <form id="signup-form" name="signup-form" action="/customers/signup" method="POST">
-        <label for="firstName">Full Name:</label>
-        <input type="text" id="firstName" name="firstName" required />
+
+        <div class="formInputError" id="form-errors-div">
+            {{#if hasErrors}}
+                {{#each errors}}
+                <p>{{this}}</p>
+                {{/each}}
+            {{/if}}
+        </div>
+
+        <label for="first-name">First Name:</label>
+        <input type="text" id="first-name" name="firstName" required />
         <br />
 
+        <label for="last-name">Last Name:</label>
+        <input type="text" id="last-name" name="lastName" required />
+        <br />
 
-        <label for="user">User ID:</label>
-        <input type="text" id="userId" name="userId" required />
+        <label for="user-name">User ID:</label>
+        <input type="text" id="user-name" name="userId" required />
         <br />
 
         <label for="password">Password:</label>
@@ -20,8 +32,8 @@
 
         <label for="role">Role:</label>
         <select id="role" name="role" required>
-            <option value="seller">seller</option>
-            <option value="customer">customer</option>
+            <option value="seller">Seller</option>
+            <option value="customer">Customer</option>
         </select>
         <br />
 
