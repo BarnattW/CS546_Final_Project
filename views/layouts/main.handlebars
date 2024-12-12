@@ -9,15 +9,20 @@
 		<header>
 			<nav class="navbar">
 				<div class="nav-container">
-					<a class="navbar-brand" href="/">Ducklink Dećor</a>
+					<a class="navbar-brand" href="/">Duckling Dećor</a>
 					<ul class="nav-list">
 						<div class="search-bar">
-							<input
-								type="text"
-								class="search-input wide-search"
-								placeholder="Search here!"
-							/>
+							<form id="searchForm" action="/customerbrowselistings" method="get">
+								<input
+									type="text"
+									class="search-input wide-search"
+									placeholder="Search here!"
+									name="query"
+									required
+								/>
+							</form>
 						</div>
+
 						{{#if user}}
 							{{#eq user.role "customer"}}
 								<li><a href="/customers/cart">Cart</a></li>

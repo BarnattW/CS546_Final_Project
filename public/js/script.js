@@ -293,3 +293,76 @@ if (sellerLoginForm) {
 		}
 	});
 }
+
+// listings (customer view)
+const searchForm = document.getElementById('searchForm');
+
+const listingsContainer = document.querySelector('.listing-item');
+
+const fetchListings = async () => {
+	try {
+		const response = await fetch('/api/listings');
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+		const listings = await response.json();
+		return listings;
+	} catch (error) {
+		console.error('Failed to fetch listings:', error);
+		return [];
+	}
+};
+
+const createListingElement = (listing) => {
+	const listingElement = document.createElement('div');
+	listingElement.classList.add('listing-item');
+
+	const listingImage = document.createElement('img');
+	listingImage.src = listing.itemImage;
+	listingImage.alt = listing.itemName;
+	listingImage.classList.add('listing-image');
+
+	const listingTitle = document.createElement('h2');
+	listingTitle.textContent = listing.itemName;
+
+	const listingDescription = document.createElement('p');
+	listingDescription.textContent = listing.itemDescription;
+
+	const listingPrice = document.createElement('p');
+	listingPrice.innerHTML = `Price: $${listing.itemPrice}`;
+
+	const listingCategory = document.createElement('p');
+	listingCategory.textContent = `Category: ${listing.itemCategory}`;
+
+	const listingCondition = document.createElement('p');
+	listingCondition.textContent = `Condition: ${listing.condition}`;
+
+	const sellerId = document.createElement('p');
+	sellerId.textContent = `Seller ID: ${listing.sellerId}`;
+
+	const addToCartButton = document.createElement('button');
+	addToCartButton.textContent = 'Add to Cart';
+	addToCartButton.classList.add('btn-add-to-cart');
+	addToCartButton.addEventListener('click', () => {
+		console.log(`Added ${listing.itemName} to cart.`);
+	});
+
+	listingElement.appendChild(listingImage);
+	listingElement.appendChild(listingTitle);
+	listingElement.appendChild(listingDescription);
+	listingElement.appendChild(listingPrice);
+	listingElement.appendChild(listingCategory);
+	listingElement.appendChild(listingCondition);
+	listingElement.appendChild(sellerId);
+	listingElement.appendChild(addToCartButton);
+
+	return listingElement;
+};
+
+const renderListings = async () => {
+	const listings = await fetchListings();
+	listings.forEach(listing => {
+		const listingElement = createListingElement(listing);
+		listingsContainer.appendChild(listingElement);
+	});
+};
