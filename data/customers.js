@@ -22,7 +22,7 @@ const createCustomer = async (username, password, name) => {
 	checkStringLength(password, 8);
 
 	const customersCollection = await customers();
-	const existingUser = await usersCollection.findOne({ username });
+	const existingUser = await customersCollection.findOne({ username });
 	if (existingUser) {
 		throw "There is already a user with that username";
 	}

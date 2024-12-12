@@ -62,55 +62,48 @@ router
 /*
  *  /customers/signup
  */
-router.route("/signup")
-	.get(async (req, res) => {
-		try {
-			return res.render("signupuser", { user: req.session.user });
-		} catch (e) {
-			return res.status(404).json({ error: e });
-		}
-	})
-	.post(async (req, res) => {
-		// creates a new customer
-		const customerData = req.body;
+router.route("/signup").post(async (req, res) => {
+	// creates a new customer
+	let customerData = req.body;
 
-		// check user input
-		if (!customerData || Object.keys(customerData).length === 0) {
-			return res
-				.status(400)
-				.json({ error: "There are no fields in the request body" });
-		}
+	// check user input
+	if (!customerData || Object.keys(customerData).length === 0) {
+		return res
+			.status(400)
+			.json({ error: "There are no fields in the request body" });
+	}
 
-		const { username, name, password, confirmPassword } = customerData;
-		try {
-			customerData = sanitizeObject(customerData);
-			username = checkString(username, "Username");
-			name = checkString(name, "Name");
-			password = checkString(password, "Password");
-			confirmPassword = checkString(confirmPassword, "Confirmation Password");
-			checkStringLength(username, 5, 20);
-			checkStringLength(password, 8);
-			checkStringLength(confirmPassword, 8);
+	let { username, name, password, confirmPassword } = customerData;
+	try {
+		customerData = sanitizeObject(customerData);
+		username = checkString(username, "Username");
+		name = checkString(name, "Name");
+		password = checkString(password, "Password");
+		confirmPassword = checkString(confirmPassword, "Confirmation Password");
+		checkStringLength(username, 5, 20);
+		checkStringLength(password, 8);
+		checkStringLength(confirmPassword, 8);
 
-			if (password != confirmPassword)
-				throw `Password and confirmation password must match`;
+		if (password != confirmPassword)
+			throw `Password and confirmation password must match`;
 
-			username = username.toLowerCase();
-		} catch (e) {
-			return res.status(400).json({ error: e });
-		}
+		username = username.toLowerCase();
+	} catch (e) {
+		console.log(e);
+		return res.status(400).json({ error: e });
+	}
 
-		// db insertion
-		try {
-			const newCustomer = await customersData.createCustomer(
-				customerData.username,
-				customerData.password,
-				customerData.name
-			);
-			return res.json(newCustomer);
-		} catch (e) {
-			return res.status(500).json({ error: e });
-		}
+	// db insertion
+	try {
+		const newCustomer = await customersData.createCustomer(
+			customerData.username,
+			customerData.password,
+			customerData.name
+		);
+		return res.json(newCustomer);
+	} catch (e) {
+		return res.status(500).json({ error: e });
+	}
 });
 
 router

@@ -1,42 +1,72 @@
-<div id="signupView">
-    <h1>Sign Up</h1>
-    <form id="signup-form" name="signup-form" action="/customers/signup" method="POST">
+<div id="signupView" class="flex-col-centered">
+	<h1>Sign Up</h1>
+	<div class="flex-col-centered w-50">
+		<div class="tabs">
+			<button class="signupTab active" data-tab="customerSignup">Customers</button>
+			<button class="signupTab" data-tab="sellerSignup">Sellers</button>
+		</div>
+		<form
+			id="customerSignup"
+			name="customerSignup"
+			action="/customers/signup"
+			method="POST"
+			class="signupForm"
+		>
+			<label for="customerName">Name</label>
+			<input type="text" id="customerName" name="customerName" required />
 
-        <div class="formInputError" id="form-errors-div">
-            {{#if hasErrors}}
-                {{#each errors}}
-                <p>{{this}}</p>
-                {{/each}}
-            {{/if}}
-        </div>
+			<label for="customerUsername">Username</label>
+			<input type="text" id="customerUsername" name="customerUsername" required />
 
-        <label for="first-name">First Name:</label>
-        <input type="text" id="first-name" name="firstName" required />
-        <br />
+			<label for="customerPassword">Password</label>
+			<input
+				type="password"
+				id="customerPassword"
+				name="customerPassword"
+				required
+			/>
 
-        <label for="last-name">Last Name:</label>
-        <input type="text" id="last-name" name="lastName" required />
-        <br />
+			<label for="customerConfirmPassword">Confirm Password</label>
+			<input
+				type="password"
+				id="customerConfirmPassword"
+				name="customerConfirmPassword"
+				required
+			/>
 
-        <label for="user-name">User ID:</label>
-        <input type="text" id="user-name" name="userId" required />
-        <br />
+			<button id="customerSignupSubmit" name="customerSignupSubmit" type="submit" class="button">Sign Up</button>
+		</form>
+		<form
+			id="sellerSignup"
+			name="sellerSignup"
+			action="/sellers/signup"
+			method="POST"
+			class="signupForm hidden"
+		>
+			<label for="sellerBusinessName">Business Name</label>
+			<input type="text" id="sellerBusinessName" name="sellerBusinessName" required />
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-        <br />
+			<label for="sellerTown">Town</label>
+			<input type="text" id="sellerTown" name="sellerTown" required />
 
-        <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required />
-        <br />
+			<label for="sellerPassword">Password</label>
+			<input
+				type="password"
+				id="sellerPassword"
+				name="sellerPassword"
+				required
+			/>
 
-        <label for="role">Role:</label>
-        <select id="role" name="role" required>
-            <option value="seller">Seller</option>
-            <option value="customer">Customer</option>
-        </select>
-        <br />
+			<label for="confirmPassword">Confirm Password</label>
+			<input
+				type="password"
+				id="sellerConfirmPassword"
+				name="sellerConfirmPassword"
+				required
+			/>
 
-        <button type="submit">Sign Up</button>
-    </form>
+			<button id="sellerSignupSubmit" name="sellerSignupSubmit" type="submit" class="button">Sign Up</button>
+		</form>
+        <div id="clientError" class="error" hidden>Error Message</div>
+	</div>
 </div>
