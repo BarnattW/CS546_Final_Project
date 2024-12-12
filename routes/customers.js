@@ -39,7 +39,6 @@ router
 			password = checkString(password, "Password");
 			checkStringLength(username, 5, 20);
 			checkStringLength(password, 8);
-			username = username.toLowerCase();
 		} catch (e) {
 			return res.status(400).json({ error: e });
 		}
@@ -86,8 +85,6 @@ router.route("/signup").post(async (req, res) => {
 
 		if (password != confirmPassword)
 			throw `Password and confirmation password must match`;
-
-		username = username.toLowerCase();
 	} catch (e) {
 		console.log(e);
 		return res.status(400).json({ error: e });
@@ -96,9 +93,9 @@ router.route("/signup").post(async (req, res) => {
 	// db insertion
 	try {
 		const newCustomer = await customersData.createCustomer(
-			customerData.username,
-			customerData.password,
-			customerData.name
+			username,
+			password,
+			name
 		);
 		return res.json(newCustomer);
 	} catch (e) {

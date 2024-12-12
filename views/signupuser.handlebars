@@ -2,7 +2,10 @@
 	<h1>Sign Up</h1>
 	<div class="flex-col-centered w-50">
 		<div class="tabs">
-			<button class="signupTab active" data-tab="customerSignup">Customers</button>
+			<button
+				class="signupTab active"
+				data-tab="customerSignup"
+			>Customers</button>
 			<button class="signupTab" data-tab="sellerSignup">Sellers</button>
 		</div>
 		<form
@@ -16,7 +19,12 @@
 			<input type="text" id="customerName" name="customerName" required />
 
 			<label for="customerUsername">Username</label>
-			<input type="text" id="customerUsername" name="customerUsername" required />
+			<input
+				type="text"
+				id="customerUsername"
+				name="customerUsername"
+				required
+			/>
 
 			<label for="customerPassword">Password</label>
 			<input
@@ -34,7 +42,12 @@
 				required
 			/>
 
-			<button id="customerSignupSubmit" name="customerSignupSubmit" type="submit" class="button">Sign Up</button>
+			<button
+				id="customerSignupSubmit"
+				name="customerSignupSubmit"
+				type="submit"
+				class="button"
+			>Sign Up</button>
 		</form>
 		<form
 			id="sellerSignup"
@@ -44,10 +57,18 @@
 			class="signupForm hidden"
 		>
 			<label for="sellerBusinessName">Business Name</label>
-			<input type="text" id="sellerBusinessName" name="sellerBusinessName" required />
+			<input
+				type="text"
+				id="sellerBusinessName"
+				name="sellerBusinessName"
+				required
+			/>
 
 			<label for="sellerTown">Town</label>
 			<input type="text" id="sellerTown" name="sellerTown" required />
+
+			<label for="sellerUsername">Username</label>
+			<input type="text" id="sellerUsername" name="sellerUsername" required />
 
 			<label for="sellerPassword">Password</label>
 			<input
@@ -65,8 +86,13 @@
 				required
 			/>
 
-			<button id="sellerSignupSubmit" name="sellerSignupSubmit" type="submit" class="button">Sign Up</button>
+			<button
+				id="sellerSignupSubmit"
+				name="sellerSignupSubmit"
+				type="submit"
+				class="button"
+			>Sign Up</button>
 		</form>
-        <div id="clientError" class="error" hidden>Error Message</div>
+		<div id="clientError" class="error" hidden>Error Message</div>
 	</div>
 </div>
