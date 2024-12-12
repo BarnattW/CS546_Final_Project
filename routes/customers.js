@@ -117,7 +117,7 @@ router
 
 		try {
 			const cart = await customersData.getCustomerCart(user._id);
-			return res.render("customer/cart", { cart, user: req.session.user });
+			return res.render("customercart", { cart, user: req.session.user });
 		} catch (e) {
 			console.log(e);
 			return res.status(404).json({ error: e });
@@ -132,7 +132,7 @@ router
 			return res.status(401).render("customerlogin", { error: e });
 		}
 
-		const cartItemData = req.body;
+		let cartItemData = req.body;
 		if (!cartItemData || Object.keys(cartItemData).length === 0) {
 			return res
 				.status(400)
@@ -168,7 +168,7 @@ router
 			return res.status(401).render("customerlogin", { error: e });
 		}
 
-		const cartItemData = req.body;
+		let cartItemData = req.body;
 		if (!cartItemData || Object.keys(cartItemData).length === 0) {
 			return res
 				.status(400)
@@ -197,7 +197,7 @@ router
 	});
 
 router
-	.route("/wishlist/")
+	.route("/wishlist")
 	.get(async (req, res) => {
 		// get customer's wishlist
 		const user = req.session.user;
@@ -208,10 +208,14 @@ router
 		}
 
 		try {
-			const wishlist = await customersData.getCustomerWishlist(req.params.id);
+			const wishlist = await customersData.getCustomerWishlist(
+				req.session.user._id
+			);
 
-			// TODO update with handlebars
-			return res.json(wishlist);
+			return res.render("customerwishlist", {
+				user: req.session.user,
+				wishlist,
+			});
 		} catch (e) {
 			console.log(e);
 			return res.status(404).json({ error: e });

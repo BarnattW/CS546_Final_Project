@@ -93,31 +93,32 @@ const getCustomerById = async (id) => {
 const getCustomerCart = async (customerId) => {
   customerId = checkId(customerId, 'customerId');
 
-  // fetch cart
-  const customersCollection = await customers();
-  const customerCart = await customersCollection.findOne(
-    {
-      _id: new ObjectId(customerId),
-    },
-    { projection: { _id: 0, cart: 1 } }
-  );
+	// fetch cart
+	const customersCollection = await customers();
+	const customer = await customersCollection.findOne(
+		{
+			_id: new ObjectId(customerId),
+		},
+		{ projection: { _id: 0, cart: 1 } }
+	);
 
-  if (!customerCart) throw `No cart found for customer with id ${customerId}`;
+	if (!customer) throw `No cart found for customer with id ${customerId}`;
 
-  // populate cart with listings
-  customerCart.forEach((cartItem) => {
-    cartItem._id = cartItem._id.toString();
-  });
-  const populatedCart = await Promise.all(
-    customerCart.map(async (cartItem) => {
-      const listing = await sellersData.getListingById(cartItem._id);
-      return {
-        _id: cartItem._id,
-        listing: listing,
-        quantity: cartItem.quantity,
-      };
-    })
-  );
+	// populate cart with listings
+	const customerCart = customer.cart;
+	customerCart.forEach((cartItem) => {
+		cartItem._id = cartItem._id.toString();
+	});
+	const populatedCart = await Promise.all(
+		customerCart.map(async (cartItem) => {
+			const listing = await sellersData.getListingById(cartItem._id);
+			return {
+				_id: cartItem._id,
+				listing: listing,
+				quantity: cartItem.quantity,
+			};
+		})
+	);
 
   return populatedCart;
 };
@@ -201,22 +202,22 @@ const updateCart = async (customerId, listingId, quantity) => {
 const getCustomerWishlist = async (customerId) => {
   customerId = checkId(customerId, 'customerId');
 
-  // fetch cart
-  const customersCollection = await customers();
-  const customerWishlist = await customersCollection.findOne(
-    {
-      _id: new ObjectId(customerId),
-    },
-    { projection: { _id: 0, wishlist: 1 } }
-  );
+	// fetch cart
+	const customersCollection = await customers();
+	const customer = await customersCollection.findOne(
+		{
+			_id: new ObjectId(customerId),
+		},
+		{ projection: { _id: 0, wishlist: 1 } }
+	);
 
-  if (!customerWishlist)
-    throw `No wishlist found for customer with id ${customerId}`;
+	if (!customerWishlist)
+		throw `No wishlist found for customer with id ${customerId}`;
 
-  // populate wishlist with listings
-  customerWishlist.forEach((wishlistItem) => {
-    wishlistItem._id = wishlistItem._id.toString();
-  });
+	// populate wishlist with listings
+	customerWishlist.forEach((wishlistItem) => {
+		wishlistItem._id = wishlistItem._id.toString();
+	});
 
   const populatedWishlist = await Promise.all(
     customerWishlist.map(async (wishlistItem) => {
