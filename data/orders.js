@@ -46,7 +46,7 @@ const getCustomerOrders = async (customerId) => {
 	customerId = checkId(customerId, "customerId");
 
 	const customersCollection = await customers();
-	const customerOrders = await customersCollection.findOne(
+	const customer = await customersCollection.findOne(
 		{
 			_id: new ObjectId(customerId),
 		},
@@ -55,12 +55,12 @@ const getCustomerOrders = async (customerId) => {
 		}
 	);
 
-	if (!customerOrders)
-		throw `No orders found for customer with id ${customerId}`;
+	if (!customers) throw `No orders found for customer with id ${customerId}`;
 
-	if (customerOrders.length === 0) return;
+	if (customer.length === 0) return;
 
 	// populate orders with items
+	const customerOrders = customer.orders;
 	customerOrders.forEach(async (order) => {
 		order.orderItems = await populateOrderItems(order.orderItems);
 	});

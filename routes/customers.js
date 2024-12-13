@@ -296,7 +296,7 @@ router
 		}
 	});
 
-router.route("/customers/checkout").get(async (req, res) => {
+router.route("/checkout").get(async (req, res) => {
 	const user = req.session.user;
 	try {
 		if (!user) throw `Session user not found. Login again.`;
@@ -311,7 +311,7 @@ router.route("/customers/checkout").get(async (req, res) => {
 	}
 });
 
-router.route("/customers/browselistings").get(async (req, res) => {
+router.route("/browselistings").get(async (req, res) => {
 	try {
 		res.render("customers/browselistings", { user: req.session.user });
 	} catch (e) {
