@@ -18,17 +18,62 @@ const applyMiddlewares = (app) => {
 
 	// redirects login, logout, and signup routes depending on session status
 	app.use(async (req, res, next) => {
-		if (req.originalUrl != "/customer/login") return next();
+		if (
+			req.originalUrl != "/customers/login" &&
+			req.originalUrl != "/sellers/login" &&
+			req.originalUrl != "/signup"
+		)
+			return next();
 
 		const user = req.session.user;
 		if (!user) return next();
 
-		if (user.role === "customer") res.redirect("/");
+		return res.redirect("/");
+	});
+
+	app.use(async (req, res, next) => {
+		if (req.originalUrl != "/signout") return next();
+
+		const user = req.session.user;
+		if (user) return next();
+
+		return res.redirect("/");
 	});
 
 	// redirects customer specific routes
+	app.use(async (req, res, next) => {
+		if (
+			req.originalUrl != "/customers/cart" &&
+			req.originalUrl != "/customers/wishlist" &&
+			req.originalUrl != "/customers/orders" &&
+			req.originalUrl != "/customers/checkout" &&
+			!req.originalUrl.match(/^\/customers\/orders\/.+$/)
+		)
+			return next();
+
+		const user = req.session.user;
+		if (!user) return res.redirect("/customers/login");
+		if (user.role != "customer") return res.redirect("/");
+
+		return next();
+	});
 
 	// redirects seller specific routes
+	app.use(async (req, res, next) => {
+		if (
+			req.originalUrl != "/sellers/listings" &&
+			req.originalUrl != "/sellers/orders" &&
+			!req.originalUrl.match(/^\/sellers\/listings\/.+$/) &&
+			!req.originalUrl.match(/^\/sellers\/orders\/.+$/)
+		)
+			return next();
+
+		const user = req.session.user;
+		if (!user) return res.redirect("/sellers/login");
+		if (user.role != "seller") return res.redirect("/");
+
+		return next();
+	});
 };
 
 export default applyMiddlewares;
