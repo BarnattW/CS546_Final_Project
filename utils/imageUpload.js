@@ -19,7 +19,6 @@ const uploadImage = async (image) => {
 			throw error;
 		});
 
-	console.log(uploadResult);
 	return uploadResult.url;
 };
 

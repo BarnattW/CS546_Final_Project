@@ -32,9 +32,9 @@ router
 				.json({ error: "There are no fields in the request body" });
 		}
 
-		let { username, password } = customerData;
 		try {
 			customerData = sanitizeObject(customerData);
+			let { username, password } = customerData;
 			username = checkString(username, "Username");
 			password = checkString(password, "Password");
 			checkStringLength(username, 5, 20);
@@ -45,6 +45,7 @@ router
 		}
 
 		try {
+			let { username, password } = customerData;
 			const user = await customersData.loginCustomer(username, password);
 			if (user) {
 				req.session.user = {
@@ -73,9 +74,9 @@ router.route("/signup").post(async (req, res) => {
 			.json({ error: "There are no fields in the request body" });
 	}
 
-	let { username, name, password, confirmPassword } = customerData;
 	try {
 		customerData = sanitizeObject(customerData);
+		let { username, name, password, confirmPassword } = customerData;
 		username = checkString(username, "Username");
 		name = checkString(name, "Name");
 		password = checkString(password, "Password");
@@ -93,6 +94,7 @@ router.route("/signup").post(async (req, res) => {
 
 	// db insertion
 	try {
+		let { username, name, password, confirmPassword } = customerData;
 		const newCustomer = await customersData.createCustomer(
 			username,
 			password,

@@ -1,18 +1,27 @@
 /*
  * Helpers
  */
-let checkInputEmpty = (elementId, inputName) => {
+const checkInputEmpty = (elementId, inputName) => {
 	if (!elementId.value.trim()) throw `${inputName} cannot be empty`;
 	return elementId.value.trim();
 };
 
-let checkInputLength = (elementId, inputName, min, max) => {
+const checkInputLength = (elementId, inputName, min, max) => {
 	const str = elementId.value;
 	if (max == undefined && str.length < min) {
 		throw `${inputName} should be greater than ${min} characters long`;
 	}
 	if (str.length < min || str.length > max)
 		throw `${inputName} should be between ${min}-${max} characters long`;
+};
+
+const convertImage = (image) => {
+	return new Promise((resolve, reject) => {
+		const fileReader = new FileReader();
+		fileReader.onload = () => resolve(fileReader.result);
+		fileReader.onerror = (error) => reject(error);
+		fileReader.readAsDataURL(image);
+	});
 };
 
 /*
@@ -294,30 +303,165 @@ if (sellerLoginForm) {
 	});
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    let test1 = {
-        sellerId: "1234abc",
-        itemName: "chair",
-        itemDescription: "cozy and pink",
-        itemPrice: "$100.00",
-        itemImage: "https://www.staples-3p.com/s7/is/image/Staples/DB79CE6C-F092-4A7C-AE64C8B42C70A9DB_sc7?wid=700&hei=700",
-        itemCategory: "furniture",
-        condition: "new"    
-    }
+/*
+ * Seller listings Page
+ */
 
-	const sellerElement = document.getElementById('sellerIdtext');
-	const nameElement = document.getElementById('itemNametext');
-	const descElement = document.getElementById('itemDescriptiontext');
-	const priceElement = document.getElementById('itemPricetext');
-	const imageElement = document.getElementById('listingimage');
-	const categoryElement = document.getElementById('itemCategorytext');
-	const conditionElement = document.getElementById('conditiontext');
+const createListingModal = document.getElementById("createListingModal");
+const form = document.getElementById("listing-form");
+const openCreateListingBtn = document.getElementById("openCreateListingBtn");
+const closeCreateListingBtn = document.getElementById("closeCreateListingBtn");
 
-	sellerElement.textContent = test1.sellerId;
-	nameElement.textContent = test1.itemName;
-	descElement.textContent = test1.itemDescription;
-	priceElement.textContent = test1.itemPrice;
-	imageElement.src = test1.itemImage;
-	categoryElement.textContent = test1.itemCategory;
-	conditionElement.textContent = test1.condition;
+openCreateListingBtn.addEventListener("click", () => {
+	//form.reset();
+	createListingModal.classList.remove("hidden");
+	createListingModal.classList.add("flex");
 });
+
+closeCreateListingBtn.addEventListener("click", () => {
+	createListingModal.classList.add("hidden");
+});
+
+
+// Add Listings form
+const addListingForm = document.getElementById("addListingForm");
+
+const listingName = document.getElementById("listingName");
+const listingDescription = document.getElementById("listingDescription");
+const listingPrice = document.getElementById("listingPrice");
+const listingCategory = document.getElementById("listingSubcategory");
+const listingCondition = document.getElementById("listingCondition");
+const listingImage = document.getElementById("listingImage");
+
+if (addListingForm) {
+	addListingForm.addEventListener("submit", async (event) => {
+		event.preventDefault();
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			listingName.value = checkInputEmpty(listingName, "Listing Name");
+			listingDescription.value = checkInputEmpty(
+				listingDescription,
+				"Listing Description"
+			);
+			listingPrice.value = checkInputEmpty(listingPrice, "Listing Price");
+			listingCategory.value = checkInputEmpty(
+				listingCategory,
+				"Listing Category"
+			);
+			listingCondition.value = checkInputEmpty(
+				listingCondition,
+				"Listing Condition"
+			);
+
+			if (!listingImage.files) throw `An image is required`;
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+			return;
+		}
+
+		try {
+			const image = await convertImage(listingImage.files[0]);
+			const price = Number(listingPrice.value);
+			const response = await fetch("/sellers/addlisting", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					itemName: listingName.value,
+					itemDescription: listingDescription.value,
+					itemPrice: price,
+					itemImage: image,
+					itemCategory: listingCategory.value,
+					condition: listingCondition.value,
+				}),
+			});
+
+			if (!response.ok) {
+				const data = await response.json();
+				clientErrorDiv.hidden = false;
+				clientErrorDiv.innerHTML = data.error;
+			} else {
+				window.location.href = "/sellers/listings"
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	});
+}
+
+document.querySelectorAll(".btn-edit-listing").forEach((btn) =>
+	btn.addEventListener("click", (e) => {
+		const row = e.target.closest("tr");
+		const listingId = row.dataset.listingid;
+
+		// Prefill form with listing data
+		document.getElementById("listing-id").value = listingId;
+		document.getElementById("itemName").value =
+			row.querySelector("td:nth-child(2)").innerText;
+		document.getElementById("itemImage").value = row.querySelector("img").src;
+		document.getElementById("itemDescription").value =
+			row.querySelector("td:nth-child(3)").innerText;
+		document.getElementById("itemPrice").value = row
+			.querySelector("td:nth-child(4)")
+			.innerText.replace("$", "");
+
+		document.getElementById("modal-title").innerText = "Edit Listing";
+		modal.classList.remove("hidden");
+	})
+);
+
+// Delete listing
+document.querySelectorAll(".btn-delete-listing").forEach((btn) =>
+	btn.addEventListener("click", async (e) => {
+		const row = e.target.closest("tr");
+		const listingId = row.dataset.listingid;
+
+		// Perform delete operation
+		const response = await fetch(`/listings/${listingId}`, {
+			method: "DELETE",
+		});
+		if (response.ok) {
+			row.remove(); // Remove row from table
+		} else {
+			alert("Failed to delete listing.");
+		}
+	})
+);
+
+
+// create a listing object (TEMPORARY)
+const listingsContainer = document.getElementById("listingsContainer");
+const createListingElement = (listing) => {
+	const listingElement = `
+        <img src="${listing.itemImage}" alt="${listing.itemName}" class="listing-image" />
+        <h2 class="listing-title">${listing.itemName}</h2>
+        <p class="listing-description">${listing.itemDescription}</p>
+        <p class="listing-price">Price: ${listing.itemPrice}</p>
+        <p class="listing-category">Category: ${listing.itemCategory}</p>
+        <p class="listing-condition">Condition: ${listing.condition}</p>
+        <p class="listing-seller">Seller ID: ${listing.sellerId}</p>
+        <button class="btn-add-to-cart">Add to Cart</button>
+    `;
+	return listingElement;
+};
+
+if (listingsContainer) {
+	console.log(listingsContainer);
+	let test1 = {
+		sellerId: "1234abc",
+		itemName: "chair",
+		itemDescription: "cozy and pink",
+		itemPrice: "$100.00",
+		itemImage:
+			"https://www.staples-3p.com/s7/is/image/Staples/DB79CE6C-F092-4A7C-AE64C8B42C70A9DB_sc7?wid=700&hei=700",
+		itemCategory: "furniture",
+		condition: "new",
+	};
+
+	listingsContainer.innerHTML += createListingElement(test1);
+}
