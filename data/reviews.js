@@ -1,7 +1,8 @@
 import { ObjectId } from 'mongodb';
-import { listings } from '../config/mongoCollections';
+import { listings, customers } from '../config/mongoCollections';
 import * as validation from '../utils/checks.js';
-import { sellerDataFunctions } from './seller';
+import * as sellerDataFunctions from './seller';
+import { customerDataFunctions } from './customers.js';
 
 const createReview = async (
   customerId,
@@ -35,7 +36,7 @@ const createReview = async (
   currListing.reviews.push(newReview);
 
   const listingCollection = await listings();
-  const updateInfo = await teamCollection.updateOne(
+  const updateInfoListing = await teamCollection.updateOne(
     { _id: new ObjectId(listingId) },
     {
       $set: {
@@ -43,9 +44,52 @@ const createReview = async (
       },
     }
   );
+
+  if (!updateInfoListing.matchedCount && !updateInfoListing.modifiedCount)
+    throw 'Update failed';
+
+  // Grab the customer that the review is going under
+
+  const currCustomer = await customerDataFunctions.getCustomerById(customerId);
+  if (!currCustomer) throw 'Customer does not exist.';
+
+  currCustomer.reviews.push(newReview);
+
+  const customerCollection = await customers();
+  const updateInfoCustomer = await customerCollection.updateOne(
+    { _id: new ObjectId(customerId) },
+    {
+      $set: {
+        reviews: currCustomer.reviews,
+      },
+    }
+  );
+
+  if (!updateInfoCustomer.matchedCount && !updateInfoCustomer.modifiedCount)
+    throw 'Update failed';
+
+  return (
+    (await sellerDataFunctions.getListingById(listingId)) &&
+    (await customerDataFunctions.getCustomerById(customerId))
+  );
 };
 
-const getReviewsById = async (customerId) => {};
+const getReviewsById = async (customerId) => {
+  //Validating Parameters
+  customerId = validation.checkId(customerId, 'Customer ID');
+
+  const listingCollection = await listings();
+  const listingwithReview = await listingCollection.findOne(
+    {
+      customerId: new Object(customerId),
+    },
+    { projection: { reviews: 1 } }
+  );
+
+  if (!listingRiview) throw 'No reviews found for this customer.';
+
+  return reviews[0];
+};
 
 const getListingReviews = async (listingId) => {};
 

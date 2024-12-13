@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import { listings } from '../config/mongoCollections.js';
 import * as validation from '../utils/checks.js';
 import bcrypt from 'bcrypt';
+import uploadImage from '../utils/imageUpload.js';
 
 const saltRounds = 12;
 
@@ -42,7 +43,7 @@ export const createSeller = async (username, password, businessName, town) => {
   let newSeller = {
     username,
     password: hashedPassword,
-    name,
+    businessName,
     town,
     listing: [],
     orders: [],
@@ -98,7 +99,7 @@ export const getAllSellerListings = async (sellerId) => {
   const currSeller = await getSellerById(sellerId);
   if (!currSeller) throw 'Error: No seller found with the given sellerId.';
 
-  const currSellerListings = currSeller.listing;
+  let currSellerListings = currSeller.listing;
 
   currSellerListings = currSellerListings.map((element) => {
     element = getListingById(element);
@@ -139,6 +140,8 @@ export const createListing = async (
   itemImage = validation.checkString(itemImage, 'Item Image');
   itemCategory = validation.checkString(itemCategory, 'Item Catagory');
   condition = validation.checkString(condition, 'Condition');
+
+  itemImage = uploadImage(itemImage); // returns the image url
 
   let newListing = {
     sellerId,
