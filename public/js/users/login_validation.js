@@ -4,7 +4,6 @@ let usernameInput = document.getElementById("user-name");
 let passwordInput = document.getElementById("password");
 let errorsDiv = document.getElementById("form-errors-div");
 
-// checking the inputs in login form
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
   errorsDiv.innerHTML = "";

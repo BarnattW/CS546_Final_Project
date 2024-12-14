@@ -1,49 +1,29 @@
-<h1>Check Out</h1>
-<form action="/customers/confirmpurchase" method="POST">
-    <label for="addressline">Address Line:</label>
-    <input type="text" id="addressline" name="addressline" required>
-    <br>
+<body>
+    <h1>Checkout</h1>
     
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city" required>
-    <br>
+    <form id="checkout-form" action="/checkout" method="POST">
+        <label for="full-name">Full Name:</label><br>
+        <input type="text" id="full-name" name="fullName" placeholder="Enter your full name" required><br><br>
 
-    <label for="state">State:</label>
-    <input type="text" id="state" name="state" required>
-    <br>
+        <label for="address">Street Address:</label><br>
+        <textarea id="address" name="address" rows="2" cols="50" placeholder="Enter your street address" required></textarea><br><br>
 
-    <label for="zipcode">Zip code:</label>
-    <input type="text" id="zipcode" name="zipcode" required>
-    <br>
+        <label for="city">City:</label><br>
+        <input type="text" id="city" name="city" placeholder="Enter your city" required><br><br>
 
-    <label for="cardname">Name on card:</label>
-    <input type="text" id="cardname" name="cardname" required>
-    <br>
-    <label for="expiration">Expiration date:</label>
-    <select name="month" id="month">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-    </select>
-    <select name="year" id="year">
-        <option value="2024">2024</option>
-        <option value="2025">2025</option>
-        <option value="2026">2026</option>
-        <option value="2027">2027</option>
-        <option value="2028">2028</option>
-        <option value="2029">2029</option>
-        <option value="2030">2030</option>
-    </select>
-    <br>
-    <br>
-    <button type="submit" class="btn-remove-from-cart">Place your order</button>    
-</form>
+        <label for="state">State:</label><br>
+        <input type="text" id="state" name="state" placeholder="Enter your state" required><br><br>
+
+        <label for="zip-code">ZIP Code:</label><br>
+        <input type="text" id="zip-code" name="zipCode" placeholder="Enter your ZIP code" required><br><br>
+
+        <label for="country">Country:</label><br>
+        <input type="text" id="country" name="country" placeholder="Enter your country" required><br><br>
+
+        <p><strong>Total Cart Value:</strong> ${{totalCartValue}}</p>
+
+        <button type="submit">Make Payment</button>
+    </form>
+</body>
+
+<script type="module" src="public/js/users/checkout_validation.js"></script>
