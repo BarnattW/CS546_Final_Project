@@ -74,28 +74,78 @@ const createReview = async (
   );
 };
 
-const getReviewsById = async (customerId) => {
+const getReviewsById = async (reviewId) => {
+  // Should be working
   //Validating Parameters
-  customerId = validation.checkId(customerId, 'Customer ID');
+  reviewId = validation.checkId(reviewId, 'Review ID');
 
   const listingCollection = await listings();
   const listingwithReview = await listingCollection.findOne(
     {
-      customerId: new Object(customerId),
+      'reviews._id': new ObjectId(reviewId),
     },
-    { projection: { reviews: 1 } }
+    { projection: { 'reviews.$': 1 } }
   );
 
-  if (!listingRiview) throw 'No reviews found for this customer.';
+  if (
+    !listingwithReview ||
+    listingwithReview.reviews.length === 0 ||
+    !listingwithReview.reviews
+  )
+    throw 'No listing found for this review.';
 
   return reviews[0];
 };
 
-const getListingReviews = async (listingId) => {};
+const getListingReviews = async (listingId) => {
+  listingId = validation.checkId(listingId, 'Listing ID');
 
-const updateReview = async (reviewId, rating, reviewText) => {};
+  const listing = await sellerDataFunctions.getListingById(listingId);
+  if (!listing) throw 'Listing does not exist.';
 
-const deleteReview = async (reviewId) => {};
+  return listing.reviews;
+};
+
+const updateReview = async (reviewId, rating, reviewText) => {
+  //validate parameters
+  // go to collection and find which listing has the review
+  // go to the collection and find which customer has the review????
+
+  reviewId = validation.checkId(reviewId, 'Review ID');
+  rating = validation.checkIsPositiveInteger(rating);
+  reviewText = validation.checkString(reviewText, 'Review Text');
+
+  const listingCollection = await listings();
+  const updatedReview = await listingCollection.updateOne(
+    { 'reviews._id': new ObjectId(reviewId) },
+    {
+      $set: {
+        'reviews.$.rating': rating,
+        'reviews.$.reviewText': reviewText,
+      },
+    }
+  );
+
+  if (!updatedReview.matchedCount && !updatedReview.modifiedCount)
+    throw 'Update failed';
+
+  return await getReviewsById(reviewId);
+};
+
+const deleteReview = async (reviewId) => {
+  // Find the listing that has the review
+  // Find the customer that wrote the review
+
+
+  reviewId = validation.checkId(reviewId, 'Review ID');
+  let listingCollection = await listings();
+
+
+
+
+
+
+};
 
 export {
   getReviewsById,
