@@ -232,8 +232,26 @@ const createOrder = async (customerId, orderItems, shippingAddress, cost) => {
   return await getCustomerOrder(customerId);
 };
 
-// optional
-const deleteOrder = async (sellerId, orderId) => {};
+// delete order fro customer and seller
+async function deleteCustomerOrder(userId, orderId) {
+  const orderCollection = await db.collection("orders");
+  const deletionInfo = await orderCollection.deleteOne({
+      _id: new ObjectId(orderId),
+      userId: new ObjectId(userId),
+  });
+
+  return deletionInfo.deletedCount > 0;
+}
+
+async function deleteSellerOrder(sellerId, orderId) {
+  const orderCollection = await db.collection("orders");
+  const deletionInfo = await orderCollection.deleteOne({
+      _id: new ObjectId(orderId),
+      sellerId: new ObjectId(sellerId), 
+  });
+
+  return deletionInfo.deletedCount > 0;
+}
 
 export const orderDataFunctions = {
   getCustomerOrders,
@@ -241,4 +259,6 @@ export const orderDataFunctions = {
   getSellerOrders,
   getSellerOrder,
   createOrder,
+  deleteCustomerOrder,
+  deleteSellerOrder
 };

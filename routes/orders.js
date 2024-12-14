@@ -142,6 +142,45 @@ router.route("/:orderId").get(async (req, res) => {
 		console.log(e);
 		return res.status(404).json({ error: e });
 	}
+})
+
+.delete(async (req, res) => {
+	const user = req.session.user;
+
+	if (!user) {
+		return res.status(401).json({ error: "Session user not found. Login again." });
+	}
+
+	try {
+		req.params.orderId = checkId(req.params.orderId, "orderId");
+		req.params.orderId = sanitizeInput(req.params.orderId);
+	} catch (e) {
+		console.log(e);
+		return res.status(400).json({ error: e });
+	}
+
+	try {
+		if (user.role === "customer") {
+			const deletedOrder = await ordersData.deleteCustomerOrder(user._id, req.params.orderId);
+			if (deletedOrder) {
+				return res.json({ success: true, message: "Order successfully cancelled." });
+			}
+		} else if (user.role === "seller") {
+			const deletedOrder = await ordersData.deleteSellerOrder(user._id, req.params.orderId);
+			if (deletedOrder) {
+				return res.json({ success: true, message: "Order successfully cancelled." });
+			}
+		} else {
+			return res.status(403).json({ error: "Invalid user role." });
+		}
+
+		return res.status(404).json({ error: "Order not found or could not be cancelled." });
+	} catch (e) {
+		console.log(e);
+		return res.status(500).json({ error: "Failed to cancel the order. Please try again later." });
+	}
 });
+
+
 
 export default router;
