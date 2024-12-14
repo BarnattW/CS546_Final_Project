@@ -18,19 +18,27 @@ router
 			return res.status(401).render("customerlogin", { error: e });
 		}
 
-		// TODO - change to render handlebars
+		//  - changed render handlebars
 		try {
-			if (user.role === "customer") {
-				const customerOrders = await ordersData.getCustomerOrders(user._id);
-				return res.json(customerOrders);
-			} else if (user.role === "seller") {
-				const sellerOrders = await ordersData.getSellerOrders(user._id);
-				return res.json(sellerOrders);
-			} else {
-				return res.status(403).render("customerlogin", {
-					error: "Session user role not found. Login again",
-				});
-			}
+            if (user.role === "customer") {
+                const customerOrders = await ordersData.getCustomerOrders(user._id);
+                return res.render("orders", {
+                    pageTitle: "Your Orders",
+                    role: user.role,
+                    orders: customerOrders,
+                });
+            } else if (user.role === "seller") {
+                const sellerOrders = await ordersData.getSellerOrders(user._id);
+                return res.render("orders", {
+                    pageTitle: "Your Orders",
+                    role: user.role,
+                    orders: sellerOrders,
+                });
+            } else {
+                return res.status(403).render("customerlogin", {
+                    error: "Session user role not found. Login again.",
+                });
+            }
 		} catch (e) {
 			console.log(e);
 			return res.status(404).json({ error: e });
@@ -115,19 +123,21 @@ router.route("/:orderId").get(async (req, res) => {
 
 	// check the role
 	try {
-		if (user.role === "customer") {
-			const customerOrder = await ordersData.getCustomerOrder(
-				user._id,
-				req.params.orderId
-			);
-			return res.json(customerOrder);
-		} else if (user.role === "seller") {
-			const sellerOrder = await ordersData.getSellerOrder(
-				user._id,
-				req.params.orderId
-			);
-			return res.json(sellerOrder);
-		}
+        if (user.role === "customer") {
+            const customerOrder = await ordersData.getCustomerOrder(user._id, req.params.orderId);
+            return res.render("order-details", {
+                pageTitle: `Order Details - ${req.params.orderId}`,
+                role: user.role,
+                order: customerOrder,
+            });
+        } else if (user.role === "seller") {
+            const sellerOrder = await ordersData.getSellerOrder(user._id, req.params.orderId);
+            return res.render("order-details", {
+                pageTitle: `Order Details - ${req.params.orderId}`,
+                role: user.role,
+                order: sellerOrder,
+            });
+        }
 	} catch (e) {
 		console.log(e);
 		return res.status(404).json({ error: e });

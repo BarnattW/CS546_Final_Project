@@ -27,12 +27,12 @@
 							{{#eq user.role "customer"}}
 								<li><a href="/customercart">Cart</a></li>
 								<li><a href="/customers/wishlist">Wishlist</a></li>
-								<li><a href="/customers/orders">Orders</a></li>
+								<li><a href="orders">Orders</a></li>
 								<li class="sign-out"><a href="/signout">Sign Out</a></li>
 								<li>Hello, {{user.username}}</li>
 							{{else}}
 								<li><a href="/sellers/listings">My Listings</a></li>
-								<li><a href="/sellers/orders">Orders</a></li>
+								<li><a href="orders">Orders</a></li>
 								<li class="sign-out"><a href="/signout">Sign Out</a></li>
 								<li>Hello, {{user.username}}</li>
 							{{/eq}}

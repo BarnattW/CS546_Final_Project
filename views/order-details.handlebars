@@ -1,0 +1,24 @@
+<body>
+    <h1>{{pageTitle}}</h1>
+
+    <p><strong>Order ID:</strong> {{order.orderId}}</p>
+    <p><strong>Order Date:</strong> {{order.orderDate}}</p>
+    <p><strong>Total:</strong> ${{order.total}}</p>
+
+    <h3>Customer Details</h3>
+    <ul>
+        <li><strong>Full Name:</strong> {{order.fullName}}</li>
+        <li><strong>Shipping Address:</strong> {{order.shippingAddress}}</li>
+    </ul>
+
+    <h3>Items</h3>
+    <ul>
+        {{#each order.items}}
+            <li>{{this.name}} - {{this.quantity}} x ${{this.price}}</li>
+        {{/each}}
+    </ul>
+
+    <a href="/orders">Back to Orders</a>
+</body>
+
+{{!-- TODO -> edit details of order post route --}}

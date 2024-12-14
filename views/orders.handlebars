@@ -1,0 +1,29 @@
+<body>
+    <h1>{{pageTitle}}</h1>
+    <p>Welcome, {{role}}. Here are your orders:</p>
+
+    {{#if orders.length}}
+        <table border="1" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Order Date</th>
+                    <th>Total Cost</th>
+                    <th>View Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each orders}}
+                    <tr>
+                        <td>{{this.orderId}}</td>
+                        <td>{{this.orderDate}}</td>
+                        <td>${{this.total}}</td>
+                        <td><a href="/orders/{{this.orderId}}">View Order</a></td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No orders found.</p>
+    {{/if}}
+</body>
