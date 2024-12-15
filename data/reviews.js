@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { listings, customers } from "../config/mongoCollections.js";
-import * as validation from "../utils/checks.js";
-import * as sellerDataFunctions from "./seller.js";
+import { listings, customers } from '../config/mongoCollections.js';
+import * as validation from '../utils/checks.js';
+import * as sellerDataFunctions from './seller.js';
 import { customerDataFunctions } from './customers.js';
 
 const createReview = async (
