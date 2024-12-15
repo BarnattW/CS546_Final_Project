@@ -397,10 +397,9 @@ if (addListingForm) {
   });
 }
 
-document.querySelectorAll('.btn-edit-listing').forEach((btn) =>
-  btn.addEventListener('click', (e) => {
-    const row = e.target.closest('tr');
-    const listingId = row.dataset.listingid;
+document.querySelectorAll("editListingBtn").forEach((btn) =>
+	btn.addEventListener("click", (e) => {
+		const row = e.target.closest("tr");
 
     // Prefill form with listing data
     document.getElementById('listing-id').value = listingId;
@@ -413,27 +412,33 @@ document.querySelectorAll('.btn-edit-listing').forEach((btn) =>
       .querySelector('td:nth-child(4)')
       .innerText.replace('$', '');
 
-    document.getElementById('modal-title').innerText = 'Edit Listing';
-    modal.classList.remove('hidden');
-  })
+		// Update the modal title and show the modal
+		document.getElementById("modal-title").innerText = "Edit Listing";
+		document.getElementById("modal").classList.remove("hidden");
+	})
 );
 
 // Delete listing
-document.querySelectorAll('.btn-delete-listing').forEach((btn) =>
-  btn.addEventListener('click', async (e) => {
-    const row = e.target.closest('tr');
-    const listingId = row.dataset.listingid;
+Array.from(document.getElementsByClassName("deleteListingBtn")).forEach((btn) =>
+	btn.addEventListener("click", async (e) => {
+		const row = e.target.closest("tr");
+		const listingId = row.dataset.listingid;
 
-    // Perform delete operation
-    const response = await fetch(`/listings/${listingId}`, {
-      method: 'DELETE',
-    });
-    if (response.ok) {
-      row.remove(); // Remove row from table
-    } else {
-      alert('Failed to delete listing.');
-    }
-  })
+		try {
+			// Perform delete operation
+			const response = await fetch(`/sellers/listings/${listingId}`, {
+				method: "DELETE",
+			});
+			if (response.ok) {
+				window.location.href = "/sellers/listings";
+			} else {
+				throw `Could not delete listing with ID ${listingId}`;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	})
 );
 
 const searchForm = document.getElementById('searchForm');
