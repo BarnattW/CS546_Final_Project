@@ -136,18 +136,59 @@ const deleteReview = async (reviewId) => {
   // Find the listing that has the review
   // Find the customer that wrote the review
 
-
   reviewId = validation.checkId(reviewId, 'Review ID');
   let listingCollection = await listings();
+  let customerCollection = await customers();
 
+  const review = await getReviewsById(reviewId);
+  if (!review) throw 'Review does not exist.';
+  const listingId = review.listingId.toString();
+  const customerId = review.customerId.toString();
 
+  const listing = await sellerDataFunctions.getListingById(listingId);
+  if (!listing) throw 'Listing does not exist.';
 
+  const customer = await customerDataFunctions.getCustomerById(customerId);
+  if (!customer) throw 'Customer does not exist.';
 
+  const updatedReviews = listing.reviews.filter(
+    (review) => review._id.toString() !== reviewId
+  );
 
+  const updatedCustomerReviews = customer.reviews.filter(
+    (review) => review._id.toString() !== reviewId
+  );
 
+  const updatedListing = await listingCollection.updateOne(
+    { _id: new ObjectId(listingId) },
+    {
+      $set: {
+        reviews: updatedReviews,
+      },
+    }
+  );
+
+  if (!updatedListing.matchedCount && !updatedListing.modifiedCount)
+    throw 'Update failed';
+
+  const updatedCustomer = await customerCollection.updateOne(
+    { _id: new ObjectId(customerId) },
+    {
+      $set: {
+        reviews: updatedCustomerReviews,
+      },
+    }
+  );
+
+  if (!updatedCustomer.matchedCount && !updatedCustomer.modifiedCount)
+    throw 'Update failed';
+
+  const finalListing = await sellerDataFunctions.getListingById(listingId);
+  const finalCustomer = await customerDataFunctions.getCustomerById(customerId);
+  return { listing: finalListing, customer: finalCustomer };
 };
 
-export {
+export const reviewDataFunctions = {
   getReviewsById,
   getListingReviews,
   createReview,
