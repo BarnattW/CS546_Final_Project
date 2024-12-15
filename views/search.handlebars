@@ -1,36 +1,47 @@
-<body>
-  <h1 class='my-4'>Search Results</h1>
-  <div class='container'>
-    <div class='row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4'>
-      {{#each searchResults}}
-        <a href='/sellers/listings/{{_id}}'><div class='col'>
-            <div class='card h-100'>
-              <img
-                src='{{itemImage}}'
-                class='card-img-top'
-                alt='{{itemName}}'
-              />
-              <div class='card-body'>
-                <h5 class='card-title'>{{itemName}}</h5>
-                <p class='card-text'>{{itemDescription}}</p>
-                <p class='fw-bold'>${{itemPrice}}</p>
-                <p> {{itemCategory}}</p>
-                <p> {{condition}}</p>
-              </div>
-              <div class='card-footer bg-white border-top-0'>
-                <form action='/cart' method='POST'>
-                  <input type='hidden' name='productId' value='{{itemId}}' />
-                  <button type='submit' class='btn btn-primary w-100'>Add to
-                    Cart</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </a>
-      {{/each}}
+<h1 class="my-4">Search Results</h1>
+<div class="container">
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+		{{#each searchResults}}
+			<div class="col">
+				<div class="card h-100">
+					<a href="/sellers/listings/{{_id}}">
+						<img src="{{itemImage}}" class="card-img-top" alt="{{itemName}}" />
+						<div class="card-body">
+							<h5 class="card-title">{{itemName}}</h5>
+							<p class="card-text">{{itemDescription}}</p>
+							<p class="fw-bold">${{itemPrice}}</p>
+							<p> {{itemCategory}}</p>
+							<p> {{condition}}</p>
+						</div>
+					</a>
+					<div class="card-footer bg-white border-top-0">
+						<form
+							id="addToCart"
+							name="addToCart"
+							action="/customers/cart"
+							method="POST"
+						>
+							<div class="mb-3">
+								<label
+									for="quantity{{itemId}}"
+									class="form-label"
+								>Quantity</label>
+								<input
+									type="number"
+									id="quantity{{itemId}}"
+									name="quantity"
+									min="1"
+									value="1"
+									class="form-control"
+								/>
+							</div>
+							<input type="hidden" name="listingId" value="{{itemId}}" />
+							<button type="submit" class="btn btn-primary w-100">Add to Cart</button>
+						</form>
+					</div>
+				</div>
+			</div>
 
-    </div>
-  </div>
-
-  <script src='/public/js/users/search.js'></script>
-</body>
+		{{/each}}
+	</div>
+</div>
