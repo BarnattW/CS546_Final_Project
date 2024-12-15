@@ -10,7 +10,7 @@ router
     try {
       const searchResults = await sellersData.getAllListings();
 
-      return res.render('search', { searchResults });
+      return res.render('search', { searchResults, user: req.session.user });
     } catch (e) {
       return res.status(404).json({ error: e });
     }
@@ -25,7 +25,7 @@ router
       // return res.render('search', { searchResults });
 
       const searchResults = await searchFunction.searchListing(searchQuery);
-      return res.render('search', { searchResults });
+      return res.render('search', { searchResults, user: req.session.user });
     } catch (e) {
       console.log(e);
       return res.status(404).json({ error: e });

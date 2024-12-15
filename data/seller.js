@@ -189,7 +189,7 @@ export const createListing = async (
   return listing;
 };
 
-// Returns all listing furniture with (ID and NAME)
+// Returns all listing furniture 
 
 export const getAllListings = async () => {
   const listingCollection = await listings();
@@ -199,7 +199,6 @@ export const getAllListings = async () => {
     eachListing._id = eachListing._id.toString();
     return eachListing;
   });
-  console.log(listingList);
   return listingList;
 };
 

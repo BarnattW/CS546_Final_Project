@@ -1,15 +1,23 @@
 import { ObjectId } from 'mongodb';
 import * as validation from '../utils/checks.js';
 import { listings } from '../config/mongoCollections.js';
+import * as sellerDataFunctions from './seller.js';
 
 export const searchListing = async (searchQuery) => {
-  searchQuery = validation.checkString(searchQuery, 'Search Query');
-
   const listingCollection = await listings();
 
+  if (!searchQuery || searchQuery.trim().length === 0) {
+    return await sellerDataFunctions.getAllListings();
+  }
+
+  // Directly use `$regex` and `$options`
   const searchResults = await listingCollection
     .find({
-      $text: { $search: searchQuery },
+      $or: [
+        { itemName: { $regex: searchQuery, $options: 'i' } },
+        { itemDescription: { $regex: searchQuery, $options: 'i' } },
+        { itemCategory: { $regex: searchQuery, $options: 'i' } },
+      ],
     })
     .toArray();
 
