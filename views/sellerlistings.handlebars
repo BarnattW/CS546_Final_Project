@@ -5,12 +5,15 @@
 		name="openCreateListingBtn"
 		class="m-bottom-10"
 	>Create New Listing</button>
+	<div id="clientError" class="error" hidden>Error Message</div>
 	<table class="listingsTable w-100">
 		<thead>
 			<tr>
 				<th>Image</th>
 				<th>Item Name</th>
 				<th>Description</th>
+				<th>Category</th>
+				<th>Condition</th>
 				<th>Price</th>
 				<th>Actions</th>
 			</tr>
@@ -25,11 +28,13 @@
 						/></td>
 					<td>{{itemName}}</td>
 					<td>{{itemDescription}}</td>
+					<td>{{itemCategory}}</td>
+					<td>{{condition}}</td>
 					<td>${{itemPrice}}</td>
 					<td>
-						<button id="editListingBtn" class="deleteListingBtn">Edit</button>
+						<button class="editListingBtn">Edit</button>
 						<button
-							id="deleteListingBtn"
+						
 							class="deleteListingBtn"
 						>Delete</button>
 					</td>
@@ -126,6 +131,5 @@
 				>Cancel</button>
 			</div>
 		</form>
-		<div id="clientError" class="error" hidden>Error Message</div>
 	</div>
 </div>
