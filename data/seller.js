@@ -189,7 +189,7 @@ export const createListing = async (
   return listing;
 };
 
-// Returns all listing furniture 
+// Returns all listing furniture
 
 export const getAllListings = async () => {
   const listingCollection = await listings();
@@ -245,16 +245,24 @@ export const updateListing = async (
 };
 
 // Deletes a listing from the listing collection
+// Delete the reference from the seller's listing array
 
 export const deleteListing = async (listingId) => {
   listingId = validation.checkId(listingId, 'Listing ID');
   const listingCollection = await listings();
-  const deletionInfo = await listingCollection.findOneAndDelete({
+  const sellerCollection = await sellers();
+  const deletionInfoListing = await listingCollection.findOneAndDelete({
     _id: new ObjectId(listingId),
   });
-  if (!deletionInfo) throw `Could not delete listing with id:${listingId}`;
+  if (!deletionInfoListing)
+    throw `Could not delete listing with id:${listingId}`;
 
-  return `${deletionInfo.name} have been successfully deleted!`;
+  const deletionInfoSeller = await sellerCollection.updateOne(
+    { listings: listingId },
+    { $pull: { listings: listingId } }
+  );
+
+  return `${deletionInfoListing.name} have been successfully deleted!`;
 };
 
 /*
