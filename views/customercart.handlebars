@@ -1,18 +1,87 @@
-<h1>Your Cart</h1>
-<div class="listing-item">
-    <img src="itemImageURL" alt="itemName" class="listing-image" id="listingimage">
-    <h2>itemName</h2>
-    <p>itemDescription</p>
-    <p>Price: $itemPrice</p>
-    <p>Category: itemCategory</p>
-    <p>Condition: condition</p>
-    <p>Seller ID: sellerId</p>
-    <button class="btn-remove-from-cart">Remove from cart</button>
-</div>
-
-
-
-
-<form action="/checkout" method="GET">
-    <button onclick="submit" id="checkout">Check out</button>
-</form>
+<h1>Cart</h1>
+{{#if cart}}
+	{{#each cart}}
+		<div class="cartItem" data-item-id="{{id}}">
+			<img src="{{image}}" alt="{{name}}" class="itemImage" />
+			<div class="itemDetails">
+				<h2>{{name}}</h2>
+				<p>Price: ${{price}}</p>
+				<div class="quantityControl">
+					<label for="quantity-{{id}}">Qty:</label>
+					<input
+						type="number"
+						id="quantity-{{id}}"
+						class="quantityInput"
+						value="{{quantity}}"
+						min="1"
+					/>
+				</div>
+				<p>Total: ${{multiply price quantity}}</p>
+			</div>
+			<button class="removeCartItemBtn">
+				<svg
+					viewBox="0 0 256 256"
+					xmlns="http://www.w3.org/2000/svg"
+					className="{className}"
+				>
+					<rect fill="none" height="256" width="256"></rect>
+					<line
+						fill="none"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="16"
+						x1="216"
+						x2="40"
+						y1="56"
+						y2="56"
+					></line>
+					<line
+						fill="none"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="16"
+						x1="104"
+						x2="104"
+						y1="104"
+						y2="168"
+					></line>
+					<line
+						fill="none"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="16"
+						x1="152"
+						x2="152"
+						y1="104"
+						y2="168"
+					></line>
+					<path
+						d="M200,56V208a8,8,0,0,1-8,8H64a8,8,0,0,1-8-8V56"
+						fill="none"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="16"
+					></path>
+					<path
+						d="M168,56V40a16,16,0,0,0-16-16H104A16,16,0,0,0,88,40V56"
+						fill="none"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth="16"
+					></path>
+				</svg>
+			</button>
+		</div>
+	{{/each}}
+	<div id="cartSummary">
+		<h2>Cart Summary</h2>
+		<p>Total Items: <span id="totalItems">{{totalItems}}</span></p>
+		<p>Total Price: $<span id="totalPrice">{{totalPrice}}</span></p>
+		<button id="checkoutButton">Proceed to Checkout</button>
+	</div>
+	<form action="/checkout" method="GET">
+		<button onclick="submit" id="checkout">Check out</button>
+	</form>
+{{else}}
+	<h2 class="">Your Cart is Empty.</h2>
+{{/if}}

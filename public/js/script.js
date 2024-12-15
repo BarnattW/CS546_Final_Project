@@ -322,7 +322,6 @@ closeCreateListingBtn.addEventListener("click", () => {
 	createListingModal.classList.add("hidden");
 });
 
-
 // Add Listings form
 const addListingForm = document.getElementById("addListingForm");
 
@@ -385,7 +384,7 @@ if (addListingForm) {
 				clientErrorDiv.hidden = false;
 				clientErrorDiv.innerHTML = data.error;
 			} else {
-				window.location.href = "/sellers/listings"
+				window.location.href = "/sellers/listings";
 			}
 		} catch (e) {
 			clientErrorDiv.hidden = false;
@@ -394,45 +393,47 @@ if (addListingForm) {
 	});
 }
 
-document.querySelectorAll(".btn-edit-listing").forEach((btn) =>
+document.querySelectorAll("editListingBtn").forEach((btn) =>
 	btn.addEventListener("click", (e) => {
 		const row = e.target.closest("tr");
-		const listingId = row.dataset.listingid;
 
-		// Prefill form with listing data
-		document.getElementById("listing-id").value = listingId;
+		document.getElementById("itemImage").value = row.querySelector("img").src;
 		document.getElementById("itemName").value =
 			row.querySelector("td:nth-child(2)").innerText;
-		document.getElementById("itemImage").value = row.querySelector("img").src;
 		document.getElementById("itemDescription").value =
 			row.querySelector("td:nth-child(3)").innerText;
 		document.getElementById("itemPrice").value = row
 			.querySelector("td:nth-child(4)")
 			.innerText.replace("$", "");
 
+		// Update the modal title and show the modal
 		document.getElementById("modal-title").innerText = "Edit Listing";
-		modal.classList.remove("hidden");
+		document.getElementById("modal").classList.remove("hidden");
 	})
 );
 
 // Delete listing
-document.querySelectorAll(".btn-delete-listing").forEach((btn) =>
+Array.from(document.getElementsByClassName("deleteListingBtn")).forEach((btn) =>
 	btn.addEventListener("click", async (e) => {
 		const row = e.target.closest("tr");
 		const listingId = row.dataset.listingid;
 
-		// Perform delete operation
-		const response = await fetch(`/listings/${listingId}`, {
-			method: "DELETE",
-		});
-		if (response.ok) {
-			row.remove(); // Remove row from table
-		} else {
-			alert("Failed to delete listing.");
+		try {
+			// Perform delete operation
+			const response = await fetch(`/sellers/listings/${listingId}`, {
+				method: "DELETE",
+			});
+			if (response.ok) {
+				window.location.href = "/sellers/listings";
+			} else {
+				throw `Could not delete listing with ID ${listingId}`;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
 		}
 	})
 );
-
 
 // create a listing object (TEMPORARY)
 const listingsContainer = document.getElementById("listingsContainer");

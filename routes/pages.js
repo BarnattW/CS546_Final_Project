@@ -59,14 +59,6 @@ router.get("/customerbrowselistings", async (req, res) => {
 	}
 });
 
-router.get("/customercart", async (req, res) => {
-	try {
-		res.render("customercart");
-	} catch (e) {
-		res.status(500).json({ error: e });
-	}
-});
-
 router.post("/checkout", (req, res) => {
     const user = req.session.user;
     if (!user) {
