@@ -192,6 +192,7 @@ router.route('/listings').get(async (req, res) => {
 router
   .route('/listings/:listingId')
   .get(async (req, res) => {
+    console.log('hi');
     const user = req.session.user;
     try {
       if (!user) throw `Session user not found. Login again.`;
@@ -206,7 +207,7 @@ router
       );
     } catch (e) {
       console.log(e);
-      return res.status(400).render('error', { message: e });
+      return res.status(400).render('error', { error: e });
     }
 
     try {

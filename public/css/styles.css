@@ -1,411 +1,411 @@
 main {
-	padding: 20px;
+  padding: 20px;
 }
 
 .flex {
-	display: flex;
+  display: flex;
 }
 
 .navbar {
-	background-color: #f8f9fa;
-	padding: 10px 20px;
-	border-bottom: 1px solid #ddd;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .nav-list {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
 }
 .nav-list li {
-	margin: 0 10px;
+  margin: 0 10px;
 }
 .nav-list a {
-	text-decoration: none;
-	color: #333;
+  text-decoration: none;
+  color: #333;
 }
 .nav-list a:hover {
-	color: #007bff;
+  color: #007bff;
 }
 
 footer {
-	background-color: #f8f9fa;
-	text-align: center;
-	padding: 10px 0;
-	border-top: 1px solid #ddd;
+  background-color: #f8f9fa;
+  text-align: center;
+  padding: 10px 0;
+  border-top: 1px solid #ddd;
 }
 
 .w-100 {
-	width: 100%;
+  width: 100%;
 }
 
 .error {
-	color: #ed155e;
+  color: #ed155e;
 }
 
 .tabs {
-	border-bottom: 2px solid;
-	border-color: black;
+  border-bottom: 2px solid;
+  border-color: black;
 }
 
 .signupTab {
-	padding: 10px 20px;
-	cursor: pointer;
-	border: none;
-	transition: background 0.3s;
-	float: left;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s;
+  float: left;
 }
 
 .signupTab:hover {
-	background: #6d6d6d;
+  background: #6d6d6d;
 }
 
 .signupTab.active {
-	background: #78d3ee;
+  background: #78d3ee;
 }
 
 .signinTab {
-	padding: 10px 20px;
-	cursor: pointer;
-	border: none;
-	transition: background 0.3s;
-	float: left;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s;
+  float: left;
 }
 
 .signinTab:hover {
-	background: #6d6d6d;
+  background: #6d6d6d;
 }
 
 .signinTab.active {
-	background: #78d3ee;
+  background: #78d3ee;
 }
 
 .flex-col-centered {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .hidden {
-	display: none;
+  display: none;
 }
 
 .listings-container {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 10px;
-	flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .listing-image {
-	max-width: 150px;
-	max-height: 150px;
+  max-width: 150px;
+  max-height: 150px;
 }
 
 .btn-add-to-cart {
-	background-color: #007bff;
-	color: white;
-	padding: 10px 15px;
-	border-radius: 5px;
-	cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 .btn-add-to-cart:hover {
-	background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .listings-header,
 .listings-container {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 10px;
-	flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .listings-header {
-	background-color: #f5f5f5;
-	padding: 10px;
-	border-bottom: 2px solid #ddd;
-	font-weight: bold;
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-bottom: 2px solid #ddd;
+  font-weight: bold;
 }
 
 .listing-image {
-	max-width: 150px;
-	max-height: 150px;
+  max-width: 150px;
+  max-height: 150px;
 }
 
 .btn-add-to-cart {
-	padding: 10px 20px;
-	background-color: #007bff;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .btn-add-to-cart:hover {
-	background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .w-50 {
-	width: 50%;
+  width: 50%;
 }
 
 label {
-	margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 input {
-	width: 100%;
-	padding: 8px;
-	margin-bottom: 15px;
-	border: 1px solid #ddd;
-	border-radius: 4px;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 .button {
-	padding: 10px 20px;
-	background-color: #007bff;
-	color: white;
-	border-radius: 5px;
-	cursor: pointer;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
 }
 .button:hover {
-	background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .navbar {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 10px 20px;
-	background-color: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
 }
 
 .nav-container {
-	display: flex;
-	align-items: center;
-	gap: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .nav-list {
-	list-style: none;
-	display: flex;
-	gap: 15px;
-	padding: 0;
-	margin: 0;
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  padding: 0;
+  margin: 0;
 }
 
 .nav-list li {
-	display: inline;
+  display: inline;
 }
 
 .nav-list a {
-	text-decoration: none;
-	color: #000;
-	padding: 8px 12px;
+  text-decoration: none;
+  color: #000;
+  padding: 8px 12px;
 }
 
 .nav-list a:hover {
-	background-color: #e0e0e0;
-	border-radius: 4px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
 }
 
 .dropdown {
-	position: relative;
+  position: relative;
 }
 
 .dropdown-content {
-	display: none;
-	position: absolute;
-	background-color: white;
-	min-width: 150px;
-	box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-	z-index: 1;
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 
 .dropdown-content a {
-	color: black;
-	text-decoration: none;
-	display: block;
-	padding: 10px;
+  color: black;
+  text-decoration: none;
+  display: block;
+  padding: 10px;
 }
 
 .dropdown-content a:hover {
-	background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 .dropdown:hover .dropdown-content {
-	display: block;
+  display: block;
 }
 
 .search-bar {
-	flex-grow: 1;
-	display: flex;
-	justify-content: center;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .search-input {
-	width: 70%;
-	padding: 8px 12px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
+  width: 70%;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .sign-out {
-	margin-left: auto;
+  margin-left: auto;
 }
 
 .wide-search {
-	width: 400px;
-	padding: 10px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	font-size: 16px;
+  width: 400px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .listing-item {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 20px;
-	border: 1px solid #ccc;
-	padding: 20px;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .listing-text {
-	flex: 1;
+  flex: 1;
 }
 
 .listing-image {
-	max-width: 200px;
-	max-height: 200px;
-	margin-left: 20px;
-	border-radius: 8px;
-	object-fit: cover;
+  max-width: 200px;
+  max-height: 200px;
+  margin-left: 20px;
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .btn-remove-from-cart {
-	padding: 10px 20px;
-	background-color: #007bff;
-	color: white;
-	border-radius: 5px;
-	cursor: pointer;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .btn-remove-from-cart:hover {
-	background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .backtocartbutton {
-	text-align: right;
-	padding: 10px 20px;
-	background-color: #007bff;
-	color: white;
-	border-radius: 5px;
-	cursor: pointer;
+  text-align: right;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .backtocartbutton:hover {
-	background-color: #0056b3;
+  background-color: #0056b3;
 }
 .form-container {
-	max-width: 600px;
-	margin: 2rem auto;
-	padding: 1.5rem;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	background-color: #f9f9f9;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
 h1 {
-	font-size: 1.8rem;
-	margin-bottom: 1rem;
-	text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .form-group {
-	margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 label {
-	display: block;
-	font-weight: bold;
-	margin-bottom: 0.5rem;
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 input,
 textarea,
 button {
-	padding: 0.75rem;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	font-size: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
 textarea {
-	resize: vertical;
+  resize: vertical;
 }
 
 button {
-	background-color: #007bff;
-	color: white;
-	cursor: pointer;
-	border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border: none;
 }
 
 button:hover {
-	background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .error-message {
-	color: red;
-	font-size: 0.875rem;
-	margin-top: 0.25rem;
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
 
 .listingsDashboard {
-	margin: 20px auto;
-	width: 80%;
+  margin: 20px auto;
+  width: 80%;
 }
 .listingsTable {
-	border-collapse: collapse;
+  border-collapse: collapse;
 }
 .listingsTable th,
 .listingsTable td {
-	border: 1px solid #ddd;
-	padding: 6px;
-	text-align: left;
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: left;
 }
 .listingImage {
-	width: 100px;
-	height: 100px;
-	object-fit: cover;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
 .modal {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	justify-content: center;
-	align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
 }
 .modalContent {
-	background: #fff;
-	padding: 25px;
-	border-radius: 8px;
-	width: 30%;
-	min-width: 400px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  width: 30%;
+  min-width: 400px;
 }
 
 .m-bottom-10 {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
 }

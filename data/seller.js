@@ -193,15 +193,13 @@ export const createListing = async (
 
 export const getAllListings = async () => {
   const listingCollection = await listings();
-  let listingList = await listingCollection
-    .find({})
-    .project({ _id: 1, name: 1 })
-    .toArray();
+  let listingList = await listingCollection.find({}).toArray();
   if (!listingList) throw 'Could not get all listings.';
   listingList = listingList.map((eachListing) => {
     eachListing._id = eachListing._id.toString();
     return eachListing;
   });
+  console.log(listingList);
   return listingList;
 };
 

@@ -1,15 +1,27 @@
 <h1>Browse Listings</h1>
 
-<div class="listings-header">
-	<span>Item Image</span>
-	<span>Item Name</span>
-	<span>Item Description</span>
-	<span>Price</span>
-	<span>Category</span>
-	<span>Condition</span>
-	<span>Seller ID</span>
-	<span>Action</span>
+<div class='listings-header'>
+  <span>Item Image</span>
+  <span>Item Name</span>
+  <span>Item Description</span>
+  <span>Price</span>
+  <span>Category</span>
+  <span>Condition</span>
+  <span>Seller ID</span>
+  <span>Action</span>
 </div>
 
-<div class="listings-container" id="listingsContainer">
+<div class='listings-container' id='listingsContainer'>
+  {{#each listings}}
+    <div class='listing'>
+      <img src='{{itemImage}}' alt='{{itemName}}' class='listing-image' />
+      <span class='listing-title'>{{itemName}}</span>
+      <span class='listing-description'>{{itemDescription}}</span>
+      <span class='listing-price'>{{itemPrice}}</span>
+      <span class='listing-category'>{{itemCategory}}</span>
+      <span class='listing-condition'>{{condition}}</span>
+      <span class='listing-seller'>{{sellerId}}</span>
+      <button class='btn-add-to-cart'>Add to Cart</button>
+    </div>
+  {{/each}}
 </div>
