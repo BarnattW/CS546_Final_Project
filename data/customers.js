@@ -314,7 +314,7 @@ const removeFromWishlist = async (customerId, listingId) => {
 	return await getCustomerWishlist(customerId);
 };
 
-export const customerDataFunctions = {
+export {
 	createCustomer,
 	getCustomerById,
 	getCustomerCart,
