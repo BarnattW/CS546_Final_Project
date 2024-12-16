@@ -2,8 +2,7 @@ import { ObjectId } from 'mongodb';
 import { listings, customers } from '../config/mongoCollections.js';
 import * as validation from '../utils/checks.js';
 import * as sellerDataFunctions from './seller.js';
-import * as customerDataFunctions from "../data/customers.js";
-
+import * as customerDataFunctions from '../data/customers.js';
 
 const createReview = async (
   customerId,

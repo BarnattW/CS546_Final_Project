@@ -14,7 +14,7 @@ router
         'listing ID'
       );
     } catch (e) {
-      return res.status(400).render('error', { message: e });
+      return res.status(400).render('error', { error: e });
     }
 
     try {
