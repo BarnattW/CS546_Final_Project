@@ -25,10 +25,13 @@
 
 <div class='add-review-section'>
   <h3>Leave a Review</h3>
-  <form action='/sellers/listings/{{listing._id}}' method='POST'>
+  <form action='/reviews/{{listing._id}}' method='POST'>
+    <label>
+      <input type='hidden' name='listingId' value='{{listing._id}}' />
+    </label>
     <div class='form-group'>
       <label for='customerName'>Name</label>
-      <input type='text' id='customerName' name='customerName' required />
+      <input type='text' id='customerName' name='name' required />
     </div>
 
     <div class='form-group'>

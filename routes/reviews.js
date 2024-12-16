@@ -3,28 +3,33 @@ const router = Router();
 import { reviewDataFunctions } from '../data/reviews.js';
 import * as sellerDataFunctions from '../data/seller.js';
 import { customerDataFunctions } from '../data/customers.js';
-
 import * as validation from '../utils/checks.js';
 
 router
-  .route('/:reviewId')
+  .route('/:listingId')
   .get(async (req, res) => {
     try {
       req.params.listingId = validation.checkId(
-        req.params.reviewId,
-        'Review ID'
+        req.params.listingId,
+        'listing ID'
       );
     } catch (e) {
       return res.status(400).render('error', { message: e });
     }
 
     try {
-      let reviewId = req.params.reviewId;
-      let review = await reviewDataFunctions.getReviewsById(reviewId);
+      let listingId = req.params.listingId;
+      let reviews = await reviewDataFunctions.getListingReviews(listingId);
+      let listing = await sellerDataFunctions.getListingById(listingId);
 
-      return res.render('reviews', { review });
+      return res.render('listing', {
+        reviews,
+        user: req.session.user,
+        listing,
+      });
     } catch (e) {
-      return res.status(404).json('error', { message: e });
+      console.log(e);
+      return res.status(404).json({ error: e });
     }
   })
   .post(async (req, res) => {
@@ -32,10 +37,10 @@ router
     try {
       if (!user) throw `Session user not found. Login again.`;
     } catch (e) {
-      return res.status(401).render('customerlogin', { message: e });
+      return res.status(401).render('customerlogin', { error: e });
     }
 
-    const reviewData = req.body;
+    let reviewData = req.body;
 
     if (!reviewData || Object.keys(reviewData).length === 0) {
       return res
@@ -44,22 +49,18 @@ router
     }
 
     try {
-      reviewData = sanitizeObject(reviewData);
+      reviewData = validation.sanitizeObject(reviewData);
 
-      const { listingId, rating, reviewText } = reviewData;
+      let {listingId, name, rating, reviewText } = reviewData;
 
+      rating = Number(rating);
       listingId = validation.checkId(listingId, 'Listing ID');
+      name = validation.checkString(name, 'Name');
       rating = validation.checkIsPositiveInteger(rating);
       reviewText = validation.checkString(reviewText, 'Review Text');
-    } catch (e) {
-      return res.status(404).json('error', { message: e });
-    }
-
-    try {
       const customer = await customerDataFunctions.getCustomerById(
         req.session.user._id
       );
-      const name = customer.name;
 
       let newReview = await reviewDataFunctions.createReview(
         req.session.user._id,
@@ -69,9 +70,16 @@ router
         reviewText
       );
 
-      return res.render('reviews', { user: req.session.user, newReview });
+      const reviews = await reviewDataFunctions.getListingReviews(listingId);
+      const listing = await sellerDataFunctions.getListingById(listingId);
+      return res.status(200).json({
+        user: req.session.user,
+        reviews,
+        listing,
+      });
     } catch (e) {
-      return res.status(404).json('error', { message: e });
+      console.log(e);
+      return res.status(404).json({ error: e });
     }
   })
 
@@ -82,16 +90,18 @@ router
         'Review ID'
       );
     } catch (e) {
-      return res.status(400).render('error', { message: e });
+      return res.status(400).render('error', { error: e });
     }
 
     try {
       let reviewId = req.params.reviewId;
-      let review = await reviewDataFunctions.deleteReview(reviewId);
+      await reviewDataFunctions.deleteReview(reviewId);
 
-      return res.render('reviews', { review });
+      reviews = await reviewDataFunctions.getListingReviews(reviewId.listingId);
+
+      return res.render('reviews', { reviews });
     } catch (e) {
-      return res.status(404).render('error', { message: e });
+      return res.status(404).render('error', { error: e });
     }
   })
   .put(async (req, res) => {
@@ -101,7 +111,7 @@ router
         'Review ID'
       );
     } catch (e) {
-      return res.status(400).render('error', { message: e });
+      return res.status(400).render('error', { error: e });
     }
 
     reviewData = req.body;
@@ -118,16 +128,20 @@ router
       rating = validation.checkIsPositiveInteger(rating);
       reviewText = validation.checkString(reviewText, 'Review Text');
     } catch (e) {
-      return res.status(404).json('error', { message: e });
+      return res.status(404).json('error', { error: e });
     }
 
     try {
       let reviewId = req.params.reviewId;
-      let review = await reviewDataFunctions.updateReview(reviewId);
+      let review = await reviewDataFunctions.updateReview(
+        reviewId,
+        rating,
+        reviewText
+      );
 
       return res.render('reviews', { user: req.session.user, review });
     } catch (e) {
-      return res.status(404).json('error', { message: e });
+      return res.status(404).json('error', { error: e });
     }
   });
 
