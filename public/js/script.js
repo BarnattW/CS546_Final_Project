@@ -650,6 +650,7 @@ Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
 	})
 );
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 // let slideIndex = 0;
 // showSlides();
@@ -673,5 +674,7 @@ Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
 // 	dots[slideIndex - 1].className += " active";
 // 	setTimeout(showSlides, 2000);
 // }
+=======
+>>>>>>> parent of ffb3f2f (homepage pictures/orders route)
 =======
 >>>>>>> parent of ffb3f2f (homepage pictures/orders route)
