@@ -151,13 +151,14 @@ router
 		}
 
 		try {
-			const updatedCart = customersData.addToCart(
+			const updatedCart = await customersData.addToCart(
 				user._id,
 				cartItemData.listingId,
 				cartItemData.quantity
 			);
 			return res.json(updatedCart);
 		} catch (e) {
+			console.log(e);
 			return res.status(500).json({ error: e });
 		}
 	})

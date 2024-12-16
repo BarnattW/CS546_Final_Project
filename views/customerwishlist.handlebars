@@ -1,1 +1,18 @@
-<p>Items will soon  be here...</p>
+ {{#if wishlist.length}}
+    <div id="wishlist-items">
+      {{#each wishlist}}
+      <div class="wishlist-item" data-listingid="{{listingId}}">
+        <img src="{{imageUrl}}" alt="{{name}}" class="wishlist-item-image" />
+        <div class="wishlist-item-details">
+          <h2>{{name}}</h2>
+          <p>Price: {{price}}</p>
+          <button class="remove-btn" data-listingid="{{listingId}}">Remove</button>
+          <button class="move-to-cart-btn" data-listingid="{{listingId}}">Move to Cart</button>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <p>Your wishlist is empty!</p>
+    {{/if}}
+  </div>
