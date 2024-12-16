@@ -215,6 +215,8 @@ router
       return res.render('listing', {
         user: req.session.user,
         listing,
+        reviews: listing.reviews,
+        comments: listing.comments,
       });
     } catch (e) {
       console.log(e);
