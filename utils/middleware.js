@@ -63,6 +63,7 @@ const applyMiddlewares = (app) => {
 		if (
 			req.originalUrl != "/sellers/listings" &&
 			req.originalUrl != "/sellers/orders" &&
+			!req.originalUrl.match(/^\/sellers\/listings\/.+$/) &&
 			!req.originalUrl.match(/^\/sellers\/orders\/.+$/)
 		)
 			return next();

@@ -1,26 +1,16 @@
-import { dbConnection } from "./mongoConnection.js";
+import { dbConnection } from './mongoConnection.js';
 // this is some more comments
 const getCollectionFn = (collection) => {
-	let _col = undefined;
+  let _col = undefined;
 
-	return async () => {
-		if (!_col) {
-			const db = await dbConnection();
-			_col = await db.collection(collection);
-		}
+  return async () => {
+    if (!_col) {
+      const db = await dbConnection();
+      _col = await db.collection(collection);
+    }
 
-		return _col;
-	};
-};
-
-export const intializeCollectionFn = async (collection) => {
-	const db = await dbConnection();
-	const collectionExists = await db
-		.listCollections({ name: collection })
-		.hasNext();
-	if (!collectionExists) {
-		await db.createCollection(collection);
-	}
+    return _col;
+  };
 };
 
 export const customers = getCollectionFn("customers");

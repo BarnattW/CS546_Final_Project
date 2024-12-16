@@ -244,6 +244,14 @@ router
 router
   .route('/listings/:listingId')
   .get(async (req, res) => {
+    console.log('hi');
+    const user = req.session.user;
+    try {
+      if (!user) throw `Session user not found. Login again.`;
+    } catch (e) {
+      return res.status(401).render('sellerlogin', { error: e });
+    }
+
     try {
       req.params.listingId = validation.checkId(
         req.params.listingId,
