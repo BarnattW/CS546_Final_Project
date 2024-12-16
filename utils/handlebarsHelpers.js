@@ -5,6 +5,9 @@ const handlerBarsRegisterHelpers = (handlebars) => {
 		}
 		return options.inverse(this);
 	});
+	handlebars.registerHelper("multiply", function (a, b) {
+		return (a * b).toFixed(2);
+	});
 };
 
 export default handlerBarsRegisterHelpers;

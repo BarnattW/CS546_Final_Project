@@ -107,20 +107,25 @@ const getCustomerCart = async (customerId) => {
 	// populate cart with listings
 	const customerCart = customer.cart;
 	customerCart.forEach((cartItem) => {
-		cartItem._id = cartItem._id.toString();
+		cartItem.listingId = cartItem.listingId.toString();
 	});
+
+	let totalItems = 0;
+	let totalPrice = 0;
 	const populatedCart = await Promise.all(
 		customerCart.map(async (cartItem) => {
-			const listing = await sellersData.getListingById(cartItem._id);
+			const listing = await sellersData.getListingById(cartItem.listingId);
+			totalItems += cartItem.quantity;
+			totalPrice += cartItem.quantity * listing.itemPrice;
 			return {
-				_id: cartItem._id,
+				listingId: cartItem.listingId,
 				listing: listing,
 				quantity: cartItem.quantity,
 			};
 		})
 	);
 
-	return populatedCart;
+	return { populatedCart, totalItems, totalPrice };
 };
 
 /*
@@ -130,20 +135,46 @@ const addToCart = async (customerId, listingId, quantity) => {
 	customerId = checkId(customerId, "customerId");
 	listingId = checkId(listingId, "listingId");
 	checkIsPositiveInteger(quantity);
-	const newItem = {
-		listingId: listingId,
-		quantity: quantity,
-	};
 
 	const customersCollection = await customers();
-	const updatedCart = await customersCollection.updateOne(
+	let updatedCart;
+
+	const existingItem = await customersCollection.findOne(
 		{
 			_id: new ObjectId(customerId),
+			"cart.listingId": new ObjectId(listingId),
 		},
 		{
-			$push: { cart: newItem },
+			projection: { "cart.$": 1 }, // Only return the matching cart item
 		}
 	);
+
+	if (existingItem) {
+		const currentQuantity = existingItem.cart[0].quantity;
+		const newQuantity = Math.min(currentQuantity + quantity, 5);
+		updatedCart = await customersCollection.updateOne(
+			{
+				_id: new ObjectId(customerId),
+				"cart.listingId": new ObjectId(listingId),
+			},
+			{
+				$set: { "cart.$.quantity": newQuantity },
+			}
+		);
+	} else {
+		const newItem = {
+			listingId: new ObjectId(listingId),
+			quantity: quantity,
+		};
+		updatedCart = await customersCollection.updateOne(
+			{
+				_id: new ObjectId(customerId),
+			},
+			{
+				$push: { cart: newItem },
+			}
+		);
+	}
 
 	if (updatedCart.modifiedCount != 1)
 		throw `Could not add to cart with customer id ${customerId}`;
@@ -172,13 +203,14 @@ const updateCart = async (customerId, listingId, quantity) => {
 			}
 		);
 	} else {
+		const newQuantity = Math.min(quantity, 5);
 		updatedCart = await customersCollection.updateOne(
 			{
 				_id: new ObjectId(customerId),
 				"cart.listingId": new ObjectId(listingId),
 			},
 			{
-				$set: { "cart.$.quantity": quantity },
+				$set: { "cart.$.quantity": newQuantity },
 			}
 		);
 	}
