@@ -118,8 +118,13 @@ router
 		}
 
 		try {
-			const cart = await customersData.getCustomerCart(user._id);
-			return res.render("customercart", { cart, user: req.session.user });
+			const cartData = await customersData.getCustomerCart(user._id);
+			return res.render("customercart", {
+				cart: cartData.populatedCart,
+				totalItems: cartData.totalItems,
+				totalPrice: cartData.totalPrice,
+				user: req.session.user,
+			});
 		} catch (e) {
 			console.log(e);
 			return res.status(404).json({ error: e });
@@ -144,6 +149,7 @@ router
 		try {
 			cartItemData = sanitizeObject(cartItemData);
 			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
+			cartItemData.quantity = Number(cartItemData.quantity);
 			checkIsPositiveInteger(cartItemData.quantity);
 		} catch (e) {
 			console.log(e);
@@ -156,7 +162,7 @@ router
 				cartItemData.listingId,
 				cartItemData.quantity
 			);
-			return res.json(updatedCart);
+			return res.redirect("/customers/cart");
 		} catch (e) {
 			return res.status(500).json({ error: e });
 		}
@@ -181,19 +187,21 @@ router
 			cartItemData = sanitizeObject(cartItemData);
 			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
 			checkIsPositiveInteger(cartItemData.quantity);
+			cartItemData.quantity = Number(cartItemData.quantity);
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ error: e });
 		}
 
 		try {
-			const updatedCart = customersData.updateCart(
+			const updatedCart = await customersData.updateCart(
 				user._id,
 				cartItemData.listingId,
 				cartItemData.quantity
 			);
 			return res.json(updatedCart);
 		} catch (e) {
+			console.log(e);
 			return res.status(500).json({ error: e });
 		}
 	});
