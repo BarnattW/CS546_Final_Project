@@ -453,3 +453,49 @@ p {
 h2 {
 	margin: 0.3rem 0 0.3rem 0;
 }
+.listing {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.product-image {
+  width: 300px; /* Larger image width */
+  height: auto;
+  margin-right: 20px;
+  border: 1px solid #ddd;
+  background: #fff;
+  padding: 10px;
+  object-fit: contain; /* Ensures the image scales nicely within the box */
+}
+
+.product-details {
+  flex: 1;
+  max-width: 700px; /* Limit width for better readability */
+}
+
+.product-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.product-description {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.product-price {
+  font-size: 18px;
+  color: #b12704; /* Similar to Amazon price color */
+  margin-bottom: 10px;
+}
+
+.product-condition {
+  font-size: 14px;
+  color: #555;
+}

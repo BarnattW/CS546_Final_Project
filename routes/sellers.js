@@ -212,7 +212,7 @@ router
 
     try {
       let listing = await sellersData.getListingById(req.params.listingId);
-      return res.render('sellerlisting', {
+      return res.render('listing', {
         user: req.session.user,
         listing,
       });
