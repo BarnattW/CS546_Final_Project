@@ -145,7 +145,7 @@ const addToCart = async (customerId, listingId, quantity) => {
 			"cart.listingId": new ObjectId(listingId),
 		},
 		{
-			projection: { "cart.$": 1 }, // Only return the matching cart item
+			projection: { "cart.$": 1 },
 		}
 	);
 
@@ -161,6 +161,8 @@ const addToCart = async (customerId, listingId, quantity) => {
 				$set: { "cart.$.quantity": newQuantity },
 			}
 		);
+
+		if ()
 	} else {
 		const newItem = {
 			listingId: new ObjectId(listingId),
@@ -175,7 +177,7 @@ const addToCart = async (customerId, listingId, quantity) => {
 			}
 		);
 	}
-
+	console.log(updatedCart);
 	if (updatedCart.modifiedCount != 1)
 		throw `Could not add to cart with customer id ${customerId}`;
 

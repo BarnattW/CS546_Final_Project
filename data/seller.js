@@ -96,27 +96,18 @@ const getSellerById = async (id) => {
 export const getAllSellerListings = async (sellerId) => {
 	sellerId = validation.checkId(sellerId);
 
-  const currSeller = await getSellerById(sellerId);
-  if (!currSeller) {
-      throw new Error("Error: No seller found with the given sellerId.");
-  }
+	const currSeller = await getSellerById(sellerId);
+	if (!currSeller) throw "Error: No seller found with the given sellerId.";
 
-  if (!currSeller.listings || currSeller.listings.length === 0) {
-      console.log("No listings found for the seller.");
-      return [];
-  }
+	let currSellerListings = currSeller.listings;
 
-  const currSellerListings = [];
-
-  for (const listingId of currSeller.listings) {
-      try {
-          console.log(`Fetching listing details for ID: ${listingId}`);
-          const listing = await getListingById(listingId);
-          currSellerListings.push(listing);
-      } catch (error) {
-          console.error(`Error fetching listing with ID: ${listingId}`, error);
-      }
-  }
+	currSellerListings = await Promise.all(
+		currSellerListings.map(async (element) => {
+			console.log(element);
+			element = await getListingById(element);
+			return element;
+		})
+	);
 
 	return currSellerListings;
 };
