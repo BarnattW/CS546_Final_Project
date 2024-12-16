@@ -242,125 +242,117 @@ router
   });
 
 router
-  .route('/listings/:listingId')
-  .get(async (req, res) => {
-    console.log('hi');
-    const user = req.session.user;
-    try {
-      if (!user) throw `Session user not found. Login again.`;
-    } catch (e) {
-      return res.status(401).render('sellerlogin', { error: e });
-    }
+	.route("/listings/:listingId")
+	.get(async (req, res) => {
+		try {
+			req.params.listingId = validation.checkId(
+				req.params.listingId,
+				"listingId"
+			);
+		} catch (e) {
+			console.log(e);
+			return res.status(400).render("error", { error: e });
+		}
 
-    try {
-      req.params.listingId = validation.checkId(
-        req.params.listingId,
-        'listingId'
-      );
-    } catch (e) {
-      console.log(e);
-      return res.status(400).render('error', { error: e });
-    }
+		try {
+			let listing = await sellersData.getListingById(req.params.listingId);
+			return res.render("listing", {
+				user: req.session.user,
+				listing,
+				reviews: listing.reviews,
+				comments: listing.comments,
+			});
+		} catch (e) {
+			console.log(e);
+			return res.status(404).json({ error: e });
+		}
+	})
 
-    try {
-      let listing = await sellersData.getListingById(req.params.listingId);
-      return res.render('listing', {
-        user: req.session.user,
-        listing,
-        reviews: listing.reviews,
-        comments: listing.comments,
-      });
-    } catch (e) {
-      console.log(e);
-      return res.status(404).json({ error: e });
-    }
-  })
+	.delete(async (req, res) => {
+		const user = req.session.user;
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("sellerlogin", { message: e });
+		}
 
-  .delete(async (req, res) => {
-    const user = req.session.user;
-    try {
-      if (!user) throw `Session user not found. Login again.`;
-    } catch (e) {
-      return res.status(401).render('sellerlogin', { message: e });
-    }
+		try {
+			req.params.listingId = validation.checkId(
+				req.params.listingId,
+				"listingId"
+			);
+		} catch (e) {
+			return res.status(400).render("error", { message: e });
+		}
 
-    try {
-      req.params.listingId = validation.checkId(
-        req.params.listingId,
-        'listingId'
-      );
-    } catch (e) {
-      return res.status(400).render('error', { message: e });
-    }
+		try {
+			let listing = await sellersData.deleteListing(req.params.listingId);
+			return res.render("sellerlistings", {
+				user: req.session.user,
+				listing,
+			});
+		} catch (e) {
+			return res.status(404).json({ error: e });
+		}
+	})
+	.put(async (req, res) => {
+		const user = req.session.user;
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("sellerlogin", { message: e });
+		}
 
-    try {
-      let listing = await sellersData.deleteListing(req.params.listingId);
-      return res.render('sellerlistings', {
-        user: req.session.user,
-        listing,
-      });
-    } catch (e) {
-      return res.status(404).json({ error: e });
-    }
-  })
-  .put(async (req, res) => {
-    const user = req.session.user;
-    try {
-      if (!user) throw `Session user not found. Login again.`;
-    } catch (e) {
-      return res.status(401).render('sellerlogin', { message: e });
-    }
+		let listingData = req.body;
+		if (!listingData || Object.keys(listingData).length === 0) {
+			return res.status(400).render("error", {
+				message: "There are no fields in the request body",
+			});
+		}
 
-    let listingData = req.body;
-    if (!listingData || Object.keys(listingData).length === 0) {
-      return res.status(400).render('error', {
-        message: 'There are no fields in the request body',
-      });
-    }
+		try {
+			listingData = validation.sanitizeObject(listingData);
 
-    try {
-      listingData = validation.sanitizeObject(listingData);
+			let {
+				itemName,
+				itemDescription,
+				itemPrice,
+				itemImage,
+				itemCategory,
+				condition,
+			} = listingData;
 
-      let {
-        itemName,
-        itemDescription,
-        itemPrice,
-        itemImage,
-        itemCategory,
-        condition,
-      } = listingData;
+			itemName = validation.checkString(itemName, "Item Name");
+			itemDescription = validation.checkString(
+				itemDescription,
+				"Item Description"
+			);
+			itemPrice = validation.checkIsPositiveInteger(itemPrice);
+			itemImage = validation.checkString(itemImage, "Item Image");
+			itemCategory = validation.checkString(itemCategory, "Item Catagory");
+			condition = validation.checkString(condition, "Condition");
+		} catch (e) {
+			res.status(400).render("error", { message: e });
+		}
 
-      itemName = validation.checkString(itemName, 'Item Name');
-      itemDescription = validation.checkString(
-        itemDescription,
-        'Item Description'
-      );
-      itemPrice = validation.checkIsPositiveInteger(itemPrice);
-      itemImage = validation.checkString(itemImage, 'Item Image');
-      itemCategory = validation.checkString(itemCategory, 'Item Catagory');
-      condition = validation.checkString(condition, 'Condition');
-    } catch (e) {
-      res.status(400).render('error', { message: e });
-    }
-
-    try {
-      let updatedListing = await sellersData.updateListing(
-        req.params.listingId,
-        itemName,
-        itemDescription,
-        itemPrice,
-        itemImage,
-        itemCategory,
-        condition
-      );
-      return res.render('sellerlisting', {
-        user: req.session.user,
-        updatedListing,
-      });
-    } catch (e) {
-      return res.status(500).json({ error: e });
-    }
-  });
+		try {
+			let updatedListing = await sellersData.updateListing(
+				req.params.listingId,
+				itemName,
+				itemDescription,
+				itemPrice,
+				itemImage,
+				itemCategory,
+				condition
+			);
+			return res.render("sellerlisting", {
+				user: req.session.user,
+				updatedListing,
+			});
+		} catch (e) {
+			return res.status(500).json({ error: e });
+		}
+	});
 
 // Export Router
 
