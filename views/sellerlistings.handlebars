@@ -1,135 +1,132 @@
 <h1>Seller Dashboard</h1>
-<div class="listingsDashboard">
-	<button
-		id="openCreateListingBtn"
-		name="openCreateListingBtn"
-		class="m-bottom-10"
-	>Create New Listing</button>
-	<div id="clientError" class="error" hidden>Error Message</div>
-	<table class="listingsTable w-100">
-		<thead>
-			<tr>
-				<th>Image</th>
-				<th>Item Name</th>
-				<th>Description</th>
-				<th>Category</th>
-				<th>Condition</th>
-				<th>Price</th>
-				<th>Actions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{{#each listings}}
-				<tr data-listingId="{{_id}}">
-					<td><img
-							src="{{itemImage}}"
-							alt="{{itemName}}"
-							class="listingImage"
-						/></td>
-					<td>{{itemName}}</td>
-					<td>{{itemDescription}}</td>
-					<td>{{itemCategory}}</td>
-					<td>{{condition}}</td>
-					<td>${{itemPrice}}</td>
-					<td>
-						<button class="editListingBtn">Edit</button>
-						<button
-						
-							class="deleteListingBtn"
-						>Delete</button>
-					</td>
-				</tr>
-			{{/each}}
-		</tbody>
-	</table>
+<div class='listingsDashboard'>
+  <button
+    id='openCreateListingBtn'
+    name='openCreateListingBtn'
+    class='m-bottom-10'
+  >Create New Listing</button>
+  <div id='clientError' class='error' hidden>Error Message</div>
+  <table class='listingsTable w-100'>
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Item Name</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Condition</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each listings}}
+        <tr data-listingId='{{_id}}'>
+          <a href='/listing/{{listings._id}}'><td><img
+                src='{{itemImage}}'
+                alt='{{itemName}}'
+                class='listingImage'
+              /></td></a>
+          <td>{{itemName}}</td>
+          <td>{{itemDescription}}</td>
+          <td>{{itemCategory}}</td>
+          <td>{{condition}}</td>
+          <td>${{itemPrice}}</td>
+          <td>
+            <button class='editListingBtn'>Edit</button>
+            <button class='deleteListingBtn'>Delete</button>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </div>
 
-<div id="createListingModal" name="createListingModal" class="modal hidden">
-	<div class="modalContent">
-		<h2>Create Listing</h2>
-		<form
-			action="/sellers/addlisting"
-			method="POST"
-			enctype="multipart/form-data"
-			id="addListingForm"
-			name="addListingForm"
-		>
-			<label for="listingName">Listing Name</label>
-			<input
-				type="text"
-				id="listingName"
-				name="listingName"
-				placeholder="Enter listing name"
-				required
-			/>
+<div id='createListingModal' name='createListingModal' class='modal hidden'>
+  <div class='modalContent'>
+    <h2>Create Listing</h2>
+    <form
+      action='/sellers/addlisting'
+      method='POST'
+      enctype='multipart/form-data'
+      id='addListingForm'
+      name='addListingForm'
+    >
+      <label for='listingName'>Listing Name</label>
+      <input
+        type='text'
+        id='listingName'
+        name='listingName'
+        placeholder='Enter listing name'
+        required
+      />
 
-			<label for="listingDescription" required>Listing Description</label>
-			<textarea
-				id="listingDescription"
-				name="listingDescription"
-				rows="4"
-				placeholder="Provide a brief description of the listing"
-				required
-			></textarea>
+      <label for='listingDescription' required>Listing Description</label>
+      <textarea
+        id='listingDescription'
+        name='listingDescription'
+        rows='4'
+        placeholder='Provide a brief description of the listing'
+        required
+      ></textarea>
 
-			<label for="listingPrice">Listing Price ($)</label>
-			<input
-				type="number"
-				id="listingPrice"
-				name="listingPrice"
-				placeholder="Enter price"
-				required
-			/>
+      <label for='listingPrice'>Listing Price ($)</label>
+      <input
+        type='number'
+        id='listingPrice'
+        name='listingPrice'
+        placeholder='Enter price'
+        required
+      />
 
-			<label for="listingSubcategory">Furniture Subcategory</label>
-			<select id="listingSubcategory" name="listingSubcategory" required>
-				<option value="" disabled selected>Select a furniture subcategory</option>
-				<option value="sofas">Sofas</option>
-				<option value="chairs">Chairs</option>
-				<option value="coffee-tables">Coffee Tables</option>
-				<option value="end-tables">End Tables</option>
-				<option value="tv-stands">TV Stands</option>
-				<option value="recliners">Recliners</option>
-				<option value="ottomans">Ottomans</option>
-				<option value="beds">Beds</option>
-				<option value="nightstands">Nightstands</option>
-				<option value="dressers">Dressers</option>
-				<option value="wardrobes">Wardrobes</option>
-				<option value="mirrors">Mirrors</option>
-				<option value="dining-tables">Dining Tables</option>
-				<option value="dining-chairs">Dining Chairs</option>
-				<option value="sideboards">Sideboards</option>
-				<option value="bar-stools">Bar Stools</option>
-				<option value="desks">Desks</option>
-				<option value="office-chairs">Office Chairs</option>
-				<option value="bookcases">Bookcases</option>
-				<option value="patio-furniture">Patio Furniture</option>
-				<option value="storage-benches">Storage Benches</option>
-				<option value="shelving-units">Shelving Units</option>
-			</select>
-			<label for="listingCondition">Listing Condition</label>
-			<select id="listingCondition" name="listingCondition" required>
-				<option value="" disabled selected>Select condition</option>
-				<option value="New">New</option>
-				<option value="Minimal Wear">Minimal Wear</option>
-				<option value="Used">Used</option>
-			</select>
-			<label for="listingImage">Upload Image</label>
-			<input
-				type="file"
-				id="listingImage"
-				name="listingImage"
-				accept=".png, .jpeg, .jpg"
-				required
-			/>
-			<div>
-				<button type="submit">Create</button>
-				<button
-					type="button"
-					id="closeCreateListingBtn"
-					name="closeCreateListingBtn"
-				>Cancel</button>
-			</div>
-		</form>
-	</div>
+      <label for='listingSubcategory'>Furniture Subcategory</label>
+      <select id='listingSubcategory' name='listingSubcategory' required>
+        <option value='' disabled selected>Select a furniture subcategory</option>
+        <option value='sofas'>Sofas</option>
+        <option value='chairs'>Chairs</option>
+        <option value='coffee-tables'>Coffee Tables</option>
+        <option value='end-tables'>End Tables</option>
+        <option value='tv-stands'>TV Stands</option>
+        <option value='recliners'>Recliners</option>
+        <option value='ottomans'>Ottomans</option>
+        <option value='beds'>Beds</option>
+        <option value='nightstands'>Nightstands</option>
+        <option value='dressers'>Dressers</option>
+        <option value='wardrobes'>Wardrobes</option>
+        <option value='mirrors'>Mirrors</option>
+        <option value='dining-tables'>Dining Tables</option>
+        <option value='dining-chairs'>Dining Chairs</option>
+        <option value='sideboards'>Sideboards</option>
+        <option value='bar-stools'>Bar Stools</option>
+        <option value='desks'>Desks</option>
+        <option value='office-chairs'>Office Chairs</option>
+        <option value='bookcases'>Bookcases</option>
+        <option value='patio-furniture'>Patio Furniture</option>
+        <option value='storage-benches'>Storage Benches</option>
+        <option value='shelving-units'>Shelving Units</option>
+      </select>
+      <label for='listingCondition'>Listing Condition</label>
+      <select id='listingCondition' name='listingCondition' required>
+        <option value='' disabled selected>Select condition</option>
+        <option value='New'>New</option>
+        <option value='Minimal Wear'>Minimal Wear</option>
+        <option value='Used'>Used</option>
+      </select>
+      <label for='listingImage'>Upload Image</label>
+      <input
+        type='file'
+        id='listingImage'
+        name='listingImage'
+        accept='.png, .jpeg, .jpg'
+        required
+      />
+      <div>
+        <button type='submit'>Create</button>
+        <button
+          type='button'
+          id='closeCreateListingBtn'
+          name='closeCreateListingBtn'
+        >Cancel</button>
+      </div>
+    </form>
+  </div>
 </div>

@@ -455,18 +455,106 @@ if (searchForm) {
 	});
 }
 
-const addToCartForm = document.getElementById("addtoCart");
+const addToCartForm = document.getElementById("addToCart");
 if (addToCartForm) {
 	addToCartForm.addEventListener("submit", (event) => {
 		event.preventDefault();
 
-		const listingId = e.target.querySelector("input[name='listingId']").value;
-		fetch(`/customers/cart`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: { listingId },
-		});
+		try {
+			const listingId = event.target.querySelector("input[name='listingId']");
+			const quantity = event.target.querySelector("input[name='quantity']");
+			listingId.value = checkInputEmpty(listingId, "listingId");
+			quantity.value = checkInputEmpty(quantity, "Quantity");
+			addToCartForm.submit();
+		} catch (e) {}
 	});
 }
+
+/*
+ * User cart
+ */
+// Delete listing from cart
+Array.from(document.getElementsByClassName("deleteCartItemBtn")).forEach(
+	(btn) =>
+		btn.addEventListener("click", async (e) => {
+			const cartItemDiv = e.target.closest(".cart-item");
+			const listingId = cartItemDiv.dataset.listingid;
+
+			clientErrorDiv.hidden = true;
+			clientErrorDiv.innerHTML = "";
+			try {
+				if (!cartItemDiv)
+					throw "Cart item does not exist. Please refresh the page.";
+			} catch (e) {
+				clientErrorDiv.hidden = false;
+				clientErrorDiv.innerHTML = e;
+				return;
+			}
+
+			try {
+				// Perform delete operation
+				const response = await fetch(`/customers/cart`, {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						quantity: 0,
+						listingId,
+					}),
+				});
+				if (response.ok) {
+					window.location.href = "/customers/cart";
+				} else {
+					throw `Could not remove listing with ID ${listingId} from cart. Please try again.`;
+				}
+			} catch (e) {
+				clientErrorDiv.hidden = false;
+				clientErrorDiv.innerHTML = e;
+			}
+		})
+);
+
+// update cart quantity
+Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
+	input.addEventListener("change", async (e) => {
+		const cartItemDiv = e.target.closest(".cart-item");
+		const listingId = cartItemDiv.dataset.listingid;
+		let quantity = parseInt(e.target.value, 10);
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+
+		try {
+			if (e.target.value > 5) {
+				e.target.value = 5;
+				throw `Quantity cannot be greater than 5`;
+			}
+			if (!cartItemDiv || !listingId) throw `No listingId found!`;
+			if (!quantity) throw "No quantity found for item";
+			if (isNaN(quantity) || quantity < 0)
+				throw "Invalid quantity. Quantity must be a positive number";
+
+			quantity = Math.min(quantity, 5);
+			const response = await fetch(`/customers/cart`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					quantity,
+					listingId,
+				}),
+			});
+
+			if (response.ok) {
+				window.location.href = "/customers/cart";
+			} else {
+				throw `Could not update listing with ID ${listingId}. Please try again.`;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	})
+);
