@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import { reviewDataFunctions } from '../data/reviews.js';
 import * as sellerDataFunctions from '../data/seller.js';
-import { customerDataFunctions } from '../data/customers.js';
+import { customersDataFunctions } from "../data/customers.js";
 import * as validation from '../utils/checks.js';
 
 router
