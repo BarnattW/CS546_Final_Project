@@ -385,8 +385,7 @@ if (addListingForm) {
 
 			if (!response.ok) {
 				const data = await response.json();
-				clientErrorDiv.hidden = false;
-				clientErrorDiv.innerHTML = data.error;
+				throw data.error;
 			} else {
 				window.location.href = "/sellers/listings";
 			}
@@ -457,16 +456,108 @@ if (searchForm) {
 
 const addToCartForm = document.getElementById("addToCart");
 if (addToCartForm) {
-	addToCartForm.addEventListener("submit", (event) => {
+	addToCartForm.addEventListener("submit", async (event) => {
 		event.preventDefault();
 
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
 		try {
 			const listingId = event.target.querySelector("input[name='listingId']");
 			const quantity = event.target.querySelector("input[name='quantity']");
 			listingId.value = checkInputEmpty(listingId, "listingId");
 			quantity.value = checkInputEmpty(quantity, "Quantity");
-			addToCartForm.submit();
-		} catch (e) {}
+			const response = await fetch("/customers/cart", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					listingId: listingId.value,
+					quantity: quantity.value,
+				}),
+			});
+
+			if (response.ok) {
+				window.location.href = "/customers/cart";
+			} else {
+				const data = await response.json();
+				throw data.error;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	});
+}
+
+/*
+ * Listing Form
+ */
+// add to cart
+const itemPageAddToCartForm = document.getElementById("itemAddToCart");
+if (itemPageAddToCartForm) {
+	itemPageAddToCartForm.addEventListener("submit", async (event) => {
+		event.preventDefault();
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			const listingId =
+				document.getElementById("addToCartBtn").dataset.listingid;
+			const quantity = document.getElementById(`quantity-${listingId}`);
+			quantity.value = checkInputEmpty(quantity, "Quantity");
+			if (quantity.value < 0) quantity.value = 1;
+			else if (quantity.value > 5) quantity.value = 5;
+			const response = await fetch("/customers/cart", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ listingId, quantity: quantity.value }),
+			});
+
+			if (response.ok) {
+				window.location.href = "/customers/cart";
+			} else {
+				const data = await response.json();
+				throw data.error;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	});
+}
+
+// add to wishlist
+const addToWishlistBtn = document.getElementById("addToWishlistBtn");
+if (addToWishlistBtn) {
+	addToWishlistBtn.addEventListener("click", async (e) => {
+		event.preventDefault();
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			const listingId = addToWishlistBtn.dataset.listingid;
+			if (!listingId) throw "listingId is missing";
+			const response = await fetch("/customers/wishlist", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ listingId }),
+			});
+
+			if (response.ok) {
+				window.location.href = "/customers/wishlist";
+			} else {
+				const data = await response.json();
+				throw data.error;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
 	});
 }
 
@@ -559,25 +650,25 @@ Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
 	})
 );
 
+// let slideIndex = 0;
+// showSlides();
 
+// function showSlides() {
+// 	let i;
+// 	let slides = document.getElementsByClassName("mySlides");
+// 	let dots = document.getElementsByClassName("dot");
+// 	for (i = 0; i < slides.length; i++) {
+// 		slides[i].style.display = "none";
+// 	}
 
-let slideIndex = 0;
-showSlides();
-
-function showSlides() {
-  let i;
-  let slides = document.getElementsByClassName("mySlides");
-  let dots = document.getElementsByClassName("dot");
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";  
-  }
-  
-  slideIndex++;
-  if (slideIndex > slides.length) {slideIndex = 1}    
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex-1].style.display = "block";  
-  dots[slideIndex-1].className += " active";
-  setTimeout(showSlides, 2000);
-}
+// 	slideIndex++;
+// 	if (slideIndex > slides.length) {
+// 		slideIndex = 1;
+// 	}
+// 	for (i = 0; i < dots.length; i++) {
+// 		dots[i].className = dots[i].className.replace(" active", "");
+// 	}
+// 	slides[slideIndex - 1].style.display = "block";
+// 	dots[slideIndex - 1].className += " active";
+// 	setTimeout(showSlides, 2000);
+// }
