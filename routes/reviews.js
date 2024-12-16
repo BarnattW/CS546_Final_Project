@@ -2,7 +2,7 @@ import { Router } from 'express';
 const router = Router();
 import { reviewDataFunctions } from '../data/reviews.js';
 import * as sellerDataFunctions from '../data/seller.js';
-import { customerDataFunctions } from '../data/customers.js';
+import { customersDataFunctions } from '../data/customers.js';
 import * as validation from '../utils/checks.js';
 
 router
@@ -51,14 +51,14 @@ router
     try {
       reviewData = validation.sanitizeObject(reviewData);
 
-      let {listingId, name, rating, reviewText } = reviewData;
+      let { listingId, name, rating, reviewText } = reviewData;
 
       rating = Number(rating);
       listingId = validation.checkId(listingId, 'Listing ID');
       name = validation.checkString(name, 'Name');
       rating = validation.checkIsPositiveInteger(rating);
       reviewText = validation.checkString(reviewText, 'Review Text');
-      const customer = await customerDataFunctions.getCustomerById(
+      const customer = await customersDataFunctions.getCustomerById(
         req.session.user._id
       );
 

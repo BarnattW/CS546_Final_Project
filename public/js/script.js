@@ -397,9 +397,9 @@ if (addListingForm) {
   });
 }
 
-document.querySelectorAll("editListingBtn").forEach((btn) =>
-	btn.addEventListener("click", (e) => {
-		const row = e.target.closest("tr");
+document.querySelectorAll('editListingBtn').forEach((btn) =>
+  btn.addEventListener('click', (e) => {
+    const row = e.target.closest('tr');
 
     // Prefill form with listing data
     document.getElementById('listing-id').value = listingId;
@@ -412,33 +412,33 @@ document.querySelectorAll("editListingBtn").forEach((btn) =>
       .querySelector('td:nth-child(4)')
       .innerText.replace('$', '');
 
-		// Update the modal title and show the modal
-		document.getElementById("modal-title").innerText = "Edit Listing";
-		document.getElementById("modal").classList.remove("hidden");
-	})
+    // Update the modal title and show the modal
+    document.getElementById('modal-title').innerText = 'Edit Listing';
+    document.getElementById('modal').classList.remove('hidden');
+  })
 );
 
 // Delete listing
-Array.from(document.getElementsByClassName("deleteListingBtn")).forEach((btn) =>
-	btn.addEventListener("click", async (e) => {
-		const row = e.target.closest("tr");
-		const listingId = row.dataset.listingid;
+Array.from(document.getElementsByClassName('deleteListingBtn')).forEach((btn) =>
+  btn.addEventListener('click', async (e) => {
+    const row = e.target.closest('tr');
+    const listingId = row.dataset.listingid;
 
-		try {
-			// Perform delete operation
-			const response = await fetch(`/sellers/listings/${listingId}`, {
-				method: "DELETE",
-			});
-			if (response.ok) {
-				window.location.href = "/sellers/listings";
-			} else {
-				throw `Could not delete listing with ID ${listingId}`;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	})
+    try {
+      // Perform delete operation
+      const response = await fetch(`/sellers/listings/${listingId}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        window.location.href = '/sellers/listings';
+      } else {
+        throw `Could not delete listing with ID ${listingId}`;
+      }
+    } catch (e) {
+      clientErrorDiv.hidden = false;
+      clientErrorDiv.innerHTML = e;
+    }
+  })
 );
 
 const searchForm = document.getElementById('searchForm');
@@ -451,203 +451,201 @@ if (searchForm) {
   });
 }
 
-const addToCartForm = document.getElementById("addToCart");
+const addToCartForm = document.getElementById('addToCart');
 if (addToCartForm) {
-	addToCartForm.addEventListener("submit", async (event) => {
-		event.preventDefault();
+  addToCartForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
-		try {
-			const listingId = event.target.querySelector("input[name='listingId']");
-			const quantity = event.target.querySelector("input[name='quantity']");
-			listingId.value = checkInputEmpty(listingId, "listingId");
-			quantity.value = checkInputEmpty(quantity, "Quantity");
-			const response = await fetch("/customers/cart", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					listingId: listingId.value,
-					quantity: quantity.value,
-				}),
-			});
+    clientErrorDiv.hidden = true;
+    clientErrorDiv.innerHTML = '';
+    try {
+      const listingId = event.target.querySelector("input[name='listingId']");
+      const quantity = event.target.querySelector("input[name='quantity']");
+      listingId.value = checkInputEmpty(listingId, 'listingId');
+      quantity.value = checkInputEmpty(quantity, 'Quantity');
+      const response = await fetch('/customers/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          listingId: listingId.value,
+          quantity: quantity.value,
+        }),
+      });
 
-			if (response.ok) {
-				window.location.href = "/customers/cart";
-			} else {
-				const data = await response.json();
-				throw data.error;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	});
+      if (response.ok) {
+        window.location.href = '/customers/cart';
+      } else {
+        const data = await response.json();
+        throw data.error;
+      }
+    } catch (e) {
+      clientErrorDiv.hidden = false;
+      clientErrorDiv.innerHTML = e;
+    }
+  });
 }
 
 /*
  * Listing Form
  */
 // add to cart
-const itemPageAddToCartForm = document.getElementById("itemAddToCart");
+const itemPageAddToCartForm = document.getElementById('itemAddToCart');
 if (itemPageAddToCartForm) {
-	itemPageAddToCartForm.addEventListener("submit", async (event) => {
-		event.preventDefault();
+  itemPageAddToCartForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
-		try {
-			const listingId =
-				document.getElementById("addToCartBtn").dataset.listingid;
-			const quantity = document.getElementById(`quantity-${listingId}`);
-			quantity.value = checkInputEmpty(quantity, "Quantity");
-			if (quantity.value < 0) quantity.value = 1;
-			else if (quantity.value > 5) quantity.value = 5;
-			const response = await fetch("/customers/cart", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ listingId, quantity: quantity.value }),
-			});
+    clientErrorDiv.hidden = true;
+    clientErrorDiv.innerHTML = '';
+    try {
+      const listingId =
+        document.getElementById('addToCartBtn').dataset.listingid;
+      const quantity = document.getElementById(`quantity-${listingId}`);
+      quantity.value = checkInputEmpty(quantity, 'Quantity');
+      if (quantity.value < 0) quantity.value = 1;
+      else if (quantity.value > 5) quantity.value = 5;
+      const response = await fetch('/customers/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ listingId, quantity: quantity.value }),
+      });
 
-			if (response.ok) {
-				window.location.href = "/customers/cart";
-			} else {
-				const data = await response.json();
-				throw data.error;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	});
+      if (response.ok) {
+        window.location.href = '/customers/cart';
+      } else {
+        const data = await response.json();
+        throw data.error;
+      }
+    } catch (e) {
+      clientErrorDiv.hidden = false;
+      clientErrorDiv.innerHTML = e;
+    }
+  });
 }
 
 // add to wishlist
-const addToWishlistBtn = document.getElementById("addToWishlistBtn");
+const addToWishlistBtn = document.getElementById('addToWishlistBtn');
 if (addToWishlistBtn) {
-	addToWishlistBtn.addEventListener("click", async (e) => {
-		event.preventDefault();
+  addToWishlistBtn.addEventListener('click', async (e) => {
+    event.preventDefault();
 
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
-		try {
-			const listingId = addToWishlistBtn.dataset.listingid;
-			if (!listingId) throw "listingId is missing";
-			const response = await fetch("/customers/wishlist", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ listingId }),
-			});
+    clientErrorDiv.hidden = true;
+    clientErrorDiv.innerHTML = '';
+    try {
+      const listingId = addToWishlistBtn.dataset.listingid;
+      if (!listingId) throw 'listingId is missing';
+      const response = await fetch('/customers/wishlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ listingId }),
+      });
 
-			if (response.ok) {
-				window.location.href = "/customers/wishlist";
-			} else {
-				const data = await response.json();
-				throw data.error;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	});
+      if (response.ok) {
+        window.location.href = '/customers/wishlist';
+      } else {
+        const data = await response.json();
+        throw data.error;
+      }
+    } catch (e) {
+      clientErrorDiv.hidden = false;
+      clientErrorDiv.innerHTML = e;
+    }
+  });
 }
 
 /*
  * User cart
  */
 // Delete listing from cart
-Array.from(document.getElementsByClassName("deleteCartItemBtn")).forEach(
-	(btn) =>
-		btn.addEventListener("click", async (e) => {
-			const cartItemDiv = e.target.closest(".cart-item");
-			const listingId = cartItemDiv.dataset.listingid;
+Array.from(document.getElementsByClassName('deleteCartItemBtn')).forEach(
+  (btn) =>
+    btn.addEventListener('click', async (e) => {
+      const cartItemDiv = e.target.closest('.cart-item');
+      const listingId = cartItemDiv.dataset.listingid;
 
-			clientErrorDiv.hidden = true;
-			clientErrorDiv.innerHTML = "";
-			try {
-				if (!cartItemDiv)
-					throw "Cart item does not exist. Please refresh the page.";
-			} catch (e) {
-				clientErrorDiv.hidden = false;
-				clientErrorDiv.innerHTML = e;
-				return;
-			}
+      clientErrorDiv.hidden = true;
+      clientErrorDiv.innerHTML = '';
+      try {
+        if (!cartItemDiv)
+          throw 'Cart item does not exist. Please refresh the page.';
+      } catch (e) {
+        clientErrorDiv.hidden = false;
+        clientErrorDiv.innerHTML = e;
+        return;
+      }
 
-			try {
-				// Perform delete operation
-				const response = await fetch(`/customers/cart`, {
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						quantity: 0,
-						listingId,
-					}),
-				});
-				if (response.ok) {
-					window.location.href = "/customers/cart";
-				} else {
-					throw `Could not remove listing with ID ${listingId} from cart. Please try again.`;
-				}
-			} catch (e) {
-				clientErrorDiv.hidden = false;
-				clientErrorDiv.innerHTML = e;
-			}
-		})
+      try {
+        // Perform delete operation
+        const response = await fetch(`/customers/cart`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            quantity: 0,
+            listingId,
+          }),
+        });
+        if (response.ok) {
+          window.location.href = '/customers/cart';
+        } else {
+          throw `Could not remove listing with ID ${listingId} from cart. Please try again.`;
+        }
+      } catch (e) {
+        clientErrorDiv.hidden = false;
+        clientErrorDiv.innerHTML = e;
+      }
+    })
 );
 
 // update cart quantity
-Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
-	input.addEventListener("change", async (e) => {
-		const cartItemDiv = e.target.closest(".cart-item");
-		const listingId = cartItemDiv.dataset.listingid;
-		let quantity = parseInt(e.target.value, 10);
+Array.from(document.getElementsByClassName('quantity-input')).forEach((input) =>
+  input.addEventListener('change', async (e) => {
+    const cartItemDiv = e.target.closest('.cart-item');
+    const listingId = cartItemDiv.dataset.listingid;
+    let quantity = parseInt(e.target.value, 10);
 
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
+    clientErrorDiv.hidden = true;
+    clientErrorDiv.innerHTML = '';
 
-		try {
-			if (e.target.value > 5) {
-				e.target.value = 5;
-				throw `Quantity cannot be greater than 5`;
-			}
-			if (!cartItemDiv || !listingId) throw `No listingId found!`;
-			if (!quantity) throw "No quantity found for item";
-			if (isNaN(quantity) || quantity < 0)
-				throw "Invalid quantity. Quantity must be a positive number";
+    try {
+      if (e.target.value > 5) {
+        e.target.value = 5;
+        throw `Quantity cannot be greater than 5`;
+      }
+      if (!cartItemDiv || !listingId) throw `No listingId found!`;
+      if (!quantity) throw 'No quantity found for item';
+      if (isNaN(quantity) || quantity < 0)
+        throw 'Invalid quantity. Quantity must be a positive number';
 
-			quantity = Math.min(quantity, 5);
-			const response = await fetch(`/customers/cart`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					quantity,
-					listingId,
-				}),
-			});
+      quantity = Math.min(quantity, 5);
+      const response = await fetch(`/customers/cart`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quantity,
+          listingId,
+        }),
+      });
 
-			if (response.ok) {
-				window.location.href = "/customers/cart";
-			} else {
-				throw `Could not update listing with ID ${listingId}. Please try again.`;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	})
+      if (response.ok) {
+        window.location.href = '/customers/cart';
+      } else {
+        throw `Could not update listing with ID ${listingId}. Please try again.`;
+      }
+    } catch (e) {
+      clientErrorDiv.hidden = false;
+      clientErrorDiv.innerHTML = e;
+    }
+  })
 );
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 // let slideIndex = 0;
 // showSlides();
@@ -671,7 +669,3 @@ Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
 // 	dots[slideIndex - 1].className += " active";
 // 	setTimeout(showSlides, 2000);
 // }
-=======
->>>>>>> parent of ffb3f2f (homepage pictures/orders route)
-=======
->>>>>>> parent of ffb3f2f (homepage pictures/orders route)
