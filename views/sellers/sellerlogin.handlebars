@@ -1,13 +1,20 @@
 <div class="flex-col-centered">
 	<h1>Log In As Seller</h1>
-	<form action="/sellers/login" method="POST" id="sellerLogin" name="sellerLogin">
-		<label for="sellerUsername">Business Name</label>
+	<form
+		action="/sellers/login"
+		method="POST"
+		id="sellerLogin"
+		name="sellerLogin"
+		class="flex-col"
+	>
+		<label for="sellerUsername">Username</label>
 		<input type="text" id="sellerUsername" name="sellerUsername" required />
-	
+
 		<label for="sellerPassword">Password</label>
 		<input type="password" id="sellerPassword" name="sellerPssword" required />
-		
+
 		<button type="submit" class="button" id="sellerLoginSubmit">Log In</button>
 	</form>
 	<div id="clientError" class="error" hidden>Error Message</div>
 </div>
+<script type="module" src="/public/js/sellers/sellerloginpage.js"></script>

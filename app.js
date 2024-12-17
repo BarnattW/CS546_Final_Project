@@ -4,10 +4,8 @@ import exphbs from 'express-handlebars';
 import applyMiddlewares from './utils/middleware.js';
 import session from 'express-session';
 import handlebars from 'handlebars';
-import handlerBarsRegisterHelpers from './utils/handlebarsHelpers.js';
-import { runSetup } from './utils/seed.js';
+import handlerBarsRegisterHelpers from "./utils/handlebarsHelpers.js";
 
-const startUp = await runSetup();
 const app = express();
 
 app.use('/public', express.static('public'));

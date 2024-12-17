@@ -6,8 +6,8 @@ import {
 	checkString,
 	checkStringLength,
 } from "../utils/checks.js";
-import { sellersData } from "./index.js";
 import bcrypt from "bcrypt";
+import { getListingById } from "./seller.js";
 
 const saltRounds = 12;
 
@@ -114,7 +114,7 @@ const getCustomerCart = async (customerId) => {
 	let totalPrice = 0;
 	const populatedCart = await Promise.all(
 		customerCart.map(async (cartItem) => {
-			const listing = await sellersData.getListingById(cartItem.listingId);
+			const listing = await getListingById(cartItem.listingId);
 			totalItems += cartItem.quantity;
 			totalPrice += cartItem.quantity * listing.itemPrice;
 			return {
@@ -256,7 +256,7 @@ const getCustomerWishlist = async (customerId) => {
 
 	const populatedWishlist = await Promise.all(
 		customerWishlist.map(async (wishlistItem) => {
-			const listing = await sellersData.getListingById(wishlistItem.listingId);
+			const listing = await getListingById(wishlistItem.listingId);
 			return {
 				listing: listing,
 			};

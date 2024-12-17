@@ -83,6 +83,11 @@ footer {
   background: #78d3ee;
 }
 
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .flex-col-centered {
   display: flex;
   flex-direction: column;
@@ -150,7 +155,6 @@ label {
   margin-bottom: 5px;
 }
 input {
-  width: 100%;
   padding: 8px;
   margin-bottom: 15px;
   border: 1px solid #ddd;

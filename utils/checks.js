@@ -41,50 +41,56 @@ const checkIsPositiveInteger = (num) => {
   return num;
 };
 
+const checkIsPositiveNumber = (num) => {
+	checkIsNumber(num);
+	if (num < 0) throw "Err: Number should be greater than 0";
+};
+
 const checkDate = (date) => {
-  if (date instanceof Date === false && isNaN(num))
-    throw `Err: ${date} is not a valid date`;
+	if (date instanceof Date === false && isNaN(num))
+		throw `Err: ${date} is not a valid date`;
 };
 
 const checkCustomer = (username, password, name) => {
-  username = checkString(username);
-  password = checkString(password);
-  name = checkString(name);
+	username = checkString(username);
+	password = checkString(password);
+	name = checkString(name);
 
-  return { username: username, password: password, name: name };
+	return { username: username, password: password, name: name };
 };
 
 const sanitizeInput = (arg) => {
-  arg = xss(arg);
-  return arg;
+	arg = xss(arg);
+	return arg;
 };
 
 const sanitizeObject = (obj) => {
-  for (const property in obj) {
-    if (typeof obj[property] != 'string' || typeof obj[property] != 'object')
-      continue;
-    if (typeof obj[property] === 'object') {
-      obj = sanitizeObject(obj);
-    } else obj[property] = xss(obj[property]);
-  }
-  return obj;
+	for (const property in obj) {
+		if (typeof obj[property] != "string" || typeof obj[property] != "object")
+			continue;
+		if (typeof obj[property] === "object") {
+			obj = sanitizeObject(obj);
+		} else obj[property] = xss(obj[property]);
+	}
+	return obj;
 };
 
 const checkStringLength = (str, min, max) => {
-  if (max == undefined && str.length < min) {
-    throw `Err: Input string should be greater than ${min} characters long`;
-  }
-  if (str.length < min || str.length > max)
-    throw `Err: Input string should be between ${min}-${max} characters long`;
+	if (max == undefined && str.length < min) {
+		throw `Err: Input string should be greater than ${min} characters long`;
+	}
+	if (str.length < min || str.length > max)
+		throw `Err: Input string should be between ${min}-${max} characters long`;
 };
 
 export {
-  checkString,
-  checkId,
-  checkIsPositiveInteger,
-  checkCustomer,
-  sanitizeInput,
-  sanitizeObject,
-  checkStringLength,
-  checkDate,
+	checkString,
+	checkId,
+	checkIsPositiveInteger,
+	checkCustomer,
+	sanitizeInput,
+	sanitizeObject,
+	checkStringLength,
+	checkDate,
+	checkIsPositiveNumber,
 };
