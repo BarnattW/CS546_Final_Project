@@ -12,12 +12,12 @@ import {
 // Add Listings form
 const addListingForm = document.getElementById('addListingForm');
 
-const listingName = document.getElementById('listingName');
-const listingDescription = document.getElementById('listingDescription');
-const listingPrice = document.getElementById('listingPrice');
-const listingCategory = document.getElementById('listingCategory');
-const listingCondition = document.getElementById('listingCondition');
-const listingImage = document.getElementById('listingImage');
+const listingName = document.getElementById("listingName");
+const listingDescription = document.getElementById("listingDescription");
+const listingPrice = document.getElementById("listingPrice");
+const listingCategory = document.getElementById("listingCategory");
+const listingCondition = document.getElementById("listingCondition");
+const listingImage = document.getElementById("listingImage");
 
 addListingForm.addEventListener('submit', async (event) => {
   event.preventDefault();
