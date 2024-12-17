@@ -1,30 +1,115 @@
-<body>
-    <h1>Checkout</h1>
-    
-    <form id="checkout-form" action="/checkout" method="POST">
-        <label for="full-name">Full Name:</label><br>
-        <input type="text" id="full-name" name="fullName" placeholder="Enter your full name" required><br><br>
+<h1>Checkout</h1>
+<div id="clientError" class="error" hidden>Error Message</div>
+{{#if cart}}
+	<div class="flex-centered">
+		<div class="flex-grow">
+			{{#each cart}}
+				<div class="checkout-item" data-listingId="{{listingId}}">
+					<a class="href-black" href="/sellers/listings/{{listing._id}}">
+						<div class="item-image">
+							<img src="{{listing.itemImage}}" alt="{{listing.itemName}}" />
+						</div>
+					</a>
+					<div class="flex-grow">
+						<h2>{{listing.itemName}}</h2>
+						<p>{{listing.itemDescription}}</p>
+						<p>Condition: {{listing.condition}}</p>
+						<p class="price">Price: ${{listing.itemPrice}}</p>
+						<p>Quantity: {{quantity}}</p>
+						<p class="total">Total: ${{multiply listing.itemPrice quantity}}</p>
+					</div>
+				</div>
+			{{/each}}
+		</div>
+		<div class="checkout-container">
+			<h2>Cart Summary</h2>
+			<h3>Total Items: {{totalItems}}</h3>
+			<h3>Total Price: ${{totalPrice}}</h3>
 
-        <label for="address">Street Address:</label><br>
-        <textarea id="address" name="address" rows="2" cols="50" placeholder="Enter your street address" required></textarea><br><br>
-
-        <label for="city">City:</label><br>
-        <input type="text" id="city" name="city" placeholder="Enter your city" required><br><br>
-
-        <label for="state">State:</label><br>
-        <input type="text" id="state" name="state" placeholder="Enter your state" required><br><br>
-
-        <label for="zip-code">ZIP Code:</label><br>
-        <input type="text" id="zip-code" name="zipCode" placeholder="Enter your ZIP code" required><br><br>
-
-        <label for="country">Country:</label><br>
-        <input type="text" id="country" name="country" placeholder="Enter your country" required><br><br>
-
-        <p><strong>Total Cart Value:</strong> ${{totalCartValue}}</p>
-
-        <button type="submit">Make Payment</button>
-    </form>
-    <script type="module" src="/public/js/users/checkout_validation.js"></script>
-
-</body>
-
+			<form id="checkoutForm" name="checkoutForm" method="POST">
+				<label for="full-name">Full Name:</label>
+				<input
+					type="text"
+					id="fullName"
+					name="fullName"
+					placeholder="Enter your full name"
+					required
+				/>
+				<label for="address">Street Address:</label>
+				<textarea
+					id="address"
+					name="address"
+					rows="2"
+					cols="50"
+					placeholder="Enter your street address"
+					required
+				></textarea>
+				<label for="city">City:</label>
+				<input
+					type="text"
+					id="city"
+					name="city"
+					placeholder="Enter your city"
+					required
+				/>
+				<label for="state">State:</label>
+				<input
+					type="text"
+					id="state"
+					name="state"
+					placeholder="Enter your state"
+					required
+				/>
+				<label for="zip-code">ZIP Code:</label>
+				<input
+					type="text"
+					id="zipCode"
+					name="zipCode"
+					placeholder="Enter your ZIP code"
+					required
+				/>
+				<label for="country">Country:</label>
+				<input
+					type="text"
+					id="country"
+					name="country"
+					placeholder="Enter your country"
+					required
+				/>
+				<label for="card-number">Card Number:</label>
+				<input
+					type="text"
+					id="cardNumber"
+					name="cardNumber"
+					placeholder="Enter your card number"
+					required
+					pattern="\d{16}"
+					title="Enter a 16-digit card number"
+				/>
+				<label for="expiration-date">Expiration Date (MM/YY):</label>
+				<input
+					type="text"
+					id="expirationDate"
+					name="expirationDate"
+					placeholder="MM/YY"
+					required
+					pattern="\d{2}/\d{2}"
+					title="Enter in MM/YY format"
+				/>
+				<label for="cvv">CVV:</label>
+				<input
+					type="text"
+					id="cvv"
+					name="cvv"
+					placeholder="CVV"
+					required
+					pattern="\d{3}"
+					title="Enter a 3-digit CVV"
+				/>
+				<button type="submit">Submit</button>
+			</form>
+		</div>
+	</div>
+{{else}}
+	<h2> Your cart is empty... </h2>
+{{/if}}

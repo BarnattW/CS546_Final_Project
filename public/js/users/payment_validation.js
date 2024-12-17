@@ -41,31 +41,3 @@ document.addEventListener('DOMContentLoaded', () => {
           errorElement.remove();
       }
   };
-
-  Object.values(fields).forEach(({ element, validate, error }) => {
-      element.addEventListener('blur', () => {
-          if (!validate(element.value)) {
-              showError(element, error);
-          } else {
-              clearError(element);
-          }
-      });
-  });
-
-  form.addEventListener('submit', (event) => {
-      let isValid = true;
-      Object.values(fields).forEach(({ element, validate, error }) => {
-          if (!validate(element.value)) {
-              showError(element, error);
-              isValid = false;
-          } else {
-              clearError(element);
-          }
-      });
-
-      if (!isValid) {
-          event.preventDefault(); 
-          alert('Please fix the errors in the form before submitting.');
-      }
-  });
-});

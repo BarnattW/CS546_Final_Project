@@ -1,29 +1,31 @@
-<body>
-    <h1>{{pageTitle}}</h1>
-    <p>Welcome, {{role}}. Here are your orders:</p>
-
-    {{#if orders.length}}
-        <table border="1" cellpadding="10">
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Order Date</th>
-                    <th>Total Cost</th>
-                    <th>View Details</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each orders}}
-                    <tr>
-                        <td>{{this.orderId}}</td>
-                        <td>{{this.orderDate}}</td>
-                        <td>${{this.total}}</td>
-                        <td><a href="/orders/{{this.orderId}}">View Order</a></td>
-                    </tr>
-                {{/each}}
-            </tbody>
-        </table>
-    {{else}}
-        <p>No orders found.</p>
-    {{/if}}
-</body>
+{{#if orders.length}}
+	<section>
+		<table class="order-table">
+			<thead>
+				<tr>
+					<th scope="col">Order ID</th>
+					<th scope="col">Order Date</th>
+					<th scope="col">Order Address</th>
+					<th scope="col">Total Cost</th>
+					<th scope="col">View Details</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each orders}}
+					<tr>
+						<td>{{_id}}</td>
+						<td>{{orderDate}}</td>
+                        <td>{{shippingAddress}}</td>
+						<td>${{cost}}</td>
+						<td><a href="/orders/{{_id}}">View Order</a></td>
+					</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</section>
+{{else}}
+	<section class="no-orders">
+		<p>You have no orders at this time. Start shopping
+			<a href="/shop">here</a>!</p>
+	</section>
+{{/if}}
