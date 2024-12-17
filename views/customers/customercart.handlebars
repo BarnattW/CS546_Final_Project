@@ -1,7 +1,6 @@
 <h1>Cart</h1>
 {{#if cart}}
   <div class="cart-items">
-    <div id="clientError" class="error" hidden>Error Message</div>
     {{#each cart}}
       <div class="cart-item" data-listingId="{{listingId}}">
         <a class ="href-black" href="/sellers/listings/{{listing._id}}">
@@ -11,7 +10,7 @@
         </a>
         <div class="flex-grow">
           <h2>{{listing.itemName}}</h2>
-          <p>{{listing.itemDescription}}</p>
+          <p>Description: {{listing.itemDescription}}</p>
           <p>Condition: {{listing.condition}}
           <p class="price">Price: ${{listing.itemPrice}}</p>
 
@@ -48,3 +47,4 @@
 {{else}}
   <h2>Your Cart is Empty.</h2>
 {{/if}}
+<script type="module" src="/public/js/customers/cartpage.js"></script>

@@ -19,9 +19,6 @@ const listingCategory = document.getElementById("listingSubcategory");
 const listingCondition = document.getElementById("listingCondition");
 const listingImage = document.getElementById("listingImage");
 
-const clientErrorDiv = document.getElementById("clientError");
-const addListingError = document.getElementById("addListingError");
-
 addListingForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
@@ -63,7 +60,7 @@ addListingForm.addEventListener("submit", async (event) => {
 
 		if (!response.ok) {
 			const data = await response.json();
-			throw data.error;
+			throw JSON.stringify(data.error);
 		} else {
 			window.location.reload();
 		}
@@ -148,7 +145,6 @@ closeEditListingBtn.addEventListener("click", () => {
 });
 
 const editListingForm = document.getElementById("editListingForm");
-const editListingError = document.getElementById("editListingError");
 
 editListingForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
@@ -204,7 +200,7 @@ editListingForm.addEventListener("submit", async (event) => {
 
 		if (!response.ok) {
 			const data = await response.json();
-			throw data.error;
+			throw JSON.stringify(data.error);
 		} else {
 			window.location.reload();
 		}

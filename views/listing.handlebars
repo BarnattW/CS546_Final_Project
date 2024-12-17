@@ -1,11 +1,10 @@
 <div class='listing'>
   <img src='{{listing.itemImage}}' alt='Item Image' class='product-image' />
-
   <div class='product-details'>
-    <h2 class='product-title'>{{listing.itemName}}</h2>
-    <p class='product-description'>Description: {{listing.itemDescription}}</p>
-    <p class='product-price'>Price: ${{listing.itemPrice}}</p>
-    <p class='product-condition'>Condition: {{listing.condition}}</p>
+    <h2>{{listing.itemName}}</h2>
+    <p>Description: {{listing.itemDescription}}</p>
+    <p >Condition: {{listing.condition}}</p>
+    <p>Price: ${{listing.itemPrice}}</p>
     <form
       id='itemAddToCart'
       name='itemAddToCart'
@@ -34,7 +33,6 @@
       class='addToWishlistBtn'
       data-listingid='{{listing._id}}'
     >Add to Wishlist</button>
-    <div id='clientError' class='error' hidden>Error Message</div>
   </div>
 </div>
 
@@ -140,3 +138,5 @@
     </form>
   {{/eq}}
 </div>
+
+<script type='module' src='/public/js/listings/listingspage.js'></script>

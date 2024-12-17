@@ -1,4 +1,8 @@
-import { checkInputEmpty, checkInputLength } from "./helpers.js";
+import {
+	checkInputEmpty,
+	checkInputLength,
+	showErrorDialog,
+} from "./helpers.js";
 /*
  * Signup Page
  */
@@ -27,8 +31,6 @@ if (signupTabs && signupForms) {
 }
 
 // Form Submission
-const clientErrorDiv = document.getElementById("clientError");
-
 const customerSignupForm = document.getElementById("customerSignup");
 const sellerSignupForm = document.getElementById("sellerSignup");
 
@@ -48,8 +50,6 @@ const sellerConfirmPassword = document.getElementById("sellerConfirmPassword");
 customerSignupForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
-	clientErrorDiv.hidden = true;
-	clientErrorDiv.innerHTML = "";
 	try {
 		customerName.value = checkInputEmpty(customerName, "Name");
 		customerUsername.value = checkInputEmpty(customerUsername, "Username");
@@ -82,20 +82,16 @@ customerSignupForm.addEventListener("submit", async (event) => {
 			window.location.href = "/customers/login";
 		} else {
 			const data = await response.json();
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = data.error;
+			throw JSON.stringify(data.error);
 		}
 	} catch (e) {
-		clientErrorDiv.hidden = false;
-		clientErrorDiv.innerHTML = e;
+		showErrorDialog(e);
 	}
 });
 
 sellerSignupForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
-	clientErrorDiv.hidden = true;
-	clientErrorDiv.innerHTML = "";
 	try {
 		sellerBusinessName.value = checkInputEmpty(
 			sellerBusinessName,
@@ -133,11 +129,9 @@ sellerSignupForm.addEventListener("submit", async (event) => {
 			window.location.href = "/sellers/login";
 		} else {
 			const data = await response.json();
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = data.error;
+			throw JSON.stringify(data.error);
 		}
 	} catch (e) {
-		clientErrorDiv.hidden = false;
-		clientErrorDiv.innerHTML = e;
+		showErrorDialog(e);
 	}
 });

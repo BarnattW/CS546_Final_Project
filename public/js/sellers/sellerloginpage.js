@@ -1,15 +1,16 @@
-import { checkInputEmpty, checkInputLength } from "../helpers.js";
+import {
+	checkInputEmpty,
+	checkInputLength,
+	showErrorDialog,
+} from "../helpers.js";
 
 const sellerLoginForm = document.getElementById("sellerLogin");
-const clientErrorDiv = document.getElementById("clientError");
 const sellerUsername = document.getElementById("sellerUsername");
 const sellerPassword = document.getElementById("sellerPassword");
 
 sellerLoginForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
-	clientErrorDiv.hidden = true;
-	clientErrorDiv.innerHTML = "";
 	try {
 		sellerUsername.value = checkInputEmpty(sellerUsername, "Username");
 		sellerPassword.value = checkInputEmpty(sellerPassword, "Password");
@@ -31,10 +32,9 @@ sellerLoginForm.addEventListener("submit", async (event) => {
 			window.location.href = "/";
 		} else {
 			const data = await response.json();
-			throw data.error;
+			throw JSON.stringify(data.error);
 		}
 	} catch (e) {
-		clientErrorDiv.hidden = false;
-		clientErrorDiv.innerHTML = e;
+		showErrorDialog(e);
 	}
 });

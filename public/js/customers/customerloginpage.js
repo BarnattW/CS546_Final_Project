@@ -1,16 +1,17 @@
-import { checkInputEmpty, checkInputLength } from "../helpers.js";
+import {
+	checkInputEmpty,
+	checkInputLength,
+	showErrorDialog,
+} from "../helpers.js";
 
 /*
  * Login Pages
  */
-const clientErrorDiv = document.getElementById("clientError");
 const customerLoginForm = document.getElementById("customerLogin");
 
 customerLoginForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
-	clientErrorDiv.hidden = true;
-	clientErrorDiv.innerHTML = "";
 	try {
 		customerUsername.value = checkInputEmpty(customerUsername, "Username");
 		customerPassword.value = checkInputEmpty(customerPassword, "Password");
@@ -32,11 +33,9 @@ customerLoginForm.addEventListener("submit", async (event) => {
 			window.location.reload();
 		} else {
 			const data = await response.json();
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = data.error;
+			throw JSON.stringify(data.error);
 		}
 	} catch (e) {
-		clientErrorDiv.hidden = false;
-		clientErrorDiv.innerHTML = e;
+		showErrorDialog(e);
 	}
 });

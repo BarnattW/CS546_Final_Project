@@ -1,5 +1,4 @@
 <h1>Wishlist</h1>
-<div id="clientError" class="error" hidden>Error Message</div>
 {{#if wishlist}}
 	<div id="cart-items">
 		{{#each wishlist}}
@@ -10,6 +9,8 @@
 					</div>
 					<div>
 						<h2>{{listing.itemName}}</h2>
+						<p>Description: {{listing.itemDescription}}</p>
+						<p>Condition: {{listing.condition}}</p>
 						<p>Price: {{listing.itemName}}</p>
 						<button
 							class="removeFromWishlistBtn"
