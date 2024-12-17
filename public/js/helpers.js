@@ -27,3 +27,17 @@ export const convertImage = (image) => {
 export const checkNumRange = (num, min, max) => {
 	if (num < min || num > max) throw `${num} is not in the range ${min}-${max}`;
 };
+
+const errorDialog = document.getElementById("errorDialog");
+export const showErrorDialog = (message) => {
+	const errorMessageElement = document.getElementById("errorMessage");
+	if (errorMessageElement) errorMessageElement.textContent = message;
+
+	errorDialog.style.display = "flex";
+};
+
+const closeErrorDialog = document.getElementById("errorDialogClose");
+if (closeErrorDialog)
+	closeErrorDialog.addEventListener("click", () => {
+		errorDialog.style.display = "none";
+	});

@@ -1,10 +1,9 @@
-<!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8" >
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" >
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Duckling Dećor</title>
-		<link rel="stylesheet" href="/public/css/styles.css" >
+		<link rel="stylesheet" href="/public/css/styles.css" />
 	</head>
 	<body>
 		<script type="module" src="/public/js/helpers.js"></script>
@@ -20,7 +19,7 @@
 								class="search-input wide-search"
 								placeholder="Search here!"
 								name="query"
-							>
+							/>
 						</form>
 					</div>
 					<ul class="nav-list">
@@ -56,6 +55,14 @@
 		</header>
 
 		<main>
+			<div id="errorDialog" class="error-dialog error" style="display: none;">
+				<div class="error-dialog-content">
+					<p id="errorMessage" class="error-dialog-message">An error has
+						occurred.</p>
+					<span id="errorDialogClose" class="error-dialog-close">×</span>
+				</div>
+			</div>
+
 			{{{body}}}
 		</main>
 

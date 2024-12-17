@@ -162,6 +162,8 @@ router
 			cartItemData.listingId = checkId(cartItemData.listingId, "listingId");
 			cartItemData.quantity = Number(cartItemData.quantity);
 			checkIsPositiveInteger(cartItemData.quantity);
+			if (cartItemData.quantity < 0) cartItemData.quantity = 1;
+			if (cartItemData.quantity > 5) cartItemData.quantity = 5;
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ error: e });

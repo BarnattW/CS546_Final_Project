@@ -360,8 +360,7 @@ button:hover {
 
 .error-message {
   color: red;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+  font-size: 1;
 }
 
 .listingsDashboard {
@@ -448,10 +447,6 @@ button:hover {
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 5px;
-}
-
-p {
-  margin: 0.3rem 0 0.3rem 0;
 }
 
 h2 {
@@ -582,4 +577,72 @@ h2 {
 .order-table th {
     background-color: #f4f4f4;
     font-weight: bold;
+}
+
+.error-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none; /* Hidden by default */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.error-dialog-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 50%;
+}
+
+.error-dialog-close {
+  font-size: 3em;
+  cursor: pointer;
+  color: #000;
+}
+.error-dialog-close:hover {
+  color: #f00;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding: 10px 15px;
+  background: #f9f9f9;
+  border-top: 1px solid #ddd;
 }

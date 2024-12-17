@@ -137,6 +137,8 @@ const addToCart = async (customerId, listingId, quantity) => {
 	customerId = checkId(customerId, "customerId");
 	listingId = checkId(listingId, "listingId");
 	checkIsPositiveInteger(quantity);
+	if (quantity > 5) throw `Quantity cannot be greater than 5`;
+	if (quantity < 1) throw `Quantity cannot be less than 1`;
 
 	const customersCollection = await customers();
 	let updatedCart;
