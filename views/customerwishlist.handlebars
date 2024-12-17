@@ -1,18 +1,27 @@
- {{#if wishlist.length}}
-    <div id="wishlist-items">
-      {{#each wishlist}}
-      <div class="wishlist-item" data-listingid="{{listingId}}">
-        <img src="{{imageUrl}}" alt="{{name}}" class="wishlist-item-image" />
-        <div class="wishlist-item-details">
-          <h2>{{name}}</h2>
-          <p>Price: {{price}}</p>
-          <button class="remove-btn" data-listingid="{{listingId}}">Remove</button>
-          <button class="move-to-cart-btn" data-listingid="{{listingId}}">Move to Cart</button>
-        </div>
-      </div>
-      {{/each}}
-    </div>
-    {{else}}
-    <p>Your wishlist is empty!</p>
-    {{/if}}
-  </div>
+<h1>Wishlist</h1>
+<div id="clientError" class="error" hidden>Error Message</div>
+{{#if wishlist}}
+	<div id="cart-items">
+		{{#each wishlist}}
+			<a class ="href-black" href="/sellers/listings/{{listing._id}}">
+				<div class="cart-item" data-listingid="{{listing._id}}">
+					<div class="item-image">
+						<img src="{{listing.itemImage}}" alt="{{listing.itemName}}" />
+					</div>
+					<div>
+						<h2>{{listing.itemName}}</h2>
+						<p>Price: {{listing.itemName}}</p>
+						<button
+							class="removeFromWishlistBtn"
+							data-listingid="{{listing._id}}"
+						>Remove</button>
+						<button class="moveToCartBtn" data-listingid="{{listing._id}}">Move
+							to Cart</button>
+					</div>
+				</div>
+			</a>
+		{{/each}}
+	</div>
+{{else}}
+	<p>Your wishlist is empty!</p>
+{{/if}}
