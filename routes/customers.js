@@ -18,7 +18,7 @@ router
 	.route("/login")
 	.get(async (req, res) => {
 		try {
-			return res.render("customerlogin", { user: req.session.user });
+			return res.render("customers/customerlogin", { user: req.session.user });
 		} catch (e) {
 			return res.status(404).json({ error: e });
 		}
@@ -34,18 +34,23 @@ router
 
 		try {
 			customerData = sanitizeObject(customerData);
-			let { username, password } = customerData;
+		} catch (e) {
+			return res.status(400).json({ error: e });
+		}
+
+		let { username, password } = customerData;
+		try {
 			username = checkString(username, "Username");
 			password = checkString(password, "Password");
 			checkStringLength(username, 5, 20);
 			checkStringLength(password, 8);
+			username = username.toLowerCase();
 		} catch (e) {
 			console.log(e);
 			return res.status(400).json({ error: e });
 		}
 
 		try {
-			let { username, password } = customerData;
 			const user = await customersData.loginCustomer(username, password);
 			if (user) {
 				req.session.user = {
@@ -56,7 +61,7 @@ router
 			}
 			return res.json();
 		} catch (e) {
-			return res.status(400).json({ error: e });
+			return res.status(500).json({ error: e });
 		}
 	});
 
@@ -76,7 +81,12 @@ router.route("/signup").post(async (req, res) => {
 
 	try {
 		customerData = sanitizeObject(customerData);
-		let { username, name, password, confirmPassword } = customerData;
+	} catch (e) {
+		return res.status(400).json({ error: e });
+	}
+
+	let { username, name, password, confirmPassword } = customerData;
+	try {
 		username = checkString(username, "Username");
 		name = checkString(name, "Name");
 		password = checkString(password, "Password");
@@ -87,6 +97,8 @@ router.route("/signup").post(async (req, res) => {
 
 		if (password != confirmPassword)
 			throw `Password and confirmation password must match`;
+
+		username = username.toLowerCase();
 	} catch (e) {
 		console.log(e);
 		return res.status(400).json({ error: e });
@@ -94,7 +106,6 @@ router.route("/signup").post(async (req, res) => {
 
 	// db insertion
 	try {
-		let { username, name, password, confirmPassword } = customerData;
 		const newCustomer = await customersData.createCustomer(
 			username,
 			password,
@@ -119,7 +130,7 @@ router
 
 		try {
 			const cartData = await customersData.getCustomerCart(user._id);
-			return res.render("customercart", {
+			return res.render("customers/customercart", {
 				cart: cartData.populatedCart,
 				totalItems: cartData.totalItems,
 				totalPrice: cartData.totalPrice,
@@ -222,7 +233,7 @@ router
 			const wishlist = await customersData.getCustomerWishlist(
 				req.session.user._id
 			);
-			return res.render("customerwishlist", {
+			return res.render("customers/customerwishlist", {
 				user: req.session.user,
 				wishlist,
 			});
@@ -356,7 +367,7 @@ router.route("/checkout").get(async (req, res) => {
 
 	try {
 		const cartData = await customersData.getCustomerCart(user._id);
-		res.render("checkout", {
+		res.render("customers/checkout", {
 			user: req.session.user,
 			cart: cartData.populatedCart,
 			totalItems: cartData.totalItems,
