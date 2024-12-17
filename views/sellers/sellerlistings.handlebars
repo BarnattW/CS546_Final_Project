@@ -1,0 +1,241 @@
+<h1>Seller Dashboard</h1>
+
+<div class="listingsDashboard">
+  <button id="openCreateListingBtn" class="m-bottom-10">
+    Create New Listing
+  </button>
+
+  <div id="clientError" class="error" hidden>
+    Error Message
+  </div>
+
+  <table class="listingsTable w-100">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Item Name</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Condition</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each listings}}
+        <tr data-listingId="{{_id}}">
+          <td>
+            <img
+              src="{{itemImage}}"
+              alt="{{itemName}}"
+              class="listingImage"
+            />
+          </td>
+          <td>{{itemName}}</td>
+          <td>{{itemDescription}}</td>
+          <td>{{itemCategory}}</td>
+          <td>{{condition}}</td>
+          <td>${{itemPrice}}</td>
+          <td>
+            <button class="editListingBtn">Edit</button>
+            <button class="deleteListingBtn">Delete</button>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+<div id="createListingModal" class="modal hidden">
+  <div class="modalContent">
+    <h2>Create Listing</h2>
+
+    <form
+      action="/sellers/addlisting"
+      method="POST"
+      enctype="multipart/form-data"
+      id="addListingForm"
+      class="flex-col"
+    >
+      <label for="listingName">Listing Name</label>
+      <input
+        type="text"
+        id="listingName"
+        name="listingName"
+        placeholder="Enter listing name"
+        required
+      />
+
+      <label for="listingDescription">Listing Description</label>
+      <textarea
+        id="listingDescription"
+        name="listingDescription"
+        rows="4"
+        placeholder="Provide a brief description of the listing"
+        required
+      ></textarea>
+
+      <label for="listingPrice">Listing Price ($)</label>
+      <input
+        type="number"
+        id="listingPrice"
+        name="listingPrice"
+        placeholder="Enter price"
+        required
+        min="1"
+        max="10000"
+        step="0.01"
+      />
+
+      <label for="listingCategory">Furniture Category</label>
+      <select id="listingCategory" name="listingCategory" required>
+        <option value="" disabled selected>Select a furniture category</option>
+        <option value="sofas">Sofas</option>
+        <option value="chairs">Chairs</option>
+        <option value="coffee-tables">Coffee Tables</option>
+        <option value="end-tables">End Tables</option>
+        <option value="tv-stands">TV Stands</option>
+        <option value="recliners">Recliners</option>
+        <option value="ottomans">Ottomans</option>
+        <option value="beds">Beds</option>
+        <option value="nightstands">Nightstands</option>
+        <option value="dressers">Dressers</option>
+        <option value="wardrobes">Wardrobes</option>
+        <option value="mirrors">Mirrors</option>
+        <option value="dining-tables">Dining Tables</option>
+        <option value="dining-chairs">Dining Chairs</option>
+        <option value="sideboards">Sideboards</option>
+        <option value="bar-stools">Bar Stools</option>
+        <option value="desks">Desks</option>
+        <option value="office-chairs">Office Chairs</option>
+        <option value="bookcases">Bookcases</option>
+        <option value="patio-furniture">Patio Furniture</option>
+        <option value="storage-benches">Storage Benches</option>
+        <option value="shelving-units">Shelving Units</option>
+      </select>
+
+      <label for="listingCondition">Listing Condition</label>
+      <select id="listingCondition" name="listingCondition" required>
+        <option value="" disabled selected>Select condition</option>
+        <option value="New">New</option>
+        <option value="Minimal Wear">Minimal Wear</option>
+        <option value="Used">Used</option>
+      </select>
+
+      <label for="listingImage">Upload Image</label>
+      <input
+        type="file"
+        id="listingImage"
+        name="listingImage"
+        accept=".png, .jpeg, .jpg"
+        required
+      />
+
+      <div>
+        <button type="submit">Create</button>
+        <button type="button" id="closeCreateListingBtn">Cancel</button>
+      </div>
+    </form>
+
+    <div id="addListingError" class="error" hidden>
+      Error Message
+    </div>
+  </div>
+</div>
+
+<div id="editListingModal" class="modal hidden">
+  <div class="modalContent">
+    <h2>Edit Listing</h2>
+
+    <form
+      action="/sellers/listing"
+      method="PUT"
+      id="editListingForm"
+      class="flex-col"
+    >
+      <label for="editListingName">Listing Name</label>
+      <input
+        type="text"
+        id="editListingName"
+        name="listingName"
+        placeholder="Enter listing name"
+        required
+      />
+
+      <label for="editListingDescription">Listing Description</label>
+      <textarea
+        id="editListingDescription"
+        name="listingDescription"
+        rows="4"
+        placeholder="Provide a brief description of the listing"
+        required
+      ></textarea>
+
+      <label for="editListingPrice">Listing Price ($)</label>
+      <input
+        type="number"
+        id="editListingPrice"
+        name="listingPrice"
+        placeholder="Enter price"
+        required
+        min="1"
+        max="10000"
+        step="0.01"
+      />
+
+      <label for="editListingCategory">Furniture Category</label>
+      <select id="editListingCategory" name="listingCategory" required>
+        <option value="" disabled selected>Select a furniture category</option>
+        <option value="sofas">Sofas</option>
+        <option value="chairs">Chairs</option>
+        <option value="coffee-tables">Coffee Tables</option>
+        <option value="end-tables">End Tables</option>
+        <option value="tv-stands">TV Stands</option>
+        <option value="recliners">Recliners</option>
+        <option value="ottomans">Ottomans</option>
+        <option value="beds">Beds</option>
+        <option value="nightstands">Nightstands</option>
+        <option value="dressers">Dressers</option>
+        <option value="wardrobes">Wardrobes</option>
+        <option value="mirrors">Mirrors</option>
+        <option value="dining-tables">Dining Tables</option>
+        <option value="dining-chairs">Dining Chairs</option>
+        <option value="sideboards">Sideboards</option>
+        <option value="bar-stools">Bar Stools</option>
+        <option value="desks">Desks</option>
+        <option value="office-chairs">Office Chairs</option>
+        <option value="bookcases">Bookcases</option>
+        <option value="patio-furniture">Patio Furniture</option>
+        <option value="storage-benches">Storage Benches</option>
+        <option value="shelving-units">Shelving Units</option>
+      </select>
+
+      <label for="editListingCondition">Listing Condition</label>
+      <select id="editListingCondition" name="listingCondition" required>
+        <option value="" disabled selected>Select condition</option>
+        <option value="New">New</option>
+        <option value="Minimal Wear">Minimal Wear</option>
+        <option value="Used">Used</option>
+      </select>
+
+      <label for="editListingImage">Upload Image</label>
+      <input
+        type="file"
+        id="editListingImage"
+        name="listingImage"
+        accept=".png, .jpeg, .jpg"
+      />
+
+      <div>
+        <button type="submit">Save Changes</button>
+        <button type="button" id="closeEditListingBtn">Cancel</button>
+      </div>
+    </form>
+
+    <div id="editListingError" class="error" hidden>
+      Error Message
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/public/js/listings/sellerlistingspage.js"></script>
