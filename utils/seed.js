@@ -2,11 +2,11 @@ import { dbConnection, closeConnection } from '../config/mongoConnection.js';
 import { customersDataFunctions } from '../data/customers.js';
 import * as seller from '../data/seller.js';
 
-export async function runSetup() {
+async function runSetup () {
   const db = await dbConnection();
   await db.dropDatabase();
 
-  // Creating two customers
+  // Creating three customers
   let customer1 = await customersDataFunctions.createCustomer(
     'mwong',
     'Password123',
@@ -16,6 +16,11 @@ export async function runSetup() {
     'oboghra',
     'Password456',
     'Om'
+  );
+  let customer3 = await customersDataFunctions.createCustomer(
+    'ljones',
+    'Password789',
+    'Lara'
   );
 
   // Seller data
@@ -67,7 +72,7 @@ export async function runSetup() {
         `Product ${i} by ${s.name}`,
         `${s.name}'s product ${i} description`,
         i * 20 + 20, // Example pricing logic
-        `https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQLAPGLHDuDHw9akKUkLTYMFZ-pc0UJOTz-YfLEnRj7MBZUOdb4mr2AG4ZsmgqJXJLR9XbwEn7grSlOIipErci5I8frzGHgJMxn8GfJMGscS9IMA-tyJ40iRA`,
+        `https://example.com/product${i}.jpg`,
         ['chairs', 'desks', 'tables', 'sofas', 'beds'][i % 5],
         ['new', 'used', 'minimal wear', 'refurbished', 'like new'][i % 5]
       );
@@ -76,3 +81,5 @@ export async function runSetup() {
 
   console.log('Done seeding database');
 }
+
+seedDB().catch(console.error);
