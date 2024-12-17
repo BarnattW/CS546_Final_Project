@@ -1,12 +1,11 @@
 <div class="flex-col-centered">
 	<h1>Log In As Customer</h1>
-	<form action="/customers/login" method="POST" id="customerLogin" name="customerLogin">
+	<form action="/customers/login" method="POST" id="customerLogin" name="customerLogin" class="flex-col">
 		<label for="customerUsername">Username</label>
 		<input type="text" id="customerUsername" name="customerUsername" required />
 		<label for="customerPassword">Password</label>
 		<input type="password" id="customerPassword" name="customerPssword" required />
 		<button type="submit" class="button" id="customerLoginSubmit">Log In</button>
 	</form>
-	<div id="clientError" class="error" hidden>Error Message</div>
 </div>
 <script type="module" src="/public/js/customers/customerloginpage.js"></script>

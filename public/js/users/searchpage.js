@@ -39,7 +39,7 @@ Array.from(document.getElementsByClassName("addToCart")).forEach((form) => {
 				window.location.href = "/customers/cart";
 			} else {
 				const data = await response.json();
-				throw data.error;
+				throw JSON.stringify(data.error);
 			}
 		} catch (e) {
 			showErrorDialog(e);

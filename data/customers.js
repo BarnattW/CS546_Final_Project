@@ -127,6 +127,7 @@ const getCustomerCart = async (customerId) => {
 		})
 	);
 
+	totalPrice = totalPrice.toFixed(2);
 	return { populatedCart, totalItems, totalPrice };
 };
 
@@ -156,6 +157,8 @@ const addToCart = async (customerId, listingId, quantity) => {
 	if (existingItem) {
 		const currentQuantity = existingItem.cart[0].quantity;
 		const newQuantity = Math.min(currentQuantity + quantity, 5);
+		if (newQuantity > 5) throw `Item already at maximum quantity of 5`;
+
 		updatedCart = await customersCollection.updateOne(
 			{
 				_id: new ObjectId(customerId),
@@ -165,7 +168,6 @@ const addToCart = async (customerId, listingId, quantity) => {
 				$set: { "cart.$.quantity": newQuantity },
 			}
 		);
-		if (newQuantity === 5) throw `Item already at maximum quantity of 5`;
 	} else {
 		const newItem = {
 			listingId: new ObjectId(listingId),
@@ -209,7 +211,7 @@ const updateCart = async (customerId, listingId, quantity) => {
 		);
 	} else {
 		const newQuantity = Math.min(quantity, 5);
-		if (newQuantity === 5) throw `Item already at maximum quantity of 5`;
+		if (newQuantity > 5) throw `Item already at maximum quantity of 5`;
 
 		updatedCart = await customersCollection.updateOne(
 			{
