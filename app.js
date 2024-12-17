@@ -5,11 +5,13 @@ import applyMiddlewares from './utils/middleware.js';
 import session from 'express-session';
 import handlebars from 'handlebars';
 import handlerBarsRegisterHelpers from './utils/handlebarsHelpers.js';
+import { runSetup } from './utils/seed.js';
 
+const startUp = await runSetup();
 const app = express();
 
 app.use('/public', express.static('public'));
-app.use(express.json({ limit: '10mb' }	));
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 handlerBarsRegisterHelpers(handlebars);
