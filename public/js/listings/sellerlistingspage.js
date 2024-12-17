@@ -2,7 +2,12 @@
  * Seller listings Page
  */
 
-import { checkInputEmpty, checkNumRange, convertImage } from "../helpers.js";
+import {
+	checkInputEmpty,
+	checkNumRange,
+	convertImage,
+	showErrorDialog,
+} from "../helpers.js";
 
 // Add Listings form
 const addListingForm = document.getElementById("addListingForm");
@@ -20,8 +25,6 @@ const addListingError = document.getElementById("addListingError");
 addListingForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
-	addListingError.hidden = true;
-	addListingError.innerHTML = "";
 	try {
 		listingName.value = checkInputEmpty(listingName, "Listing Name");
 		listingDescription.value = checkInputEmpty(
@@ -39,13 +42,7 @@ addListingForm.addEventListener("submit", async (event) => {
 		);
 
 		if (!listingImage.files) throw `An image is required`;
-	} catch (e) {
-		addListingError.hidden = false;
-		addListingError.innerHTML = e;
-		return;
-	}
 
-	try {
 		const image = await convertImage(listingImage.files[0]);
 		const price = Number(listingPrice.value);
 		checkNumRange(price, 1, 10000);
@@ -71,8 +68,7 @@ addListingForm.addEventListener("submit", async (event) => {
 			window.location.reload();
 		}
 	} catch (e) {
-		clientErrorDiv.hidden = false;
-		clientErrorDiv.innerHTML = e;
+		showErrorDialog(e);
 	}
 });
 
@@ -82,8 +78,6 @@ Array.from(document.getElementsByClassName("deleteListingBtn")).forEach((btn) =>
 		const row = e.target.closest("tr");
 		const listingId = row.dataset.listingid;
 
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
 		try {
 			const response = await fetch(`/sellers/listings/${listingId}`, {
 				method: "DELETE",
@@ -94,8 +88,7 @@ Array.from(document.getElementsByClassName("deleteListingBtn")).forEach((btn) =>
 				throw `Could not delete listing with ID ${listingId}`;
 			}
 		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
+			showErrorDialog(e);
 		}
 	})
 );
@@ -160,8 +153,6 @@ const editListingError = document.getElementById("editListingError");
 editListingForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
-	editListingError.hidden = true;
-	editListingError.innerHTML = "";
 	try {
 		const listingId = editListingForm.dataset.listingid;
 		const listingName = document.getElementById("editListingName");
@@ -218,7 +209,6 @@ editListingForm.addEventListener("submit", async (event) => {
 			window.location.reload();
 		}
 	} catch (e) {
-		editListingError.hidden = false;
-		editListingError.innerHTML = e;
+		showErrorDialog(e);
 	}
 });

@@ -4,40 +4,40 @@ import { checkInputEmpty, checkInputLength } from "./helpers.js";
  * Listing Form
  */
 // add to cart
-// const itemPageAddToCartForm = document.getElementById("itemAddToCart");
-// if (itemPageAddToCartForm) {
-// 	itemPageAddToCartForm.addEventListener("submit", async (event) => {
-// 		event.preventDefault();
+const itemPageAddToCartForm = document.getElementById("itemAddToCart");
+if (itemPageAddToCartForm) {
+	itemPageAddToCartForm.addEventListener("submit", async (event) => {
+		event.preventDefault();
 
-// 		clientErrorDiv.hidden = true;
-// 		clientErrorDiv.innerHTML = "";
-// 		try {
-// 			const listingId =
-// 				document.getElementById("addToCartBtn").dataset.listingid;
-// 			const quantity = document.getElementById(`quantity-${listingId}`);
-// 			quantity.value = checkInputEmpty(quantity, "Quantity");
-// 			if (quantity.value < 0) quantity.value = 1;
-// 			else if (quantity.value > 5) quantity.value = 5;
-// 			const response = await fetch("/customers/cart", {
-// 				method: "POST",
-// 				headers: {
-// 					"Content-Type": "application/json",
-// 				},
-// 				body: JSON.stringify({ listingId, quantity: quantity.value }),
-// 			});
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			const listingId =
+				document.getElementById("addToCartBtn").dataset.listingid;
+			const quantity = document.getElementById(`quantity-${listingId}`);
+			quantity.value = checkInputEmpty(quantity, "Quantity");
+			if (quantity.value < 0) quantity.value = 1;
+			else if (quantity.value > 5) quantity.value = 5;
+			const response = await fetch("/customers/cart", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ listingId, quantity: quantity.value }),
+			});
 
-// 			if (response.ok) {
-// 				window.location.href = "/customers/cart";
-// 			} else {
-// 				const data = await response.json();
-// 				throw data.error;
-// 			}
-// 		} catch (e) {
-// 			clientErrorDiv.hidden = false;
-// 			clientErrorDiv.innerHTML = e;
-// 		}
-// 	});
-// }
+			if (response.ok) {
+				window.location.href = "/customers/cart";
+			} else {
+				const data = await response.json();
+				throw data.error;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	});
+}
 
 // add to wishlist
 const addToWishlistBtn = document.getElementById("addToWishlistBtn");
