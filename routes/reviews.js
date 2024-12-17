@@ -1,9 +1,8 @@
 import { Router } from 'express';
 const router = Router();
-import { reviewDataFunctions } from '../data/reviews.js';
+import { reviewsDataFunctions } from '../data/reviews.js';
 import * as sellerDataFunctions from '../data/seller.js';
 import * as validation from '../utils/checks.js';
-import { customersDataFunctions } from '../data/customers.js';
 
 router
   .route('/:listingId')
@@ -19,7 +18,7 @@ router
 
     try {
       let listingId = req.params.listingId;
-      let reviews = await reviewDataFunctions.getListingReviews(listingId);
+      let reviews = await reviewsDataFunctions.getListingReviews(listingId);
       let listing = await sellerDataFunctions.getListingById(listingId);
 
       return res.render('listing', {
@@ -57,7 +56,7 @@ router
       rating = validation.checkIsPositiveInteger(rating);
       reviewText = validation.checkString(reviewText, 'Review Text');
 
-      let newReview = await reviewDataFunctions.createReview(
+      let newReview = await reviewsDataFunctions.createReview(
         user._id,
         user.username,
         listingId,
@@ -86,9 +85,11 @@ router
 
     try {
       let reviewId = req.params.reviewId;
-      await reviewDataFunctions.deleteReview(reviewId);
+      await reviewsDataFunctions.deleteReview(reviewId);
 
-      reviews = await reviewDataFunctions.getListingReviews(reviewId.listingId);
+      reviews = await reviewsDataFunctions.getListingReviews(
+        reviewId.listingId
+      );
 
       return res.render('reviews', { reviews });
     } catch (e) {
@@ -124,7 +125,7 @@ router
 
     try {
       let reviewId = req.params.reviewId;
-      let review = await reviewDataFunctions.updateReview(
+      let review = await reviewsDataFunctions.updateReview(
         reviewId,
         rating,
         reviewText

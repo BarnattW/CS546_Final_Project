@@ -201,7 +201,7 @@ const deleteReview = async (reviewId) => {
   return { listing: finalListing, customer: finalCustomer };
 };
 
-export const reviewDataFunctions = {
+export const reviewsDataFunctions = {
   getReviewsById,
   getListingReviews,
   createReview,

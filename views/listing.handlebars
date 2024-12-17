@@ -1,41 +1,41 @@
 <div class='listing'>
   <img src='{{listing.itemImage}}' alt='Item Image' class='product-image' />
 
-	<div class="product-details">
-		<h2 class="product-title">{{listing.itemName}}</h2>
-		<p class="product-description">Description: {{listing.itemDescription}}</p>
-		<p class="product-price">Price: ${{listing.itemPrice}}</p>
-		<p class="product-condition">Condition: {{listing.condition}}</p>
-		<form
-			id="itemAddToCart"
-			name="itemAddToCart"
-			action="/customers/cart"
-			method="POST"
-		>
-			<label for="quantity-{{listing._id}}">Quantity:</label>
-			<input
-				type="number"
-				id="quantity-{{listing._id}}"
-				name="quantity"
-				min="1"
-				max="5"
-				value="1"
-			/>
-			<button
-				type="submit"
-				id="addToCartBtn"
-				class="addToCartBtn"
-				data-listingid="{{listing._id}}"
-			>Add to Cart</button>
-		</form>
-		<button
-			id="addToWishlistBtn"
-			name="addToWishlistBtn"
-			class="addToWishlistBtn"
-			data-listingid="{{listing._id}}"
-		>Add to Wishlist</button>
-		<div id="clientError" class="error" hidden>Error Message</div>
-	</div>
+  <div class='product-details'>
+    <h2 class='product-title'>{{listing.itemName}}</h2>
+    <p class='product-description'>Description: {{listing.itemDescription}}</p>
+    <p class='product-price'>Price: ${{listing.itemPrice}}</p>
+    <p class='product-condition'>Condition: {{listing.condition}}</p>
+    <form
+      id='itemAddToCart'
+      name='itemAddToCart'
+      action='/customers/cart'
+      method='POST'
+    >
+      <label for='quantity-{{listing._id}}'>Quantity:</label>
+      <input
+        type='number'
+        id='quantity-{{listing._id}}'
+        name='quantity'
+        min='1'
+        max='5'
+        value='1'
+      />
+      <button
+        type='submit'
+        id='addToCartBtn'
+        class='addToCartBtn'
+        data-listingid='{{listing._id}}'
+      >Add to Cart</button>
+    </form>
+    <button
+      id='addToWishlistBtn'
+      name='addToWishlistBtn'
+      class='addToWishlistBtn'
+      data-listingid='{{listing._id}}'
+    >Add to Wishlist</button>
+    <div id='clientError' class='error' hidden>Error Message</div>
+  </div>
 </div>
 
 <div class='reviews-section'>
@@ -93,4 +93,50 @@
     </form>
   {{/eq}}
 
+</div>
+
+<div class='comments-section'>
+  <h3>Customer Comments</h3>
+  {{#if comments}}
+    <div class='comment-cards-container'>
+      {{#each comments}}
+        <div class='comment-card'>
+          <h4 class='commenter-name'>{{commenterName}}
+            - Posted on
+            {{timeString}}</h4>
+          <p class='comment-text'>{{comment}}</p>
+        </div>
+      {{/each}}
+    </div>
+  {{else}}
+    <p>No comments yet.</p>
+  {{/if}}
+</div>
+
+<div class='add-comment-section'>
+  <h3>Leave a Comment</h3>
+
+  {{#eq user.role 'seller'}}
+    <p class='info-message'>Sellers cannot leave comments.</p>
+  {{else}}
+    <form
+      action='/comments/{{listing._id}}'
+      method='POST'
+      id='addCommentForm'
+      name='addCommentForm'
+      data-listingid='{{listing._id}}'
+    >
+      <div class='form-group'>
+        <label for='commentText'>Your Comment</label>
+        <textarea
+          id='commentText'
+          name='commentText'
+          rows='4'
+          required
+        ></textarea>
+      </div>
+
+      <button type='submit' class='submit-comment-btn'>Submit Comment</button>
+    </form>
+  {{/eq}}
 </div>
