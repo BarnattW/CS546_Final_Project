@@ -1,85 +1,142 @@
-<div class="listing">
-	<img src="{{listing.itemImage}}" alt="Item Image" class="product-image" />
+<div class='listing'>
+  <img src='{{listing.itemImage}}' alt='Item Image' class='product-image' />
 
-	<div class="product-details">
-		<h2 class="product-title">{{listing.itemName}}</h2>
-		<p class="product-description">Description: {{listing.itemDescription}}</p>
-		<p class="product-price">Price: ${{listing.itemPrice}}</p>
-		<p class="product-condition">Condition: {{listing.condition}}</p>
-		<form
-			id="itemAddToCart"
-			name="itemAddToCart"
-			action="/customers/cart"
-			method="POST"
-		>
-			<label for="quantity-{{listing._id}}">Quantity:</label>
-			<input
-				type="number"
-				id="quantity-{{listing._id}}"
-				name="quantity"
-				min="1"
-				max="5"
-				value="1"
-			/>
-			<button
-				type="submit"
-				id="addToCartBtn"
-				class="addToCartBtn"
-				data-listingid="{{listing._id}}"
-			>Add to Cart</button>
-		</form>
-		<button
-			id="addToWishlistBtn"
-			name="addToWishlistBtn"
-			class="addToWishlistBtn"
-			data-listingid="{{listing._id}}"
-		>Add to Wishlist</button>
-		<div id="clientError" class="error" hidden>Error Message</div>
-	</div>
+  <div class='product-details'>
+    <h2 class='product-title'>{{listing.itemName}}</h2>
+    <p class='product-description'>Description: {{listing.itemDescription}}</p>
+    <p class='product-price'>Price: ${{listing.itemPrice}}</p>
+    <p class='product-condition'>Condition: {{listing.condition}}</p>
+    <form
+      id='itemAddToCart'
+      name='itemAddToCart'
+      action='/customers/cart'
+      method='POST'
+    >
+      <label for='quantity-{{listing._id}}'>Quantity:</label>
+      <input
+        type='number'
+        id='quantity-{{listing._id}}'
+        name='quantity'
+        min='1'
+        max='5'
+        value='1'
+      />
+      <button
+        type='submit'
+        id='addToCartBtn'
+        class='addToCartBtn'
+        data-listingid='{{listing._id}}'
+      >Add to Cart</button>
+    </form>
+    <button
+      id='addToWishlistBtn'
+      name='addToWishlistBtn'
+      class='addToWishlistBtn'
+      data-listingid='{{listing._id}}'
+    >Add to Wishlist</button>
+    <div id='clientError' class='error' hidden>Error Message</div>
+  </div>
 </div>
 
-<div class="reviews-section">
-	<h3>Customer Reviews</h3>
-	{{#if reviews}}
-		{{#each reviews}}
-			<div class="review">
-				<h4 class="reviewer-name">{{this.customerName}} - {{this.rating}}/5</h4>
-				<p class="review-text">{{this.reviewText}}</p>
-			</div>
-		{{/each}}
-	{{else}}
-		<p>No reviews yet.</p>
-	{{/if}}
+<div class='reviews-section'>
+  <h3>Customer Reviews</h3>
+  {{#if reviews}}
+    <div class='review-cards-container'>
+      {{#each reviews}}
+        <div class='review-card'>
+          <h4 class='reviewer-name'>{{customerName}} - {{rating}}/5</h4>
+          <p class='review-text'>{{reviewText}}</p>
+        </div>
+      {{/each}}
+    </div>
+  {{else}}
+    <p>No reviews yet.</p>
+  {{/if}}
 </div>
 
-<div class="add-review-section">
-	<h3>Leave a Review</h3>
-	<form action="/reviews/{{listing._id}}" method="POST">
-		<label>
-			<input type="hidden" name="listingId" value="{{listing._id}}" />
-		</label>
-		<div class="form-group">
-			<label for="customerName">Name</label>
-			<input type="text" id="customerName" name="name" required />
-		</div>
+<div class='add-review-section'>
+  <h3>Leave a Review</h3>
 
-		<div class="form-group">
-			<label for="rating">Rating</label>
-			<select id="rating" name="rating" required>
-				<option value="">Select a rating</option>
-				<option value="5">5/5</option>
-				<option value="4">4/5</option>
-				<option value="3">3/5</option>
-				<option value="2">2/5</option>
-				<option value="1">1/5</option>
-			</select>
-		</div>
+  {{#eq user.role 'seller'}}
+    <p class='info-message'>Sellers cannot leave reviews.</p>
+  {{else}}
+    <form
+      action='/review/{{listing._id}}'
+      method='POST'
+      id='addReviewForm'
+      name='addReviewForm'
+      data-listingid='{{listing._id}}'
+    >
+      <div class='form-group'>
+        <label for='rating'>Rating</label>
+        <select id='rating' name='rating' required>
+          <option value=''>Select a rating</option>
+          <option value='5'>5/5</option>
+          <option value='4'>4/5</option>
+          <option value='3'>3/5</option>
+          <option value='2'>2/5</option>
+          <option value='1'>1/5</option>
+        </select>
+      </div>
 
-		<div class="form-group">
-			<label for="reviewText">Your Review</label>
-			<textarea id="reviewText" name="reviewText" rows="4" required></textarea>
-		</div>
+      <div class='form-group'>
+        <label for='reviewText'>Your Review</label>
+        <textarea
+          id='reviewText'
+          name='reviewText'
+          rows='4'
+          required
+        ></textarea>
+      </div>
 
-		<button type="submit" class="submit-review-btn">Submit Review</button>
-	</form>
+      <button type='submit' class='submit-review-btn'>Submit Review</button>
+    </form>
+  {{/eq}}
+
+</div>
+
+<div class='comments-section'>
+  <h3>Customer Comments</h3>
+  {{#if comments}}
+    <div class='comment-cards-container'>
+      {{#each comments}}
+        <div class='comment-card'>
+          <h4 class='commenter-name'>{{commenterName}}
+            - Posted on
+            {{timeString}}</h4>
+          <p class='comment-text'>{{comment}}</p>
+        </div>
+      {{/each}}
+    </div>
+  {{else}}
+    <p>No comments yet.</p>
+  {{/if}}
+</div>
+
+<div class='add-comment-section'>
+  <h3>Leave a Comment</h3>
+
+  {{#eq user.role 'seller'}}
+    <p class='info-message'>Sellers cannot leave comments.</p>
+  {{else}}
+    <form
+      action='/comments/{{listing._id}}'
+      method='POST'
+      id='addCommentForm'
+      name='addCommentForm'
+      data-listingid='{{listing._id}}'
+    >
+      <div class='form-group'>
+        <label for='commentText'>Your Comment</label>
+        <textarea
+          id='commentText'
+          name='commentText'
+          rows='4'
+          required
+        ></textarea>
+      </div>
+
+      <button type='submit' class='submit-comment-btn'>Submit Comment</button>
+    </form>
+  {{/eq}}
 </div>

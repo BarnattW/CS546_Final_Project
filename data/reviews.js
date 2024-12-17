@@ -2,8 +2,7 @@ import { ObjectId } from 'mongodb';
 import { listings, customers } from '../config/mongoCollections.js';
 import * as validation from '../utils/checks.js';
 import * as sellerDataFunctions from './seller.js';
-import * as customerDataFunctions from "../data/customers.js";
-
+import { customersDataFunctions } from './customers.js';
 
 const createReview = async (
   customerId,
@@ -21,6 +20,20 @@ const createReview = async (
   if (rating > 5) throw 'Rating is out of 5 stars!';
   reviewText = validation.checkString(reviewText, 'Review Text');
 
+  const customer = await customersDataFunctions.getCustomerById(customerId);
+  if (!customer) throw 'Customer does not exist.';
+  if (customer.reviews.length > 0) {
+    for (let i = 0; i < customer.reviews.length; i++) {
+      if (customer.reviews[i].listingId === listingId)
+        throw 'Customer already made a review for this listing.';
+    }
+  }
+
+  const listing = await sellerDataFunctions.getListingById(listingId);
+  if (!listing) throw 'Listing does not exist.';
+  if (listing.sellerId === customerId)
+    throw 'Seller cannot make a review for their own listing.';
+
   // Creates a new Object of Review
   let newReview = {
     customerId,
@@ -32,16 +45,13 @@ const createReview = async (
 
   // Grab the listing that the review is going under
   const currListing = await sellerDataFunctions.getListingById(listingId);
-  if (!currListing) throw 'Listing does not exist.';
-
-  currListing.reviews.push(newReview);
-
-  const listingCollection = await listings();
-  const updateInfoListing = await teamCollection.updateOne(
+  // add review to the listing
+  const listingsCollection = await listings();
+  const updateInfoListing = await listingsCollection.updateOne(
     { _id: new ObjectId(listingId) },
     {
-      $set: {
-        reviews: currListing.reviews,
+      $push: {
+        reviews: newReview,
       },
     }
   );
@@ -51,7 +61,7 @@ const createReview = async (
 
   // Grab the customer that the review is going under
 
-  const currCustomer = await customerDataFunctions.getCustomerById(customerId);
+  const currCustomer = await customersDataFunctions.getCustomerById(customerId);
   if (!currCustomer) throw 'Customer does not exist.';
 
   currCustomer.reviews.push(newReview);
@@ -71,7 +81,7 @@ const createReview = async (
 
   return (
     (await sellerDataFunctions.getListingById(listingId)) &&
-    (await customerDataFunctions.getCustomerById(customerId))
+    (await customersDataFunctions.getCustomerById(customerId))
   );
 };
 
@@ -149,7 +159,7 @@ const deleteReview = async (reviewId) => {
   const listing = await sellerDataFunctions.getListingById(listingId);
   if (!listing) throw 'Listing does not exist.';
 
-  const customer = await customerDataFunctions.getCustomerById(customerId);
+  const customer = await customersDataFunctions.getCustomerById(customerId);
   if (!customer) throw 'Customer does not exist.';
 
   const updatedReviews = listing.reviews.filter(
@@ -185,11 +195,13 @@ const deleteReview = async (reviewId) => {
     throw 'Update failed';
 
   const finalListing = await sellerDataFunctions.getListingById(listingId);
-  const finalCustomer = await customerDataFunctions.getCustomerById(customerId);
+  const finalCustomer = await customersDataFunctions.getCustomerById(
+    customerId
+  );
   return { listing: finalListing, customer: finalCustomer };
 };
 
-export const reviewDataFunctions = {
+export const reviewsDataFunctions = {
   getReviewsById,
   getListingReviews,
   createReview,

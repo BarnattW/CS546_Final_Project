@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb';
-import * as validation from '../utils/checks.js';
 import { listings } from '../config/mongoCollections.js';
 import * as sellerDataFunctions from './seller.js';
 
