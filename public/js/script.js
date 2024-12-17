@@ -535,6 +535,18 @@ if (addToWishlistBtn) {
   addToWishlistBtn.addEventListener('click', async (e) => {
     event.preventDefault();
 
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			const listingId = addToWishlistBtn.dataset.listingid;
+			if (!listingId) throw "listingId is missing";
+			const response = await fetch("/customers/wishlist", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ listingId }),
+			});
     clientErrorDiv.hidden = true;
     clientErrorDiv.innerHTML = '';
     try {
@@ -803,4 +815,77 @@ if (addCommentForm) {
       clientErrorDiv.innerHTML = e;
     }
   });
+}
+
+/*
+ * Checkout page
+ */
+function formatShippingAddress(address, city, state, zip, country) {
+	if (!address || !city || !state || !zip || !country) {
+		throw new Error(
+			"All fields (address, city, state, zip, country) are required."
+		);
+	}
+
+	return `${address}\n${city}, ${state} ${zip}\n${country}`;
+}
+
+const checkoutForm = document.getElementById("checkoutForm");
+if (checkoutForm) {
+	checkoutForm.addEventListener("submit", async (event) => {
+		event.preventDefault();
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			const fullName = document.getElementById("fullName");
+			fullName.value = checkInputEmpty(fullName, "Full Name");
+
+			// format shipping address bassed on address, city, state, zip, and country
+			const address = document.getElementById("address");
+			const city = document.getElementById("city");
+			const state = document.getElementById("state");
+			const zip = document.getElementById("zipCode");
+			const country = document.getElementById("country");
+			address.value = checkInputEmpty(address, "Address");
+			city.value = checkInputEmpty(city, "City");
+			state.value = checkInputEmpty(state, "State");
+			zip.value = checkInputEmpty(zip, "Zip Code");
+			country.value = checkInputEmpty(country, "Country");
+
+			const shippingAddress = formatShippingAddress(
+				address.value,
+				city.value,
+				state.value,
+				zip.value,
+				country.value
+			);
+
+			// Get card credentials. For now, we'll just use the card number
+			const cardNumber = document.getElementById("cardNumber");
+			cardNumber.value = checkInputEmpty(cardNumber, "Card Number");
+
+			const response = await fetch("/customers/orders", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					name: fullName.value,
+					shippingAddress,
+					cardNumber: cardNumber.value,
+				}),
+			});
+
+			if (response.ok) {
+				window.location.href = "/customers/orders";
+			} else {
+				const data = await response.json();
+				throw data.error;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	});
 }

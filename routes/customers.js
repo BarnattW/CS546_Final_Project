@@ -355,7 +355,13 @@ router.route("/checkout").get(async (req, res) => {
 	}
 
 	try {
-		res.render("customer/checkout", { user: req.session.user });
+		const cartData = await customersData.getCustomerCart(user._id);
+		res.render("checkout", {
+			user: req.session.user,
+			cart: cartData.populatedCart,
+			totalItems: cartData.totalItems,
+			totalPrice: cartData.totalPrice,
+		});
 	} catch (e) {
 		return res.status(404).json({ error: e });
 	}
