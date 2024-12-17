@@ -168,78 +168,77 @@ router.route('/addlisting').post(async (req, res) => {
 });
 
 router
-  .route('/listings')
-  .get(async (req, res) => {
-    const user = req.session.user;
+	.route("/listings")
+	.get(async (req, res) => {
+		const user = req.session.user;
 
-    try {
-      if (!user) throw `Session user not found. Login again.`;
-    } catch (e) {
-      return res.status(401).render('sellerlogin', { error: e });
-    }
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("sellerlogin", { error: e });
+		}
 
-    try {
-      let listings = await sellersData.getAllSellerListings(
-        req.session.user._id
-      );
-      console.log(listings);
-      return res.render('sellerlistings', {
-        user: req.session.user,
-        listings,
-      });
-    } catch (e) {
-      console.log(e);
-      return res.status(404).json({ error: e });
-    }
-  })
+		try {
+			let listings = await sellersData.getAllSellerListings(
+				req.session.user._id
+			);
+			console.log(listings);
+			return res.render("sellerlistings", {
+				user: req.session.user,
+				listings,
+			});
+		} catch (e) {
+			console.log(e);
+			return res.status(404).json({ error: e });
+		}
+	})
+	.post(async (req, res) => {
+		const user = req.session.user;
+		try {
+			if (!user) throw `Session user not found. Login again.`;
+		} catch (e) {
+			return res.status(401).render("customerlogin", { message: e });
+		}
 
-  .post(async (req, res) => {
-    const user = req.session.user;
-    try {
-      if (!user) throw `Session user not found. Login again.`;
-    } catch (e) {
-      return res.status(401).render('customerlogin', { message: e });
-    }
+		const reviewData = req.body;
 
-    const reviewData = req.body;
+		if (!reviewData || Object.keys(reviewData).length === 0) {
+			return res
+				.status(400)
+				.json({ error: "There are no fields in the request body" });
+		}
 
-    if (!reviewData || Object.keys(reviewData).length === 0) {
-      return res
-        .status(400)
-        .json({ error: 'There are no fields in the request body' });
-    }
+		try {
+			reviewData = sanitizeObject(reviewData);
 
-    try {
-      reviewData = sanitizeObject(reviewData);
+			const { listingId, rating, reviewText } = reviewData;
 
-      const { listingId, rating, reviewText } = reviewData;
+			listingId = validation.checkId(listingId, "Listing ID");
+			rating = validation.checkIsPositiveInteger(rating);
+			reviewText = validation.checkString(reviewText, "Review Text");
+		} catch (e) {
+			return res.status(404).json("error", { message: e });
+		}
 
-      listingId = validation.checkId(listingId, 'Listing ID');
-      rating = validation.checkIsPositiveInteger(rating);
-      reviewText = validation.checkString(reviewText, 'Review Text');
-    } catch (e) {
-      return res.status(404).json('error', { message: e });
-    }
+		try {
+			const customer = await customerDataFunctions.getCustomerById(
+				req.session.user._id
+			);
+			const name = customer.name;
 
-    try {
-      const customer = await customerDataFunctions.getCustomerById(
-        req.session.user._id
-      );
-      const name = customer.name;
+			let newReview = await reviewDataFunctions.createReview(
+				req.session.user._id,
+				name,
+				listingId,
+				rating,
+				reviewText
+			);
 
-      let newReview = await reviewDataFunctions.createReview(
-        req.session.user._id,
-        name,
-        listingId,
-        rating,
-        reviewText
-      );
-
-      return res.render('reviews', { user: req.session.user, newReview });
-    } catch (e) {
-      return res.status(404).json('error', { message: e });
-    }
-  });
+			return res.render("reviews", { user: req.session.user, newReview });
+		} catch (e) {
+			return res.status(404).json("error", { message: e });
+		}
+	});
 
 router
 	.route("/listings/:listingId")

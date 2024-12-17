@@ -565,11 +565,13 @@ if (addToWishlistBtn) {
  * User cart
  */
 // Delete listing from cart
-Array.from(document.getElementsByClassName('deleteCartItemBtn')).forEach(
-  (btn) =>
-    btn.addEventListener('click', async (e) => {
-      const cartItemDiv = e.target.closest('.cart-item');
-      const listingId = cartItemDiv.dataset.listingid;
+Array.from(document.getElementsByClassName("deleteCartItemBtn")).forEach(
+	(btn) =>
+		btn.addEventListener("click", async (e) => {
+			e.preventDefault();
+
+			const cartItemDiv = e.target.closest(".cart-item");
+			const listingId = cartItemDiv.dataset.listingid;
 
       clientErrorDiv.hidden = true;
       clientErrorDiv.innerHTML = '';
@@ -607,11 +609,13 @@ Array.from(document.getElementsByClassName('deleteCartItemBtn')).forEach(
 );
 
 // update cart quantity
-Array.from(document.getElementsByClassName('quantity-input')).forEach((input) =>
-  input.addEventListener('change', async (e) => {
-    const cartItemDiv = e.target.closest('.cart-item');
-    const listingId = cartItemDiv.dataset.listingid;
-    let quantity = parseInt(e.target.value, 10);
+Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
+	input.addEventListener("change", async (e) => {
+		e.preventDefault();
+
+		const cartItemDiv = e.target.closest(".cart-item");
+		const listingId = cartItemDiv.dataset.listingid;
+		let quantity = parseInt(e.target.value, 10);
 
     clientErrorDiv.hidden = true;
     clientErrorDiv.innerHTML = '';
@@ -693,3 +697,71 @@ if (addReviewForm) {
     }
   });
 }
+
+/*
+ * User Wishlist
+ */
+
+Array.from(document.getElementsByClassName("removeFromWishlistBtn")).forEach(
+	(btn) =>
+		btn.addEventListener("click", async (e) => {
+			e.preventDefault();
+
+			clientErrorDiv.hidden = true;
+			clientErrorDiv.innerHTML = "";
+			try {
+				const listingId = e.target.dataset.listingid;
+				if (!listingId) throw "listingId is missing";
+
+				const response = await fetch("/customers/wishlist", {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ listingId }),
+				});
+
+				if (response.ok) {
+					window.location.href = "/customers/wishlist";
+				} else {
+					const data = await response.json();
+					throw data.error;
+				}
+			} catch (e) {
+				clientErrorDiv.hidden = false;
+				clientErrorDiv.innerHTML = e;
+				return;
+			}
+		})
+);
+
+Array.from(document.getElementsByClassName("moveToCartBtn")).forEach((btn) =>
+	btn.addEventListener("click", async (e) => {
+		e.preventDefault();
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			const listingId = e.target.dataset.listingid;
+			if (!listingId) throw "listingId is missing";
+
+			const response = await fetch("/customers/moveWishlistToCart", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ listingId }),
+			});
+
+			if (response.ok) {
+				window.location.href = "/customers/cart";
+			} else {
+				const data = await response.json();
+				throw data.error;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	})
+);
