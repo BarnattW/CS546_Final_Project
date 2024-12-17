@@ -1,65 +1,67 @@
-<html lang='en'>
-  <head>
-    <meta charset='utf-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <title>{{title}}</title>
-    <link rel='stylesheet' href='/public/css/styles.css' />
-  </head>
-  <body>
-    <header>
-      <nav class='navbar'>
-        <div class='nav-container'>
-          <a class='navbar-brand' href='/'>Duckling Dećor</a>
-          <ul class='nav-list'>
-            <div class='search-bar'>
-              <form id='searchForm' action='/search' method='POST'>
-                <input
-                  type='text'
-                  class='search-input wide-search'
-                  placeholder='Search here!'
-                  name='query'
-                />
-              </form>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" >
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" >
+		<title>Duckling Dećor</title>
+		<link rel="stylesheet" href="/public/css/styles.css" >
+	</head>
+	<body>
+		<script type="module" src="/public/js/helpers.js"></script>
+		<header>
+			<nav class="navbar">
+				<div class="nav-container">
+					<a class="navbar-brand" href="/">Duckling Dećor</a>
 
-            {{#if user}}
-              {{#eq user.role 'customer'}}
-                <li><a href='/customers/cart'>Cart</a></li>
-                <li><a href='/customers/wishlist'>Wishlist</a></li>
-                <li><a href='/orders'>Orders</a></li>
-                <li class='sign-out'><a href='/signout'>Sign Out</a></li>
-                <li>Hello, {{user.username}}</li>
-              {{else}}
-                <li><a href='/sellers/listings'>My Listings</a></li>
-                <li><a href='/orders'>Orders</a></li>
-                <li class='sign-out'><a href='/signout'>Sign Out</a></li>
-                <li>Hello, {{user.username}}</li>
-              {{/eq}}
-            {{else}}
-              <li class='dropdown'>
-                <a href='#'>Sign In</a>
-                <div class='dropdown-content'>
-                  <a href='/customers/login'>As Customer</a>
-                  <a href='/sellers/login'>As Seller</a>
-                </div>
-              </li>
-              <li>
-                <a href='/signup'>Sign Up</a>
-              </li>
+					<div class="search-bar">
+						<form id="searchForm" action="/search" method="POST">
+							<input
+								type="text"
+								class="search-input wide-search"
+								placeholder="Search here!"
+								name="query"
+							>
+						</form>
+					</div>
+					<ul class="nav-list">
+						{{#if user}}
+							{{#eq user.role "customer"}}
+								<li><a href="/customers/cart">Cart</a></li>
+								<li><a href="/customers/wishlist">Wishlist</a></li>
+								<li><a href="/orders">Orders</a></li>
+								<li class="sign-out"><a href="/signout">Sign Out</a></li>
+								<li>Hello, {{user.username}}</li>
+							{{else}}
+								<li><a href="/sellers/listings">My Listings</a></li>
+								<li><a href="/orders">Orders</a></li>
+								<li class="sign-out"><a href="/signout">Sign Out</a></li>
+								<li>Hello, {{user.username}}</li>
+							{{/eq}}
+						{{else}}
+							<li class="dropdown">
+								<a href="#">Sign In</a>
+								<div class="dropdown-content">
+									<a href="/customers/login">As Customer</a>
+									<a href="/sellers/login">As Seller</a>
+								</div>
+							</li>
+							<li>
+								<a href="/signup">Sign Up</a>
+							</li>
 
-            {{/if}}
-          </ul>
-        </div>
-      </nav>
-    </header>
+						{{/if}}
+					</ul>
+				</div>
+			</nav>
+		</header>
 
-    <main>
-      {{{body}}}
-    </main>
+		<main>
+			{{{body}}}
+		</main>
 
-    <footer>
-      <p>© 2024 DucklingDecor. All Rights Reserved.</p>
-    </footer>
-    <script src='/public/js/script.js'></script>
-  </body>
+		<footer>
+			<p>© 2024 DucklingDecor. All Rights Reserved.</p>
+		</footer>
+		<script type="module" src="/public/js/script.js"></script>
+	</body>
 </html>
