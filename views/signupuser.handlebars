@@ -13,7 +13,7 @@
 			name="customerSignup"
 			action="/customers/signup"
 			method="POST"
-			class="signupForm"
+			class="signupForm flex-col"
 		>
 			<label for="customerName">Name</label>
 			<input type="text" id="customerName" name="customerName" required />
@@ -54,7 +54,7 @@
 			name="sellerSignup"
 			action="/sellers/signup"
 			method="POST"
-			class="signupForm hidden"
+			class="signupForm flex-col hidden"
 		>
 			<label for="sellerBusinessName">Business Name</label>
 			<input
@@ -78,7 +78,7 @@
 				required
 			/>
 
-			<label for="confirmPassword">Confirm Password</label>
+			<label for="sellerConfirmPassword">Confirm Password</label>
 			<input
 				type="password"
 				id="sellerConfirmPassword"
@@ -96,3 +96,4 @@
 		<div id="clientError" class="error" hidden>Error Message</div>
 	</div>
 </div>
+<script type="module" src="/public/js/signuppage.js"></script>

@@ -9,6 +9,14 @@ router.get("/", async (req, res) => {
 	}
 });
 
+router.get("/signup", async (req, res) => {
+	try {
+		return res.render("signupuser");
+	} catch (e) {
+		return res.status(500).json({ error: e });
+	}
+});
+
 router.get("/signout", async (req, res) => {
 	try {
 		if (req.session) {

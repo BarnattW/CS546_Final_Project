@@ -20,6 +20,7 @@ const createCustomer = async (username, password, name) => {
 	name = checkString(name, "name");
 	checkStringLength(username, 5, 20);
 	checkStringLength(password, 8);
+	username = username.toLowerCase();
 
 	const customersCollection = await customers();
 	const existingUser = await customersCollection.findOne({ username });
@@ -56,6 +57,7 @@ const loginCustomer = async (username, password) => {
 	password = checkString(password, "password");
 	checkStringLength(username, 5, 20);
 	checkStringLength(password, 8);
+	username = username.toLowerCase();
 
 	const customersCollection = await customers();
 	const customer = await customersCollection.findOne({ username });

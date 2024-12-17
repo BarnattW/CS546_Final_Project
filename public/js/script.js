@@ -1,325 +1,43 @@
 import { checkInputEmpty, checkInputLength } from "./helpers.js";
 
 /*
- * Signup Page
- */
-let signupTabs = document.getElementsByClassName("signupTab");
-let signupForms = document.getElementsByClassName("signupForm");
-
-if (signupTabs && signupForms) {
-	signupTabs = Array.from(signupTabs);
-	signupForms = Array.from(signupForms);
-	signupTabs.forEach((signupTab) => {
-		signupTab.addEventListener("click", () => {
-			signupTabs.forEach((tab) => {
-				tab.classList.remove("active");
-			});
-			signupForms.forEach((form) => {
-				form.classList.add("hidden");
-			});
-
-			signupTab.classList.add("active");
-			const form = signupTab.getAttribute("data-tab");
-			document.getElementById(form).classList.remove("hidden");
-		});
-	});
-}
-
-/*
- * Signin Page
- */
-let signinTabs = document.getElementsByClassName("signinTab");
-let signinForms = document.getElementsByClassName("signinForm");
-
-if (signinTabs && signinForms) {
-	signinTabs = Array.from(signinTabs);
-	signinForms = Array.from(signinForms);
-	signinTabs.forEach((signinTab) => {
-		signinTab.addEventListener("click", () => {
-			signinTabs.forEach((tab) => {
-				tab.classList.remove("active");
-			});
-			signinForms.forEach((form) => {
-				form.classList.add("hidden");
-			});
-
-			signinTab.classList.add("active");
-			const form = signinTab.getAttribute("data-tab");
-			document.getElementById(form).classList.remove("hidden");
-		});
-	});
-}
-
-// Form Submission
-const clientErrorDiv = document.getElementById("clientError");
-
-const customerSignupForm = document.getElementById("customerSignup");
-const customerSignupSubmit = document.getElementById("customerSignupSubmit");
-const sellerSignupForm = document.getElementById("sellerSignup");
-
-const customerName = document.getElementById("customerName");
-const customerUsername = document.getElementById("customerUsername");
-const customerPassword = document.getElementById("customerPassword");
-const customerConfirmPassword = document.getElementById(
-	"customerConfirmPassword"
-);
-
-const sellerBusinessName = document.getElementById("sellerBusinessName");
-const sellerTown = document.getElementById("sellerTown");
-const sellerUsername = document.getElementById("sellerUsername");
-const sellerPassword = document.getElementById("sellerPassword");
-const sellerConfirmPassword = document.getElementById("sellerConfirmPassword");
-
-if (customerSignupForm) {
-	customerSignupForm.addEventListener("submit", async (event) => {
-		event.preventDefault();
-
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
-		try {
-			customerName.value = checkInputEmpty(customerName, "Name");
-			customerUsername.value = checkInputEmpty(customerUsername, "Username");
-			customerPassword.value = checkInputEmpty(customerPassword, "Password");
-			customerConfirmPassword.value = checkInputEmpty(
-				customerConfirmPassword,
-				"Confirmation Password"
-			);
-			checkInputLength(customerUsername, "Username", 5, 20);
-			checkInputLength(customerPassword, "Password", 8);
-			checkInputLength(customerConfirmPassword, "Confirmation Password", 8);
-
-			if (customerPassword.value != customerConfirmPassword.value)
-				throw `Password and confirmation password must match`;
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-			return;
-		}
-
-		try {
-			const response = await fetch("/customers/signup", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					username: customerUsername.value,
-					name: customerName.value,
-					password: customerPassword.value,
-					confirmPassword: customerConfirmPassword.value,
-				}),
-			});
-
-			if (response.ok) {
-				window.location.href = "/customers/login";
-			} else {
-				const data = await response.json();
-				clientErrorDiv.hidden = false;
-				clientErrorDiv.innerHTML = data.error;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	});
-}
-
-if (sellerSignupForm) {
-	sellerSignupForm.addEventListener("submit", async (event) => {
-		event.preventDefault();
-
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
-		try {
-			sellerBusinessName.value = checkInputEmpty(
-				sellerBusinessName,
-				"Business Name"
-			);
-			sellerTown.value = checkInputEmpty(sellerTown, "Town");
-			sellerUsername.value = checkInputEmpty(sellerUsername, "Username");
-			sellerPassword.value = checkInputEmpty(sellerPassword, "Password");
-			sellerConfirmPassword.value = checkInputEmpty(
-				sellerConfirmPassword,
-				"Confirmation Password"
-			);
-			checkInputLength(sellerUsername, "Username", 5, 30);
-			checkInputLength(sellerPassword, "Password", 8);
-			checkInputLength(sellerConfirmPassword, "Confirmation Password", 8);
-
-			if (sellerPassword.value != sellerConfirmPassword.value)
-				throw `Password and confirmation password must match`;
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-			return;
-		}
-
-		try {
-			const response = await fetch("/sellers/signup", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					businessName: sellerBusinessName.value,
-					town: sellerTown.value,
-					username: sellerUsername.value,
-					password: sellerPassword.value,
-					confirmPassword: sellerConfirmPassword.value,
-				}),
-			});
-
-			if (response.ok) {
-				window.location.href = "/sellers/login";
-			} else {
-				const data = await response.json();
-				clientErrorDiv.hidden = false;
-				clientErrorDiv.innerHTML = data.error;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	});
-}
-
-/*
- * Login Pages
- */
-
-const customerLoginForm = document.getElementById("customerLogin");
-
-if (customerLoginForm) {
-	customerLoginForm.addEventListener("submit", async (event) => {
-		event.preventDefault();
-
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
-		try {
-			customerUsername.value = checkInputEmpty(customerUsername, "Username");
-			customerPassword.value = checkInputEmpty(customerPassword, "Password");
-			checkInputLength(customerUsername, "Username", 5, 20);
-			checkInputLength(customerPassword, "Password", 8);
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-			return;
-		}
-
-		try {
-			const response = await fetch("/customers/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					username: customerUsername.value,
-					password: customerPassword.value,
-				}),
-			});
-
-			if (response.ok) {
-				window.location.href = "/";
-			} else {
-				const data = await response.json();
-				clientErrorDiv.hidden = false;
-				clientErrorDiv.innerHTML = data.error;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	});
-}
-
-/*
- * Search bar and search results
- */
-
-const searchForm = document.getElementById("searchForm");
-
-if (searchForm) {
-	searchForm.addEventListener("submit", (event) => {
-		event.preventDefault();
-
-		searchForm.submit();
-	});
-}
-
-const addToCartForm = document.getElementById("addToCart");
-if (addToCartForm) {
-	addToCartForm.addEventListener("submit", async (event) => {
-		event.preventDefault();
-
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
-		try {
-			const listingId = event.target.querySelector("input[name='listingId']");
-			const quantity = event.target.querySelector("input[name='quantity']");
-			listingId.value = checkInputEmpty(listingId, "listingId");
-			quantity.value = checkInputEmpty(quantity, "Quantity");
-			const response = await fetch("/customers/cart", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					listingId: listingId.value,
-					quantity: quantity.value,
-				}),
-			});
-
-			if (response.ok) {
-				window.location.href = "/customers/cart";
-			} else {
-				const data = await response.json();
-				throw data.error;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	});
-}
-
-/*
  * Listing Form
  */
 // add to cart
-const itemPageAddToCartForm = document.getElementById("itemAddToCart");
-if (itemPageAddToCartForm) {
-	itemPageAddToCartForm.addEventListener("submit", async (event) => {
-		event.preventDefault();
+// const itemPageAddToCartForm = document.getElementById("itemAddToCart");
+// if (itemPageAddToCartForm) {
+// 	itemPageAddToCartForm.addEventListener("submit", async (event) => {
+// 		event.preventDefault();
 
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
-		try {
-			const listingId =
-				document.getElementById("addToCartBtn").dataset.listingid;
-			const quantity = document.getElementById(`quantity-${listingId}`);
-			quantity.value = checkInputEmpty(quantity, "Quantity");
-			if (quantity.value < 0) quantity.value = 1;
-			else if (quantity.value > 5) quantity.value = 5;
-			const response = await fetch("/customers/cart", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ listingId, quantity: quantity.value }),
-			});
+// 		clientErrorDiv.hidden = true;
+// 		clientErrorDiv.innerHTML = "";
+// 		try {
+// 			const listingId =
+// 				document.getElementById("addToCartBtn").dataset.listingid;
+// 			const quantity = document.getElementById(`quantity-${listingId}`);
+// 			quantity.value = checkInputEmpty(quantity, "Quantity");
+// 			if (quantity.value < 0) quantity.value = 1;
+// 			else if (quantity.value > 5) quantity.value = 5;
+// 			const response = await fetch("/customers/cart", {
+// 				method: "POST",
+// 				headers: {
+// 					"Content-Type": "application/json",
+// 				},
+// 				body: JSON.stringify({ listingId, quantity: quantity.value }),
+// 			});
 
-			if (response.ok) {
-				window.location.href = "/customers/cart";
-			} else {
-				const data = await response.json();
-				throw data.error;
-			}
-		} catch (e) {
-			clientErrorDiv.hidden = false;
-			clientErrorDiv.innerHTML = e;
-		}
-	});
-}
+// 			if (response.ok) {
+// 				window.location.href = "/customers/cart";
+// 			} else {
+// 				const data = await response.json();
+// 				throw data.error;
+// 			}
+// 		} catch (e) {
+// 			clientErrorDiv.hidden = false;
+// 			clientErrorDiv.innerHTML = e;
+// 		}
+// 	});
+// }
 
 // add to wishlist
 const addToWishlistBtn = document.getElementById("addToWishlistBtn");
