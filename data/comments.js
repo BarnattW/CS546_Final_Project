@@ -1,3 +1,7 @@
+
+
+
+
 const getCustomerComments = async (customerId) => {};
 
 const getListingComments = async (listingId) => {};
@@ -7,7 +11,10 @@ const createComment = async (
 	commenterName,
 	listingId,
 	comment
-) => {};
+) => {
+	commenterId = checkId(commenterId, "commenterId");
+
+};
 
 // below is potentially optional
 const updateComment = async (commentId, updatedComment) => {};
