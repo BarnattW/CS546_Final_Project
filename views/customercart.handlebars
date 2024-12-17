@@ -1,12 +1,14 @@
 <h1>Cart</h1>
-<div id="clientError" class="error" hidden>Error Message</div>
 {{#if cart}}
   <div class="cart-items">
+    <div id="clientError" class="error" hidden>Error Message</div>
     {{#each cart}}
       <div class="cart-item" data-listingId="{{listingId}}">
-        <div class="item-image">
-          <img src="{{listing.itemImage}}" alt="{{listing.itemName}}" />
-        </div>
+        <a class ="href-black" href="/sellers/listings/{{listing._id}}">
+          <div class="item-image">
+            <img src="{{listing.itemImage}}" alt="{{listing.itemName}}" />
+          </div>
+        </a>
         <div class="flex-grow">
           <h2>{{listing.itemName}}</h2>
           <p>{{listing.itemDescription}}</p>

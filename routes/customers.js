@@ -222,7 +222,6 @@ router
 			const wishlist = await customersData.getCustomerWishlist(
 				req.session.user._id
 			);
-
 			return res.render("customerwishlist", {
 				user: req.session.user,
 				wishlist,
@@ -241,7 +240,7 @@ router
 			return res.status(401).render("customerlogin", { error: e });
 		}
 
-		const wishlistItemData = req.body;
+		let wishlistItemData = req.body;
 		if (!wishlistItemData || Object.keys(wishlistItemData).length === 0) {
 			return res
 				.status(400)
@@ -260,7 +259,7 @@ router
 		}
 
 		try {
-			const updatedWishlist = customersData.addToWishlist(
+			const updatedWishlist = await customersData.addToWishlist(
 				user._id,
 				wishlistItemData.listingId
 			);
@@ -278,7 +277,7 @@ router
 			return res.status(401).render("customerlogin", { error: e });
 		}
 
-		const wishlistItemData = req.body;
+		let wishlistItemData = req.body;
 		if (!wishlistItemData || Object.keys(wishlistItemData).length === 0) {
 			return res
 				.status(400)
@@ -297,15 +296,55 @@ router
 		}
 
 		try {
-			const updatedWishlist = customersData.removeFromWishlist(
+			const updatedWishlist = await customersData.removeFromWishlist(
 				user._id,
-				cartItemData.listingId
+				wishlistItemData.listingId
 			);
 			return res.json(updatedWishlist);
 		} catch (e) {
+			console.log(e);
 			return res.status(500).json({ error: e });
 		}
 	});
+
+router.route("/moveWishlistToCart").put(async (req, res) => {
+	// move item from wishlist to cart
+	const user = req.session.user;
+	try {
+		if (!user) throw `Session user not found. Login again.`;
+	} catch (e) {
+		return res.status(401).render("customerlogin", { error: e });
+	}
+
+	let wishlistItemData = req.body;
+	if (!wishlistItemData || Object.keys(wishlistItemData).length === 0) {
+		return res
+			.status(400)
+			.json({ error: "There are no fields in the request body" });
+	}
+
+	try {
+		wishlistItemData = sanitizeObject(wishlistItemData);
+		wishlistItemData.listingId = checkId(
+			wishlistItemData.listingId,
+			"listingId"
+		);
+	} catch (e) {
+		console.log(e);
+		return res.status(400).json({ error: e });
+	}
+
+	try {
+		const updatedCart = await customersData.moveFromWishlistToCart(
+			user._id,
+			wishlistItemData.listingId
+		);
+		return res.json(updatedCart);
+	} catch (e) {
+		console.log(e);
+		return res.status(500).json({ error: e });
+	}
+});
 
 router.route("/checkout").get(async (req, res) => {
 	const user = req.session.user;
@@ -317,14 +356,6 @@ router.route("/checkout").get(async (req, res) => {
 
 	try {
 		res.render("customer/checkout", { user: req.session.user });
-	} catch (e) {
-		return res.status(404).json({ error: e });
-	}
-});
-
-router.route("/browselistings").get(async (req, res) => {
-	try {
-		res.render("customers/browselistings", { user: req.session.user });
 	} catch (e) {
 		return res.status(404).json({ error: e });
 	}

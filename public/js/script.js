@@ -533,8 +533,9 @@ if (itemPageAddToCartForm) {
 const addToWishlistBtn = document.getElementById("addToWishlistBtn");
 if (addToWishlistBtn) {
 	addToWishlistBtn.addEventListener("click", async (e) => {
-		event.preventDefault();
+		e.preventDefault();
 
+		console.log("he");
 		clientErrorDiv.hidden = true;
 		clientErrorDiv.innerHTML = "";
 		try {
@@ -568,6 +569,8 @@ if (addToWishlistBtn) {
 Array.from(document.getElementsByClassName("deleteCartItemBtn")).forEach(
 	(btn) =>
 		btn.addEventListener("click", async (e) => {
+			e.preventDefault();
+
 			const cartItemDiv = e.target.closest(".cart-item");
 			const listingId = cartItemDiv.dataset.listingid;
 
@@ -609,6 +612,8 @@ Array.from(document.getElementsByClassName("deleteCartItemBtn")).forEach(
 // update cart quantity
 Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
 	input.addEventListener("change", async (e) => {
+		e.preventDefault();
+
 		const cartItemDiv = e.target.closest(".cart-item");
 		const listingId = cartItemDiv.dataset.listingid;
 		let quantity = parseInt(e.target.value, 10);
@@ -642,6 +647,74 @@ Array.from(document.getElementsByClassName("quantity-input")).forEach((input) =>
 				window.location.href = "/customers/cart";
 			} else {
 				throw `Could not update listing with ID ${listingId}. Please try again.`;
+			}
+		} catch (e) {
+			clientErrorDiv.hidden = false;
+			clientErrorDiv.innerHTML = e;
+		}
+	})
+);
+
+/*
+ * User Wishlist
+ */
+
+Array.from(document.getElementsByClassName("removeFromWishlistBtn")).forEach(
+	(btn) =>
+		btn.addEventListener("click", async (e) => {
+			e.preventDefault();
+
+			clientErrorDiv.hidden = true;
+			clientErrorDiv.innerHTML = "";
+			try {
+				const listingId = e.target.dataset.listingid;
+				if (!listingId) throw "listingId is missing";
+
+				const response = await fetch("/customers/wishlist", {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ listingId }),
+				});
+
+				if (response.ok) {
+					window.location.href = "/customers/wishlist";
+				} else {
+					const data = await response.json();
+					throw data.error;
+				}
+			} catch (e) {
+				clientErrorDiv.hidden = false;
+				clientErrorDiv.innerHTML = e;
+				return;
+			}
+		})
+);
+
+Array.from(document.getElementsByClassName("moveToCartBtn")).forEach((btn) =>
+	btn.addEventListener("click", async (e) => {
+		e.preventDefault();
+
+		clientErrorDiv.hidden = true;
+		clientErrorDiv.innerHTML = "";
+		try {
+			const listingId = e.target.dataset.listingid;
+			if (!listingId) throw "listingId is missing";
+
+			const response = await fetch("/customers/moveWishlistToCart", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ listingId }),
+			});
+
+			if (response.ok) {
+				window.location.href = "/customers/cart";
+			} else {
+				const data = await response.json();
+				throw data.error;
 			}
 		} catch (e) {
 			clientErrorDiv.hidden = false;

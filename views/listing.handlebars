@@ -28,8 +28,12 @@
 				data-listingid="{{listing._id}}"
 			>Add to Cart</button>
 		</form>
-		<button class="addToWishlistBtn" data-listingid="{{listing._id}}">Add to
-			Wishlist</button>
+		<button
+			id="addToWishlistBtn"
+			name="addToWishlistBtn"
+			class="addToWishlistBtn"
+			data-listingid="{{listing._id}}"
+		>Add to Wishlist</button>
 		<div id="clientError" class="error" hidden>Error Message</div>
 	</div>
 </div>
@@ -48,16 +52,16 @@
 	{{/if}}
 </div>
 
-<div class='add-review-section'>
-  <h3>Leave a Review</h3>
-  <form action='/reviews/{{listing._id}}' method='POST'>
-    <label>
-      <input type='hidden' name='listingId' value='{{listing._id}}' />
-    </label>
-    <div class='form-group'>
-      <label for='customerName'>Name</label>
-      <input type='text' id='customerName' name='name' required />
-    </div>
+<div class="add-review-section">
+	<h3>Leave a Review</h3>
+	<form action="/reviews/{{listing._id}}" method="POST">
+		<label>
+			<input type="hidden" name="listingId" value="{{listing._id}}" />
+		</label>
+		<div class="form-group">
+			<label for="customerName">Name</label>
+			<input type="text" id="customerName" name="name" required />
+		</div>
 
 		<div class="form-group">
 			<label for="rating">Rating</label>
