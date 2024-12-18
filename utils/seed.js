@@ -90,7 +90,7 @@ export async function runSetup() {
 				itemImage:
 					"https://medleyhome.com/cdn/shop/files/kirnik-sofa-106-linara-jicama-02.jpg?v=1713315799&width=2048",
 				itemCategory: "sofas",
-				itemCondition: "refurbished",
+				itemCondition: "new",
 			},
 			{
 				itemName: "Bed",
@@ -99,7 +99,7 @@ export async function runSetup() {
 				itemImage:
 					"https://assets.wfcdn.com/im/65594651/resize-h800-w800%5Ecompr-r85/2759/275944225/Chandlor+Panel+Bed.jpg",
 				itemCategory: "beds",
-				itemCondition: "like new",
+				itemCondition: "used",
 			},
 		];
 
