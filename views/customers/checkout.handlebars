@@ -26,7 +26,7 @@
 			<h3>Total Price: ${{totalPrice}}</h3>
 
 			<form id="checkoutForm" name="checkoutForm" method="POST">
-				<label for="full-name">Full Name:</label>
+				<label for="fullName">Full Name:</label>
 				<input
 					type="text"
 					id="fullName"
@@ -59,7 +59,7 @@
 					placeholder="Enter your state"
 					required
 				/>
-				<label for="zip-code">ZIP Code:</label>
+				<label for="zipCode">ZIP Code:</label>
 				<input
 					type="text"
 					id="zipCode"
@@ -75,7 +75,7 @@
 					placeholder="Enter your country"
 					required
 				/>
-				<label for="card-number">Card Number:</label>
+				<label for="cardNumber">Card Number:</label>
 				<input
 					type="text"
 					id="cardNumber"
@@ -85,7 +85,7 @@
 					pattern="\d{16}"
 					title="Enter a 16-digit card number"
 				/>
-				<label for="expiration-date">Expiration Date (MM/YY):</label>
+				<label for="expirationDate">Expiration Date (MM/YY):</label>
 				<input
 					type="text"
 					id="expirationDate"
@@ -112,3 +112,4 @@
 {{else}}
 	<h2> Your cart is empty... </h2>
 {{/if}}
+<script type="module" src="/public/js/customers/checkoutpage.js"></script>
