@@ -13,7 +13,7 @@ router
 		try {
 			return res.render("sellers/sellerlogin", { user: req.session.user });
 		} catch (e) {
-			return res.status(404).json({ error: e });
+			return res.status(404).render("error", { error: e });
 		}
 	})
 	.post(async (req, res) => {
@@ -199,7 +199,7 @@ router
 			});
 		} catch (e) {
 			console.log(e);
-			return res.status(404).json({ error: e });
+			return res.status(404).render("error", { error: e });
 		}
 	})
 	.post(async (req, res) => {
@@ -263,7 +263,7 @@ router
 			);
 		} catch (e) {
 			console.log(e);
-			return res.status(400).json({ error: e });
+			return res.status(400).render("error", { error: e });
 		}
 
 		try {
@@ -276,7 +276,7 @@ router
 			});
 		} catch (e) {
 			console.log(e);
-			return res.status(404).json({ error: e });
+			return res.status(404).render("error", { error: e });
 		}
 	})
 	.delete(async (req, res) => {

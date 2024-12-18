@@ -3,6 +3,8 @@ import { customers, sellers } from "../config/mongoCollections.js";
 import {
 	checkId,
 	checkIsPositiveInteger,
+	checkIsPositiveNumber,
+	checkRegex,
 	checkString,
 } from "../utils/checks.js";
 import { sellersData } from "./index.js";
@@ -26,7 +28,7 @@ import { sellersData } from "./index.js";
 const populateOrderItems = async (orderItems) => {
 	orderItems.forEach((item) => {
 		if (item.listingId) item.listingId = item.listingId.toString();
-		else _id = _id.toString();
+		else item.listing._id = item.listing._id.toString();
 	});
 
 	const populatedItems = await Promise.all(
@@ -34,7 +36,7 @@ const populateOrderItems = async (orderItems) => {
 			let listing;
 			if (item.listingId) {
 				listing = await sellersData.getListingById(item.listingId);
-			} else listing = await sellersData.getListingById(item._id);
+			} else listing = await sellersData.getListingById(item.listing._id);
 			return {
 				listing,
 			};
@@ -99,10 +101,6 @@ const getCustomerOrder = async (customerId, orderId) => {
 
 	if (!customerOrder) throw `No order found with orderId ${orderId}`;
 
-	customerOrder.orders[0].orderItems = await populateOrderItems(
-		customerOrder.orders[0].orderItems
-	);
-
 	return customerOrder.orders[0];
 };
 
@@ -129,7 +127,6 @@ const getSellerOrders = async (sellerId) => {
 	if (sellerOrders.length === 0) return;
 	await Promise.all(
 		sellerOrders.map(async (order) => {
-			console.log(order.orderItems);
 			order.orderItems = await populateOrderItems(order.orderItems);
 		})
 	);
@@ -147,7 +144,7 @@ const getSellerOrder = async (sellerId, orderId) => {
 	const sellersCollection = await sellers();
 	const sellerOrder = await sellersCollection.findOne(
 		{
-			_id: new ObjectId(customerId),
+			_id: new ObjectId(sellerId),
 			"orders._id": new ObjectId(orderId),
 		},
 		{
@@ -162,10 +159,6 @@ const getSellerOrder = async (sellerId, orderId) => {
 
 	if (!sellerOrder) throw `No order found with orderId ${orderId}`;
 
-	sellerOrder.orders[0].orderItems = await populateOrderItems(
-		sellerOrder.orders[0].orderItems
-	);
-
 	return sellerOrder.orders[0];
 };
 
@@ -178,15 +171,33 @@ const createOrder = async (
 	orderItems,
 	shippingAddress,
 	cardNumber,
+	expirationDate,
+	cvv,
 	cost
 ) => {
 	// replicate order across both sellers and the customer
+	// ideally for credit card information, we use a third party service
+	// but for the sake of simplication, we'll just store it in the database (just card number)
 	customerId = checkId(customerId, "customerId");
 	name = checkString(name, "name");
 	shippingAddress = checkString(shippingAddress, "shippingAddress");
 	checkString(cardNumber, "cardNumber");
-	if (cardNumber.length !== 16) throw "Invalid card number";
-	checkIsPositiveInteger(cost);
+	checkString(expirationDate, "expirationDate");
+	checkString(cvv, "cvv");
+	checkRegex(cardNumber, /^[0-9]{16}$/, "Invalid 16-digit-card number");
+	checkRegex(
+		expirationDate,
+		/^(0[1-9]|1[0-2])\/([0-9]{2})$/,
+		"Invalid expiry date in MM/YY format"
+	);
+	const today = new Date();
+	const [month, year] = expirationDate.split("/");
+	const expiration = new Date(`20${year}`, month - 1);
+	if (expiration < today) {
+		throw "Expiration date must be in the future.";
+	}
+	checkRegex(cvv, /^[0-9]{3,4}$/, "Invalid 3 or 4 digit CVV");
+	checkIsPositiveNumber(cost);
 
 	const newOrderId = new ObjectId();
 	const newOrder = {
@@ -198,6 +209,7 @@ const createOrder = async (
 		cost,
 		cardNumber,
 		orderDate: new Date(),
+		shippingStatus: "Order Received",
 	};
 
 	const customersCollection = await customers();
@@ -234,7 +246,22 @@ const createOrder = async (
 			const listing = await sellersData.getListingById(
 				orderItem.listingId.toString()
 			);
-			sellerOrders[listing.sellerId] = listing;
+
+			const sellerId = listing.sellerId.toString();
+			if (!sellerOrders[sellerId]) {
+				sellerOrders[sellerId] = {
+					listings: [],
+					totalCost: 0,
+				};
+			}
+
+			const cost = orderItem.quantity * orderItem.listing.itemPrice;
+			sellerOrders[sellerId].listings.push({
+				listing,
+				quantity: orderItem.quantity,
+				cost,
+			});
+			sellerOrders[sellerId].totalCost += cost;
 		})
 	);
 
@@ -244,12 +271,14 @@ const createOrder = async (
 			_id: newOrderId,
 			customerId: customerId,
 			name,
-			orderItems: [sellerOrders[sellerId]],
+			orderItems: sellerOrders[sellerId].listings,
 			shippingAddress: shippingAddress,
-			cost: cost,
+			cost: sellerOrders[sellerId].totalCost.toFixed(2),
 			cardNumber: cardNumber,
 			orderDate: new Date(),
+			shippingStatus: "Order Received",
 		};
+
 		const updatedSellerOrders = await sellersCollection.updateOne(
 			{
 				_id: new ObjectId(sellerId),

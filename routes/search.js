@@ -12,7 +12,7 @@ router
 
 			return res.render("search", { searchResults, user: req.session.user });
 		} catch (e) {
-			return res.status(404).json({ error: e });
+			return res.status(404).render("error", { error: e });
 		}
 	})
 	.post(async (req, res) => {
