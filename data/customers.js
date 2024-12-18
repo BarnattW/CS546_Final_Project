@@ -128,6 +128,7 @@ const getCustomerCart = async (customerId) => {
 	);
 
 	totalPrice = totalPrice.toFixed(2);
+	totalPrice = parseFloat(totalPrice);
 	return { populatedCart, totalItems, totalPrice };
 };
 

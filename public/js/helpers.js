@@ -24,6 +24,10 @@ export const convertImage = (image) => {
 	});
 };
 
+export const checkRegex = (str, regex, message) => {
+	if (!regex.test(str)) throw message;
+};
+
 export const checkNumRange = (num, min, max) => {
 	if (num < min || num > max) throw `${num} is not in the range ${min}-${max}`;
 };

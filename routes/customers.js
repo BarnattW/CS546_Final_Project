@@ -20,7 +20,7 @@ router
 		try {
 			return res.render("customers/customerlogin", { user: req.session.user });
 		} catch (e) {
-			return res.status(404).json({ error: e });
+			return res.status(404).render("error", { error: e });
 		}
 	})
 	.post(async (req, res) => {
@@ -138,7 +138,7 @@ router
 			});
 		} catch (e) {
 			console.log(e);
-			return res.status(404).json({ error: e });
+			return res.status(404).render("error", { error: e });
 		}
 	})
 	.post(async (req, res) => {
@@ -241,7 +241,7 @@ router
 			});
 		} catch (e) {
 			console.log(e);
-			return res.status(404).json({ error: e });
+			return res.status(404).render("error", { error: e });
 		}
 	})
 	.post(async (req, res) => {
@@ -376,7 +376,7 @@ router.route("/checkout").get(async (req, res) => {
 			totalPrice: cartData.totalPrice,
 		});
 	} catch (e) {
-		return res.status(404).json({ error: e });
+		return res.status(404).render("error", { error: e });
 	}
 });
 

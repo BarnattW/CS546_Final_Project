@@ -37,8 +37,6 @@ Array.from(document.getElementsByClassName("moveToCartBtn")).forEach((btn) =>
 	btn.addEventListener("click", async (e) => {
 		e.preventDefault();
 
-		clientErrorDiv.hidden = true;
-		clientErrorDiv.innerHTML = "";
 		try {
 			const listingId = e.target.dataset.listingid;
 			if (!listingId) throw "listingId is missing";

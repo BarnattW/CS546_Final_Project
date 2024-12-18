@@ -6,6 +6,7 @@
 		<p>Order ID: {{order._id}}</p>
 		<p>Order Date: {{order.orderDate}}</p>
 		<p>Total Cost: ${{order.cost}}</p>
+		<p>Order Status: {{order.shippingStatus}}</p>
 	</section>
 
 	<section>
@@ -16,33 +17,68 @@
 
 	<section>
 		<h3>Items Ordered</h3>
-		{{#if order.orderItems}}
-			{{#each order.orderItems}}
-				<div class="cart-item" data-item-id="{{_id}}">
-					<a href="/sellers/listings/{{listing._id}}" class="href-black">
-						<div class="item-image">
-							<img src="{{listing.itemImage}}" alt="{{listing.itemName}}" />
+		{{#eq user.role "customer"}}
+			{{#if order.orderItems}}
+				{{#each order.orderItems}}
+					<div class="cart-item" data-item-id="{{_id}}">
+						<a href="/sellers/listings/{{listing._id}}" class="href-black">
+							<div class="item-image">
+								<img src="{{listing.itemImage}}" alt="{{listing.itemName}}" />
+							</div>
+						</a>
+
+						<div class="item-details">
+							<h2>{{listing.itemName}}</h2>
+							<p>{{listing.itemDescription}}</p>
+							<p>Condition: {{listing.condition}}</p>
+							<p class="price">Price: ${{listing.itemPrice}}</p>
+							<p>Quantity: {{quantity}}</p>
+
+							<p class="total">Total: ${{multiply
+									listing.itemPrice
+									quantity
+								}}</p>
 						</div>
-					</a>
-
-					<div class="item-details">
-						<h2>{{listing.itemName}}</h2>
-						<p>{{listing.itemDescription}}</p>
-						<p>Condition: {{listing.condition}}</p>
-						<p class="price">Price: ${{listing.itemPrice}}</p>
-						<p>Quantity: {{quantity}}</p>
-
-						<p class="total">Total: ${{multiply listing.itemPrice quantity}}</p>
 					</div>
-				</div>
-			{{/each}}
-		{{else}}
-			<p>No items found for this order.</p>
-		{{/if}}
+				{{/each}}
+			{{else}}
+				<p>No items found for this order.</p>
+			{{/if}}
+		{{/eq}}
+
+		{{#eq user.role "seller"}}
+			{{#if order.orderItems}}
+				{{#each order.orderItems}}
+					<div class="cart-item" data-item-id="{{_id}}">
+						<a href="/sellers/listings/{{listing._id}}" class="href-black">
+							<div class="item-image">
+								<img src="{{listing.itemImage}}" alt="{{listing.itemName}}" />
+							</div>
+						</a>
+
+						<div class="item-details">
+							<h2>{{listing.itemName}}</h2>
+							<p>{{listing.itemDescription}}</p>
+							<p>Condition: {{listing.condition}}</p>
+							<p class="price">Price: ${{listing.itemPrice}}</p>
+							<p>Quantity: {{quantity}}</p>
+
+							<p class="total">Total: ${{multiply
+									listing.itemPrice
+									quantity
+								}}</p>
+						</div>
+					</div>
+				{{/each}}
+			{{else}}
+				<p>No items found for this order.</p>
+			{{/if}}
+		{{/eq}}
 	</section>
 
 	<section class="order-actions">
-		<a href="/customers/orders" class="btn-back">Back to Orders</a>
+		<a href="/customers/orders" class="btn-back">
+			<button>Back to Orders</button></a>
 	</section>
 </div>
 

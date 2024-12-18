@@ -83,6 +83,20 @@ const checkStringLength = (str, min, max) => {
 		throw `Err: Input string should be between ${min}-${max} characters long`;
 };
 
+const checkRegex = (str, regex, message) => {
+	if (!regex.test(str)) throw message;
+};
+
+function formatShippingAddress(address, city, state, zip, country) {
+	if (!address || !city || !state || !zip || !country) {
+		throw new Error(
+			"All fields (address, city, state, zip, country) are required."
+		);
+	}
+
+	return `${address}\n${city}, ${state} ${zip}\n${country}`;
+}
+
 export {
 	checkString,
 	checkId,
@@ -93,4 +107,6 @@ export {
 	checkStringLength,
 	checkDate,
 	checkIsPositiveNumber,
+	checkRegex,
+	formatShippingAddress,
 };
