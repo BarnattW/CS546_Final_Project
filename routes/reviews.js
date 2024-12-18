@@ -6,31 +6,6 @@ import * as validation from '../utils/checks.js';
 
 router
   .route('/:listingId')
-  .get(async (req, res) => {
-    try {
-      req.params.listingId = validation.checkId(
-        req.params.listingId,
-        'listing ID'
-      );
-    } catch (e) {
-      return res.status(400).render('error', { error: e });
-    }
-
-    try {
-      let listingId = req.params.listingId;
-      let reviews = await reviewsDataFunctions.getListingReviews(listingId);
-      let listing = await sellerDataFunctions.getListingById(listingId);
-
-      return res.render('listing', {
-        reviews,
-        user: req.session.user,
-        listing,
-      });
-    } catch (e) {
-      console.log(e);
-      return res.status(404).json({ error: e });
-    }
-  })
   .post(async (req, res) => {
     const user = req.session.user;
     let listingId = req.params.listingId;
@@ -74,66 +49,53 @@ router
   })
 
   .delete(async (req, res) => {
-    try {
-      req.params.reviewId = validation.checkId(
-        req.params.reviewId,
-        'Review ID'
-      );
-    } catch (e) {
-      return res.status(400).render('error', { error: e });
-    }
+    let { reviewId } = req.body;
+    let listingId = req.params.listingId;
+    reviewId = validation.sanitizeObject(reviewId);
+    listingId = validation.checkId(listingId, 'Listing ID');
 
     try {
-      let reviewId = req.params.reviewId;
       await reviewsDataFunctions.deleteReview(reviewId);
 
-      reviews = await reviewsDataFunctions.getListingReviews(
-        reviewId.listingId
-      );
+      let listing = await reviewsDataFunctions.getListingReviews(listingId);
 
-      return res.render('reviews', { reviews });
+      return res.json(listing);
     } catch (e) {
       return res.status(404).render('error', { error: e });
     }
   })
   .put(async (req, res) => {
-    try {
-      req.params.reviewId = validation.checkId(
-        req.params.reviewId,
-        'Review ID'
-      );
-    } catch (e) {
-      return res.status(400).render('error', { error: e });
-    }
-
-    reviewData = req.body;
+    const reviewData = req.body;
     if (!reviewData || Object.keys(reviewData).length === 0) {
       return res
         .status(400)
         .json({ error: 'There are no fields in the request body' });
     }
-
     try {
-      reviewData = sanitizeObject(reviewData);
-      const { rating, reviewText } = reviewData;
+      // Validate review ID
+      const listingId = validation.checkId(req.params.listingId, 'Listing ID');
+      const sanitizedData = validation.sanitizeObject(reviewData);
+
+      let { rating, reviewText, reviewId } = reviewData;
 
       rating = validation.checkIsPositiveInteger(rating);
       reviewText = validation.checkString(reviewText, 'Review Text');
-    } catch (e) {
-      return res.status(404).json('error', { error: e });
-    }
 
-    try {
-      let reviewId = req.params.reviewId;
-      let review = await reviewsDataFunctions.updateReview(
+      // Update the review
+      const updatedReview = await reviewsDataFunctions.updateReview(
         reviewId,
         rating,
         reviewText
       );
 
-      return res.render('reviews', { user: req.session.user, review });
+      // Return the updated review
+      return res
+        .status(200)
+        .json({ message: 'Review updated successfully', updatedReview });
     } catch (e) {
-      return res.status(404).json('error', { error: e });
+      console.error(e); // Log the error for debugging
+      // Return a JSON error response
+      return res.status(400).json({ error: e.toString() });
     }
   });
 

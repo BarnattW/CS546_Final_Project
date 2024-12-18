@@ -125,6 +125,10 @@ export const getListingById = async (listingId) => {
 
 	if (!listing) throw "Can not find listing from that listingId.";
 	listing._id = listing._id.toString();
+	listing.reviews = listing.reviews.map((review) => {
+		if (review._id) review._id = review?._id?.toString();
+		return review;
+	});
 	return listing;
 };
 
