@@ -66,11 +66,6 @@ const getCustomerOrders = async (customerId) => {
 	// populate orders with items
 	const customerOrders = customer.orders;
 	if (customerOrders.length === 0) return;
-	await Promise.all(
-		customerOrders.map(async (order) => {
-			order.orderItems = await populateOrderItems(order.orderItems);
-		})
-	);
 
 	return customerOrders;
 };
@@ -125,11 +120,6 @@ const getSellerOrders = async (sellerId) => {
 	// populate each order's orderItems
 	const sellerOrders = seller.orders;
 	if (sellerOrders.length === 0) return;
-	await Promise.all(
-		sellerOrders.map(async (order) => {
-			order.orderItems = await populateOrderItems(order.orderItems);
-		})
-	);
 
 	return sellerOrders;
 };
