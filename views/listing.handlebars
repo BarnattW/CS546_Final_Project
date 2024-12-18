@@ -1,10 +1,11 @@
 <div class='listing'>
   <img src='{{listing.itemImage}}' alt='Item Image' class='product-image' />
+
   <div class='product-details'>
-    <h2>{{listing.itemName}}</h2>
-    <p>Description: {{listing.itemDescription}}</p>
-    <p >Condition: {{listing.condition}}</p>
-    <p>Price: ${{listing.itemPrice}}</p>
+    <h2 class='product-title'>{{listing.itemName}}</h2>
+    <p class='product-description'>Description: {{listing.itemDescription}}</p>
+    <p class='product-price'>Price: ${{listing.itemPrice}}</p>
+    <p class='product-condition'>Condition: {{listing.condition}}</p>
     <form
       id='itemAddToCart'
       name='itemAddToCart'
@@ -33,6 +34,7 @@
       class='addToWishlistBtn'
       data-listingid='{{listing._id}}'
     >Add to Wishlist</button>
+    <div id='clientError' class='error' hidden>Error Message</div>
   </div>
 </div>
 
@@ -41,10 +43,32 @@
   {{#if reviews}}
     <div class='review-cards-container'>
       {{#each reviews}}
+        {{#eq ../user._id this.customerId}}
+          <form class='review-card' id="editReviewForm">
+          <div class='form-group'>
+            <label><input hidden id="editReviewId" name="editReviewId" value="{{_id}}" />
+            </label>
+            <label><input hidden id="editListingId" name="editListingId" value="{{listingId}}" />
+            </label>
+            <label class='reviewer-name'>{{customerName}} -
+            <select id='editRating' name='rating'>
+              <option value='5' {{#eq rating 5}}selected{{/eq}}>5/5</option>
+              <option value='4' {{#eq rating 4}}selected{{/eq}}>4/5</option>
+              <option value='3' {{#eq rating 3}}selected{{/eq}}>3/5</option>
+              <option value='2' {{#eq rating 2}}selected{{/eq}}>2/5</option>
+              <option value='1' {{#eq rating 1}}selected{{/eq}}>1/5</option>
+            </select></label>
+          </div>
+          <label><input class='review-text' id="editReviewText" name="editReviewText" value="{{reviewText}}" /></label>
+          <span><button type="button" id="deleteReviewButton" data-reviewid="{{_id}}" data-listingid="{{listingId}}" class='delete-review-btn'>Delete</button>
+          <button type='submit' class='submit-review-btn'>Update Review</button></span>
+        </form>
+        {{else}}
         <div class='review-card'>
           <h4 class='reviewer-name'>{{customerName}} - {{rating}}/5</h4>
           <p class='review-text'>{{reviewText}}</p>
         </div>
+        {{/eq}}
       {{/each}}
     </div>
   {{else}}
@@ -52,6 +76,8 @@
   {{/if}}
 </div>
 
+{{#if alreadyReviewed}}
+{{else}}
 <div class='add-review-section'>
   <h3>Leave a Review</h3>
 
@@ -92,6 +118,7 @@
   {{/eq}}
 
 </div>
+{{/if}}
 
 <div class='comments-section'>
   <h3>Customer Comments</h3>
@@ -137,6 +164,11 @@
       <button type='submit' class='submit-comment-btn'>Submit Comment</button>
     </form>
   {{/eq}}
+  {{#if alreadyCommented}}
+    <a>
+      <button class='update-comment-btn'>Update Comment</button>
+    </a>
+  {{/if}}
 </div>
 
 <script type='module' src='/public/js/listings/listingspage.js'></script>

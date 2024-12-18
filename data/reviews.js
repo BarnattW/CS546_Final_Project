@@ -36,6 +36,7 @@ const createReview = async (
 
   // Creates a new Object of Review
   let newReview = {
+    _id: new ObjectId(),
     customerId,
     customerName,
     listingId,
@@ -105,7 +106,11 @@ const getReviewsById = async (reviewId) => {
   )
     throw 'No listing found for this review.';
 
-  return reviews[0];
+  // find the review matching the reviewId
+  const review = listingwithReview.reviews.find(
+    (review) => review._id.toString() === reviewId
+  );
+  return review;
 };
 
 const getListingReviews = async (listingId) => {
@@ -163,11 +168,11 @@ const deleteReview = async (reviewId) => {
   if (!customer) throw 'Customer does not exist.';
 
   const updatedReviews = listing.reviews.filter(
-    (review) => review._id.toString() !== reviewId
+    (review) => review?._id?.toString() !== reviewId
   );
 
   const updatedCustomerReviews = customer.reviews.filter(
-    (review) => review._id.toString() !== reviewId
+    (review) => review?._id?.toString() !== reviewId
   );
 
   const updatedListing = await listingCollection.updateOne(

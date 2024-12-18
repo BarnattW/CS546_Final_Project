@@ -310,12 +310,12 @@ input {
   background-color: #0056b3;
 }
 .form-container {
-	max-width: 600px;
-	margin: 1rem 3rem;
-	padding: 1.5rem;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	background-color: #f9f9f9;
+  max-width: 600px;
+  margin: 1rem 3rem;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
 h1 {
@@ -453,50 +453,50 @@ h2 {
   margin: 0.3rem 0 0.3rem 0;
 }
 .listing {
-	display: flex;
-	align-items: flex-start;
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 20px;
-	font-family: Arial, sans-serif;
+  display: flex;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
 .product-image {
-	width: 300px; /* Larger image width */
-	height: auto;
-	margin-right: 20px;
-	border: 1px solid #ddd;
-	background: #fff;
-	padding: 10px;
-	object-fit: contain; /* Ensures the image scales nicely within the box */
+  width: 300px; /* Larger image width */
+  height: auto;
+  margin-right: 20px;
+  border: 1px solid #ddd;
+  background: #fff;
+  padding: 10px;
+  object-fit: contain; /* Ensures the image scales nicely within the box */
 }
 
 .product-details {
-	flex: 1;
-	max-width: 700px; /* Limit width for better readability */
+  flex: 1;
+  max-width: 700px; /* Limit width for better readability */
 }
 
 .product-title {
-	font-size: 20px;
-	font-weight: bold;
-	margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .product-description {
-	font-size: 14px;
-	line-height: 1.5;
-	margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 10px;
 }
 
 .product-price {
-	font-size: 18px;
-	color: #b12704; /* Similar to Amazon price color */
-	margin-bottom: 10px;
+  font-size: 18px;
+  color: #b12704; /* Similar to Amazon price color */
+  margin-bottom: 10px;
 }
 
 .product-condition {
-	font-size: 14px;
-	color: #555;
+  font-size: 14px;
+  color: #555;
 }
 
 .reviews-section {
@@ -541,42 +541,43 @@ h2 {
 }
 
 .flex-centered {
-	display: flex;
-	justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .checkout-item {
-	display: flex;
-	gap: 20px;
-	border: 1px solid #ddd;
-	border-radius: 5px;
+  display: flex;
+  gap: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
 .checkout-container {
-	max-width: 600px;
-	margin: 0 3rem;
-	padding: 1.5rem;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	background-color: #f9f9f9;
+  max-width: 600px;
+  margin: 0 3rem;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
 .order-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 16px;
-    text-align: left;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 16px;
+  text-align: left;
 }
 
-.order-table th, .order-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+.order-table th,
+.order-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
 .order-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
+  background-color: #f4f4f4;
+  font-weight: bold;
 }
 
 .error-dialog {

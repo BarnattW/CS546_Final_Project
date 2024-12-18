@@ -62,12 +62,6 @@ addToWishlistBtn.addEventListener('click', async (e) => {
   }
 });
 
-import {
-  checkInputEmpty,
-  checkInputLength,
-  showErrorDialog,
-} from './helpers.js';
-
 // Checks Reviews
 
 const addReviewForm = document.getElementById('addReviewForm');
@@ -138,8 +132,73 @@ if (addCommentForm) {
         throw data.error;
       }
     } catch (e) {
-      clientErrorDiv.hidden = false;
-      clientErrorDiv.innerHTML = e;
+      showErrorDialog(e);
     }
   });
 }
+
+const editReviewForm = document.getElementById('editReviewForm');
+if (editReviewForm)
+  editReviewForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    try {
+      const reviewText = document.getElementById('editReviewText')?.value;
+      const rating = document.getElementById('editRating')?.value;
+      const reviewId = document.getElementById('editReviewId')?.value;
+      const listingId = document.getElementById('editListingId')?.value;
+      console.log(reviewText, rating, reviewId, listingId);
+      if (rating.value < 1 || rating.value > 5)
+        throw `Rating must be between 1 and 5`;
+      const response = await fetch(`/reviews/${listingId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reviewText: reviewText,
+          rating: Number(rating),
+          reviewId: reviewId,
+        }),
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        const data = await response.json();
+        throw JSON.stringify(data.error);
+      }
+    } catch (e) {
+      showErrorDialog(e);
+    }
+  });
+
+const deleteReviewButton = document.getElementById('deleteReviewButton');
+if (deleteReviewButton)
+  deleteReviewButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    try {
+      const reviewId = deleteReviewButton.dataset.reviewid;
+      const listingId = deleteReviewButton.dataset.listingid;
+      console.log(reviewId, listingId);
+      const response = await fetch(`/reviews/${listingId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          reviewId: reviewId,
+        }),
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        const data = await response.json();
+        throw JSON.stringify(data.error);
+      }
+    } catch (e) {
+      showErrorDialog(e);
+    }
+  });
