@@ -7,7 +7,7 @@ import {
 	checkRegex,
 	checkString,
 } from "../utils/checks.js";
-import { sellersData } from "./index.js";
+import * as sellersData from "./seller.js";
 
 /* TO-DO
  * Orders -> likely to change to support payment info and shipping status
