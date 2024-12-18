@@ -44,7 +44,6 @@ const createCustomer = async (username, password, name) => {
 		throw "Could not create customer";
 
 	const newId = insertInfo.insertedId.toString();
-	// TODO - see if this is essential...
 	const customer = await getCustomerById(newId);
 	return customer;
 };
