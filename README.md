@@ -1,8 +1,8 @@
-# Project Name
+# Duckling Decor
 
 ## Description
 
-We developed a web application that allows customers to browse and purchase furniture from various sellers. It provides a user-friendly interface for customers to create accounts, log in, and explore different furniture options. Sellers can also create accounts and manage their businesses by adding and updating furniture listings. The application uses a database to store user information, furniture data, and business details. It is built using Express + Handlebars. To get started, clone the repository, install the dependencies, and run the seed file to populate the database with our initial data. Then, start the application and access it through a web browser. We provide detailed instructions for installation, usage, and account login information for both customers and sellers below.
+We at Duckling Decor developed a web application that allows customers to browse and purchase furniture from various sellers. It provides a user-friendly interface for customers to create accounts, log in, and explore different furniture options. Sellers can also create accounts and manage their businesses by adding and updating furniture listings. The application uses a database to store user information, furniture data, and business details. It is built using Express + Handlebars. To get started, clone the repository, install the dependencies, and run the seed file to populate the database with our initial data. Then, start the application and access it through a web browser. We provide detailed instructions for installation, usage, and account login information for both customers and sellers below.
 
 ## Installation
 
