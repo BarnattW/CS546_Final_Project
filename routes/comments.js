@@ -55,7 +55,6 @@ router
       let { commentText } = commentData;
       commentText = validation.checkString(commentText, 'Comment');
 
-
       let newComment = await commentsData.createComment(
         user._id,
         user.username,
@@ -67,6 +66,45 @@ router
     } catch (e) {
       console.log(e);
       return res.status(400).json({ error: e });
+    }
+  })
+  .delete(async (req, res) => {
+    let { commentId } = req.body;
+    let listingId = req.params.listingId;
+    commentId = validation.sanitizeObject(commentId);
+    listingId = validation.checkId(listingId, 'Listing ID');
+
+    try {
+      await commentsData.deleteComment(commentId);
+
+      let listing = await commentsData.getListingComments(listingId);
+
+      return res.json(listing);
+    } catch (e) {
+      return res.status(404).render('error', { error: e });
+    }
+  })
+  .put(async (req, res) => {
+    let { commentId, commentText } = req.body;
+    commentId = validation.sanitizeObject(commentId);
+    commentText = validation.sanitizeObject(commentText);
+
+    try {
+      commentId = validation.checkId(commentId, 'Comment ID');
+      commentText = validation.checkString(commentText, 'Comment Text');
+    } catch (e) {
+      return res.status(400).render('error', { error: e });
+    }
+
+    try {
+      let updatedCommentData = await commentsData.updateComment(
+        commentId,
+        commentText
+      );
+
+      return res.json(updatedCommentData);
+    } catch (e) {
+      return res.status(404).render('error', { error: e });
     }
   });
 

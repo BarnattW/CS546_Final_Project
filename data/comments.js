@@ -36,6 +36,7 @@ const createComment = async (
   });
 
   let newComment = {
+    _id: new ObjectId(),
     commenterId,
     commenterName,
     listingId,
@@ -85,6 +86,23 @@ const getCustomerComments = async (customerId) => {
   return customer.comments;
 };
 
+const getCommentById = async (commentId) => {
+  commentId = validation.checkId(commentId, 'commentId');
+  const listingCollection = await listings();
+
+  const listing = await listingCollection.findOne({
+    'comments._id': new ObjectId(commentId),
+  });
+
+  if (!listing) throw 'Could not find comment with that id';
+
+  const comment = listing.comments.find(
+    (comment) => comment?._id?.toString() === commentId
+  );
+
+  return comment;
+};
+
 const getListingComments = async (listingId) => {
   listingId = validation.checkId(listingId, 'listingId');
   const listingCollection = await listings();
@@ -99,12 +117,68 @@ const getListingComments = async (listingId) => {
 };
 
 // below is potentially optional
-const updateComment = async (commentId, updatedComment) => {};
+const updateComment = async (commentId, updatedComment) => {
+  commentId = validation.checkId(commentId, 'commentId');
+  updatedComment = validation.checkString(updatedComment, 'updatedComment');
 
-const deleteComment = async (commentId) => {};
+  const listingCollection = await listings();
+  const updateInfo = await listingCollection.updateOne(
+    { 'comments._id': new ObjectId(commentId) },
+    {
+      $set: {
+        'comments.$.comment': updatedComment,
+        'comments.$.timeString': new Date().toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZoneName: 'short',
+        }),
+      },
+    }
+  );
+
+  if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
+    throw 'Could not update comment';
+
+  return await getCommentById(commentId);
+};
+
+const deleteComment = async (commentId) => {
+  commentId = validation.checkId(commentId, 'commentId');
+
+  const listingCollection = await listings();
+  const updateInfo = await listingCollection.updateOne(
+    { 'comments._id': new ObjectId(commentId) },
+    {
+      $pull: {
+        comments: { _id: new ObjectId(commentId) },
+      },
+    }
+  );
+
+  // delete from user object as well
+  const customerCollection = await customers();
+  const updateInfoCustomer = await customerCollection.updateOne(
+    { 'comments._id': new ObjectId(commentId) },
+    {
+      $pull: {
+        comments: { _id: new ObjectId(commentId) },
+      },
+    }
+  );
+
+  if (!updateInfoCustomer.matchedCount && !updateInfoCustomer.modifiedCount)
+    throw 'Could not delete comment';
+
+  if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
+    throw 'Could not delete comment';
+
+  return true;
+};
 
 export const commentsDataFunctions = {
   getCustomerComments,
   getListingComments,
   createComment,
+  updateComment,
+  deleteComment,
 };

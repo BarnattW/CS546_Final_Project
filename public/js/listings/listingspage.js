@@ -202,3 +202,65 @@ if (deleteReviewButton)
       showErrorDialog(e);
     }
   });
+
+const editCommentForm = document.getElementById('editCommentForm');
+if (editCommentForm)
+  editCommentForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    try {
+      const commentText = document.getElementById('editCommentText')?.value;
+      const commentId = document.getElementById('editCommentId')?.value;
+      const listingId = document.getElementById('editListingId')?.value;
+      console.log(commentText, commentId, listingId);
+      const response = await fetch(`/comments/${listingId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          commentText: commentText,
+          commentId: commentId,
+        }),
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        const data = await response.json();
+        throw JSON.stringify(data.error);
+      }
+    } catch (e) {
+      showErrorDialog(e);
+    }
+  });
+
+const deleteCommentButton = document.getElementById('deleteCommentButton');
+if (deleteCommentButton)
+  deleteCommentButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    try {
+      const commentId = deleteCommentButton.dataset.commentid;
+      const listingId = deleteCommentButton.dataset.listingid;
+      console.log(commentId, listingId);
+      const response = await fetch(`/comments/${listingId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          commentId: commentId,
+        }),
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        const data = await response.json();
+        throw JSON.stringify(data.error);
+      }
+    } catch (e) {
+      showErrorDialog(e);
+    }
+  });

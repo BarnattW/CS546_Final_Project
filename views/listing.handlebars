@@ -40,6 +40,49 @@
 
 <div class='reviews-section'>
   <h3>Customer Reviews</h3>
+  {{#if alreadyReviewed}}
+  {{else}}
+  <div class='add-review-section'>
+    <h3>Leave a Review</h3>
+
+    {{#eq user.role 'seller'}}
+      <p class='info-message'>Sellers cannot leave reviews.</p>
+    {{else}}
+      <form
+        action='/review/{{listing._id}}'
+        method='POST'
+        id='addReviewForm'
+        name='addReviewForm'
+        data-listingid='{{listing._id}}'
+      >
+        <div class='form-group'>
+          <label for='rating'>Rating</label>
+          <select id='rating' name='rating' required>
+            <option value=''>Select a rating</option>
+            <option value='5'>5/5</option>
+            <option value='4'>4/5</option>
+            <option value='3'>3/5</option>
+            <option value='2'>2/5</option>
+            <option value='1'>1/5</option>
+          </select>
+        </div>
+
+        <div class='form-group'>
+          <label for='reviewText'>Your Review</label>
+          <textarea
+            id='reviewText'
+            name='reviewText'
+            rows='4'
+            required
+          ></textarea>
+        </div>
+
+        <button type='submit' class='submit-review-btn'>Submit Review</button>
+      </form>
+    {{/eq}}
+
+  </div>
+  {{/if}}
   {{#if reviews}}
     <div class='review-cards-container'>
       {{#each reviews}}
@@ -76,99 +119,71 @@
   {{/if}}
 </div>
 
-{{#if alreadyReviewed}}
-{{else}}
-<div class='add-review-section'>
-  <h3>Leave a Review</h3>
 
-  {{#eq user.role 'seller'}}
-    <p class='info-message'>Sellers cannot leave reviews.</p>
-  {{else}}
-    <form
-      action='/review/{{listing._id}}'
-      method='POST'
-      id='addReviewForm'
-      name='addReviewForm'
-      data-listingid='{{listing._id}}'
-    >
-      <div class='form-group'>
-        <label for='rating'>Rating</label>
-        <select id='rating' name='rating' required>
-          <option value=''>Select a rating</option>
-          <option value='5'>5/5</option>
-          <option value='4'>4/5</option>
-          <option value='3'>3/5</option>
-          <option value='2'>2/5</option>
-          <option value='1'>1/5</option>
-        </select>
-      </div>
-
-      <div class='form-group'>
-        <label for='reviewText'>Your Review</label>
-        <textarea
-          id='reviewText'
-          name='reviewText'
-          rows='4'
-          required
-        ></textarea>
-      </div>
-
-      <button type='submit' class='submit-review-btn'>Submit Review</button>
-    </form>
-  {{/eq}}
-
-</div>
-{{/if}}
 
 <div class='comments-section'>
   <h3>Customer Comments</h3>
-  {{#if comments}}
-    <div class='comment-cards-container'>
-      {{#each comments}}
-        <div class='comment-card'>
-          <h4 class='commenter-name'>{{commenterName}}
-            - Posted on
-            {{timeString}}</h4>
-          <p class='comment-text'>{{comment}}</p>
-        </div>
-      {{/each}}
-    </div>
-  {{else}}
-    <p>No comments yet.</p>
-  {{/if}}
-</div>
-
-<div class='add-comment-section'>
-  <h3>Leave a Comment</h3>
-
-  {{#eq user.role 'seller'}}
-    <p class='info-message'>Sellers cannot leave comments.</p>
-  {{else}}
-    <form
-      action='/comments/{{listing._id}}'
-      method='POST'
-      id='addCommentForm'
-      name='addCommentForm'
-      data-listingid='{{listing._id}}'
-    >
-      <div class='form-group'>
-        <label for='commentText'>Your Comment</label>
-        <textarea
-          id='commentText'
-          name='commentText'
-          rows='4'
-          required
-        ></textarea>
-      </div>
-
-      <button type='submit' class='submit-comment-btn'>Submit Comment</button>
-    </form>
-  {{/eq}}
   {{#if alreadyCommented}}
-    <a>
-      <button class='update-comment-btn'>Update Comment</button>
-    </a>
-  {{/if}}
+  {{else}}
+  <div class='add-comment-section'>
+    <h3>Leave a Comment</h3>
+
+    {{#eq user.role 'seller'}}
+      <p class='info-message'>Sellers cannot leave comments.</p>
+    {{else}}
+      <form
+        action='/comments/{{listing._id}}'
+        method='POST'
+        id='addCommentForm'
+        name='addCommentForm'
+        data-listingid='{{listing._id}}'
+      >
+        <div class='form-group'>
+          <label for='commentText'>Your Comment</label>
+          <textarea
+            id='commentText'
+            name='commentText'
+            rows='4'
+            required
+          ></textarea>
+        </div>
+
+        <button type='submit' class='submit-comment-btn'>Submit Comment</button>
+      </form>
+    {{/eq}}
+    {{/if}}
+    {{#if comments}}
+      <div class='comment-cards-container'>
+        {{#each comments}}
+          {{#eq ../user._id this.commenterId}}
+            <form class='comment-card' id="editCommentForm">
+            <div class='form-group'>
+              {{log this}}
+              <label><input hidden id="editCommentId" name="editCommentId" value="{{_id}}" />
+              </label>
+              <label><input hidden id="editListingId" name="editListingId" value="{{listingId}}" />
+              </label>
+              <label class='commenter-name'>{{commenterName}} - Posted on
+              {{timeString}}</label>
+            </div>
+            <label><input class='comment-text' id="editCommentText" name="editCommentText" value="{{comment}}" /></label>
+            <span><button type="button" id="deleteCommentButton" data-commentid="{{_id}}" data-listingid="{{listingId}}" class='delete-comment-btn'>Delete</button>
+            <button type='submit' class='submit-comment-btn'>Update Comment</button></span>
+          </form>
+          {{else}}
+          <div class='comment-card'>
+            <h4 class='commenter-name'>{{commenterName}}
+              - Posted on
+              {{timeString}}</h4>
+            <p class='comment-text'>{{comment}}</p>
+          </div>
+          {{/eq}}
+        {{/each}}
+      </div>
+    {{else}}
+      <p>No comments yet.</p>
+    {{/if}}
+</div>
 </div>
 
 <script type='module' src='/public/js/listings/listingspage.js'></script>
