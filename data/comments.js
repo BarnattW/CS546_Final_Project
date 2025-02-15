@@ -4,6 +4,8 @@ import * as validation from '../utils/checks.js';
 import * as sellerDataFunctions from './seller.js';
 import { customersDataFunctions } from './customers.js';
 
+// Just a test
+
 const createComment = async (
   commenterId,
   commenterName,
